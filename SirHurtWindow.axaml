@@ -396,12 +396,6 @@
                 <Path Data="{StaticResource ShGearIcon}" Width="17" Height="17" Stretch="Uniform" />
               </Button>
             </StackPanel>
-            <Border Width="3" Height="26"
-                    Background="#32526F"
-                    IsHitTestVisible="False"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Margin="0,10,0,0" />
           </Grid>
         </Border>
 
