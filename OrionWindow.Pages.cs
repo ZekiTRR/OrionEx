@@ -301,7 +301,9 @@ public sealed partial class OrionWindow
             {
                 _orionUniversalConsole = new OrionConsoleWindow();
                 _orionUniversalConsole.Closed += (_, _) => _orionUniversalConsole = null;
-                _orionUniversalConsole.Show(this);
+                // No owner: hiding Orion (menu handoff) must not hide the
+                // console — it is an independent companion window.
+                _orionUniversalConsole.Show();
             }
             else
             {
