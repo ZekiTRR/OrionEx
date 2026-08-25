@@ -1,15 +1,19 @@
 # OrionEx
 
-Ремейк [Orion](https://github.com/snooped-xl/Orion) — мультиинтерфейсного скрипт-исполнителя на Avalonia.
+A remake of [Orion](https://github.com/snooped-xl/Orion) — a multi-interface Roblox script executor built on Avalonia.
 
-Добавлены меню: **Wave**, **SirHurt**, **Script-Ware**, **SirHurt Legacy**.
+Added menus: **Wave**, **SirHurt**, **Script-Ware**, **SirHurt Legacy**.
 
-> ⚠️ Это лишь MVP — меню могут не соответствовать оригиналу на все 100%.
+> ⚠️ This is an MVP only — the menus may not match the originals 100%.
 
-## Сборка
+## Build
 
 ```
 dotnet publish -c Release -p:RuntimeIdentifier=win-x64
 ```
 
-Готовый exe: `bin/Release/net8.0-windows/win-x64/publish/Orion.exe`
+Ready-to-run exe: `bin/Release/net8.0-windows/win-x64/publish/Orion.exe`
+
+---
+
+📄 Russian version: [README.ru.md](README.ru.md)
