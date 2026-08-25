@@ -1,0 +1,70 @@
+﻿[
+    {
+        "Path":  "ok\\Documents\\Codex\\SirHurtV5-refactor\\release\\SirHurtUI.exe",
+        "Hash":  "9D98FFC91CE7249154F9E66C386AE366F9CA209DADD60800883697FD48792076"
+    },
+    {
+        "Path":  "ok\\Documents\\Codex\\SirHurtV5-refactor\\release\\autoexe\\luaconsole.lua",
+        "Hash":  "9E385A11429105017E9EDF3B49A944ACF2879E92528733B3F729D48141F05D85"
+    },
+    {
+        "Path":  "ok\\Documents\\Codex\\SirHurtV5-refactor\\release\\SirHurtUIfold\\active-ui.txt",
+        "Hash":  "68D64538C4A997C9A768D615AAEF527F1F865B6ABF23C45A46DF285E69A46660"
+    },
+    {
+        "Path":  "ok\\Documents\\Codex\\SirHurtV5-refactor\\release\\SirHurtUIfold\\runtime-manifest.json",
+        "Hash":  "0A67F74378D56A62CBBA70180F73A4BA22526BAF31B366DDE12A5AA43DD5CBCA"
+    },
+    {
+        "Path":  "ok\\Documents\\Codex\\SirHurtV5-refactor\\release\\SirHurtUIfold\\SirHurtUI.ico",
+        "Hash":  "4A026CAD726BC012A29B351C4AD5D69A1CF3A10D127414346CA0072D6C8B3EB4"
+    },
+    {
+        "Path":  "ok\\Documents\\Codex\\SirHurtV5-refactor\\release\\SirHurtUIfold\\update-welcome.json",
+        "Hash":  "C92CEEBF4E9331FEB594191E49881EAF5C54D8A50092D28D8C080133C74472E3"
+    },
+    {
+        "Path":  "ok\\Documents\\Codex\\SirHurtV5-refactor\\release\\SirHurtUIfold\\runtime\\Microsoft.Web.WebView2.Core.dll",
+        "Hash":  "B1A3B02A593D89F14CB8D6B0B52746CD7F20028089D99810B56377B249577702"
+    },
+    {
+        "Path":  "ok\\Documents\\Codex\\SirHurtV5-refactor\\release\\SirHurtUIfold\\runtime\\Microsoft.Web.WebView2.WinForms.dll",
+        "Hash":  "43A843272AEB0C1D9524B77046B8135D520EDB963386B2895DB52C660F01A6D1"
+    },
+    {
+        "Path":  "ok\\Documents\\Codex\\SirHurtV5-refactor\\release\\SirHurtUIfold\\runtime\\WebView2Loader.dll",
+        "Hash":  "FB82AC089963E1DEE932ACCE2F86BA34C128770CEC4B60BCFD86F95D29E971AB"
+    },
+    {
+        "Path":  "ok\\Documents\\Codex\\SirHurtV5-refactor\\release\\SirHurtUIfold\\runtime\\Zenith.Core.dll",
+        "Hash":  "5A9834BAA02CCE801058B0ABCA0009D5F2A325618C07EB0873C15A68E57467FF"
+    },
+    {
+        "Path":  "ok\\Documents\\Codex\\SirHurtV5-refactor\\release\\SirHurtUIfold\\ui\\zenith\\app.js",
+        "Hash":  "7E8260F15B281DFDDBBF3C5693EBBA48E803672CADE9502D486E9D2D45C1405C"
+    },
+    {
+        "Path":  "ok\\Documents\\Codex\\SirHurtV5-refactor\\release\\SirHurtUIfold\\ui\\zenith\\index.html",
+        "Hash":  "18ACADBE5495393D886287C5F9C3649261BAA3AF4761256A75EFA8194274B791"
+    },
+    {
+        "Path":  "ok\\Documents\\Codex\\SirHurtV5-refactor\\release\\SirHurtUIfold\\ui\\zenith\\loader.html",
+        "Hash":  "5887727016A2C2F4E3C7F0C9EE2285CC926DB2D2EED4446BEBCEC5D8C80F1B76"
+    },
+    {
+        "Path":  "ok\\Documents\\Codex\\SirHurtV5-refactor\\release\\SirHurtUIfold\\ui\\zenith\\rbx_cleaner.ps1",
+        "Hash":  "24B560722B3C1D37C3F2B9102C2A49780AEE421D6995A17768C5C57DA9E53C46"
+    },
+    {
+        "Path":  "ok\\Documents\\Codex\\SirHurtV5-refactor\\release\\SirHurtUIfold\\ui\\zenith\\style.css",
+        "Hash":  "8CE6FC8A3F9775DE67CD1B30B12BA43B1B981E9D4649CF99DD53AB82C02B5D55"
+    },
+    {
+        "Path":  "ok\\Documents\\Codex\\SirHurtV5-refactor\\release\\SirHurtUIfold\\ui\\zenith\\utilities.bat",
+        "Hash":  "62904A63A2FE019199EDBDD478F66ED67A540D4FA8DA6A8B4C58B859F4DBAD90"
+    },
+    {
+        "Path":  "ok\\Documents\\Codex\\SirHurtV5-refactor\\release\\SirHurtUIfold\\ui\\zenith\\bootstrapper\\bootstrapper.exe",
+        "Hash":  "5196EC651C54C4FE978E1D692723683758CAB59DEFC43DDB41206DE9E32190A2"
+    }
+]

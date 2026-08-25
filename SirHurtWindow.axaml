@@ -2,8 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="OrbitAvalonia.SirHurtWindow"
         Title="SirHurt V5"
-        Width="936" Height="672"
-        MinWidth="680" MinHeight="460"
+        Width="954" Height="538"
+        MinWidth="700" MinHeight="420"
         Background="Transparent"
         TransparencyLevelHint="Transparent"
         WindowDecorations="None"
@@ -27,6 +27,9 @@
     <StreamGeometry x:Key="ShCloseIcon">M6 6l12 12 M18 6 6 18</StreamGeometry>
     <StreamGeometry x:Key="ShMinimizeIcon">M5 12h14</StreamGeometry>
     <StreamGeometry x:Key="ShMaximizeIcon">M6 6h12v12H6Z M6 10h12</StreamGeometry>
+    <StreamGeometry x:Key="ShPageIcon">M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z M14 2v4a2 2 0 0 0 2 2h4</StreamGeometry>
+    <StreamGeometry x:Key="ShMonitorIcon">M8 21h8 M12 17v4 M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5Z</StreamGeometry>
+    <StreamGeometry x:Key="ShZapIcon">M13 2 3 14h7l-1 8 11-14h-7l1-6Z</StreamGeometry>
     <StreamGeometry x:Key="ShSearchIcon">M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z M21 21l-4.35-4.35</StreamGeometry>
   </Window.Resources>
 
@@ -155,7 +158,7 @@
       </Setter>
     </Style>
     <Style Selector="Button.sh-rail Path">
-      <Setter Property="Stroke" Value="#9A9A9A" />
+      <Setter Property="Stroke" Value="#AEAEAE" />
       <Setter Property="StrokeThickness" Value="1.6" />
       <Setter Property="StrokeLineCap" Value="Round" />
       <Setter Property="StrokeJoin" Value="Round" />
@@ -183,7 +186,8 @@
 
     <!-- Search input -->
     <Style Selector="TextBox.sh-search">
-      <Setter Property="Height" Value="26" />
+      <Setter Property="Height" Value="20" />
+      <Setter Property="MinHeight" Value="0" />
       <Setter Property="Background" Value="#1A1A1A" />
       <Setter Property="BorderBrush" Value="#2E2E2E" />
       <Setter Property="BorderThickness" Value="1" />
@@ -303,7 +307,7 @@
       <SolidColorBrush Color="#0C0C0C" />
     </Border.Background>
 
-      <Grid RowDefinitions="36,20,*,26">
+      <Grid RowDefinitions="28,22,*,22">
 
       <!-- ══════════ Title bar ══════════ -->
       <Grid Grid.Row="0" Background="#111111" PointerPressed="TitleBar_PointerPressed">
@@ -312,21 +316,17 @@
           <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0" Spacing="8">
-          <Border Width="16" Height="16" Background="#1B6BFA">
-            <TextBlock Text="SH" FontSize="7" FontWeight="Black" Foreground="White"
-                       HorizontalAlignment="Center" VerticalAlignment="Center" />
-          </Border>
-          <TextBlock Text="SirHurt V5" FontSize="12" FontWeight="SemiBold" Foreground="#E8E8E8" VerticalAlignment="Center" />
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0,0,0" Spacing="7">
+          <Image Source="avares://Orion/Assets/SirHurt/logo.png"
+                 Width="18" Height="18" Stretch="Uniform"
+                 RenderOptions.BitmapInterpolationMode="HighQuality" />
+          <TextBlock Text="SirHurt V5" FontSize="11.5" FontWeight="Bold" Foreground="#EAEAEA" VerticalAlignment="Center" />
         </StackPanel>
 
         <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-          <TextBlock Text="www.SirHurt.net" FontSize="10.5" Foreground="#6E6E6E" VerticalAlignment="Center" Margin="0,0,14,0" />
+          <TextBlock Text="www.SirHurt.net" FontSize="10" Foreground="#343434" VerticalAlignment="Center" Margin="0,0,14,0" />
           <Button Classes="sh-win" Click="Minimize_Click" ToolTip.Tip="Minimize">
             <Path Data="{StaticResource ShMinimizeIcon}" Width="12" Height="12" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
-          </Button>
-          <Button x:Name="MaximizeButton" Classes="sh-win" Click="Maximize_Click" ToolTip.Tip="Maximize">
-            <Path Data="{StaticResource ShMaximizeIcon}" Width="12" Height="12" Stretch="Uniform" />
           </Button>
           <Button Classes="sh-win close" Margin="0,0,6,0" Click="Close_Click" ToolTip.Tip="Return to Orion">
             <Path Data="{StaticResource ShCloseIcon}" Width="11" Height="11" Stretch="Uniform" />
@@ -335,7 +335,7 @@
       </Grid>
 
       <!-- ══════════ Toolbar ══════════ -->
-      <Border Grid.Row="1" Background="#141414" BorderBrush="#262626" BorderThickness="0,1,0,1">
+      <Border Grid.Row="1" Background="#1D2125" BorderBrush="#131517" BorderThickness="0,1,0,1">
         <Grid Margin="10,0" ColumnDefinitions="*,Auto">
           <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
             <Button Classes="sh-tool execute" Click="Execute_Click" ToolTip.Tip="Execute (Ctrl+Enter)">
@@ -370,9 +370,9 @@
             </Button>
           </StackPanel>
 
-          <Button Grid.Column="1" Classes="sh-tool init" Click="Initialize_Click" ToolTip.Tip="Check injection bridge status">
+          <Button Grid.Column="1" Classes="sh-tool" Click="Initialize_Click" ToolTip.Tip="Check injection bridge status">
             <StackPanel Orientation="Horizontal" Spacing="6">
-              <Path Data="{StaticResource ShPencilIcon}" Width="9" Height="9" Stretch="Uniform" Fill="#4D8DFF" StrokeThickness="0" />
+              <Path Data="{StaticResource ShZapIcon}" Width="9" Height="9" Stretch="Uniform" Fill="#EBECEE" StrokeThickness="0" />
               <TextBlock Text="Initialize" VerticalAlignment="Center" />
             </StackPanel>
           </Button>
@@ -380,44 +380,38 @@
       </Border>
 
       <!-- ══════════ Main ══════════ -->
-      <Grid Grid.Row="2" ColumnDefinitions="44,168,*">
+      <Grid Grid.Row="2" ColumnDefinitions="48,150,*">
 
         <!-- Rail -->
-        <Border Grid.Column="0" Background="#111111" BorderBrush="#262626" BorderThickness="0,0,1,0">
+        <Border Grid.Column="0" Background="#111111" BorderBrush="#212120" BorderThickness="0,0,1,0">
           <Grid>
-            <DockPanel Margin="0,8,0,8">
-              <Button DockPanel.Dock="Bottom" Classes="sh-rail" x:Name="RailSettings" Click="RailSettings_Click" ToolTip.Tip="Settings">
+            <StackPanel Margin="0,10,0,0">
+              <Button Classes="sh-rail active" x:Name="RailCode" Click="RailCode_Click" ToolTip.Tip="Editor">
+                <Path Data="{StaticResource ShCodeIcon}" Width="17" Height="17" Stretch="Uniform" />
+              </Button>
+              <Button Classes="sh-rail" x:Name="RailConsole" Click="RailConsole_Click" ToolTip.Tip="Console">
+                <Path Data="{StaticResource ShMonitorIcon}" Width="17" Height="17" Stretch="Uniform" />
+              </Button>
+              <Button Classes="sh-rail" x:Name="RailSettings" Click="RailSettings_Click" ToolTip.Tip="Settings">
                 <Path Data="{StaticResource ShGearIcon}" Width="17" Height="17" Stretch="Uniform" />
               </Button>
-              <StackPanel>
-                <Button Classes="sh-rail active" x:Name="RailCode" Click="RailCode_Click" ToolTip.Tip="Editor">
-                  <Path Data="{StaticResource ShCodeIcon}" Width="17" Height="17" Stretch="Uniform" />
-                </Button>
-              </StackPanel>
-            </DockPanel>
-            <Border Width="7" Height="26"
-                    Background="#1B6BFA"
-                    Opacity="0.35"
+            </StackPanel>
+            <Border Width="3" Height="26"
+                    Background="#32526F"
                     IsHitTestVisible="False"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
-                    Margin="0,14,0,0" />
-            <Border Width="3" Height="22"
-                    Background="#1B6BFA"
-                    IsHitTestVisible="False"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Margin="0,16,0,0" />
+                    Margin="0,10,0,0" />
           </Grid>
         </Border>
 
         <!-- Left panel -->
-        <Border Grid.Column="1" Background="#2D2D2D" BorderBrush="#262626" BorderThickness="0,0,1,0">
+        <Border Grid.Column="1" Background="#2D2D2D" BorderBrush="#232323" BorderThickness="0,0,1,0">
           <Panel Margin="8,8,8,8">
             <!-- Scripts search -->
             <StackPanel x:Name="ScriptsPanel">
               <TextBlock x:Name="ScriptsHeader" Text="Search your scripts folder" FontSize="10" Foreground="#B0B0B0" Margin="2,0,0,6" TextTrimming="CharacterEllipsis" />
-              <TextBox x:Name="ScriptSearch" Classes="sh-search" PlaceholderText="Search here..." TextChanged="ScriptSearch_TextChanged" />
+              <TextBox x:Name="ScriptSearch" Classes="sh-search" MinHeight="0" Height="20" PlaceholderText="Search here..." TextChanged="ScriptSearch_TextChanged" />
               <ListBox x:Name="ScriptList" Classes="sh-list" Margin="0,8,0,0" DoubleTapped="ScriptList_DoubleTapped" />
               <TextBlock x:Name="ScriptsEmpty" Text="No scripts found" FontSize="10.5" Foreground="#8A8A8A" HorizontalAlignment="Center" Margin="0,14,0,0" />
             </StackPanel>
@@ -443,14 +437,35 @@
         <Panel Grid.Column="2">
 
           <!-- Editor mode -->
-          <Grid x:Name="EditorMode" RowDefinitions="32,*">
-            <Border Grid.Row="0" Background="#0C0C0C">
-              <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
-                <StackPanel x:Name="TabStrip" Orientation="Horizontal" Margin="6,4,0,0" Spacing="4" VerticalAlignment="Top" />
+          <Grid x:Name="EditorMode" RowDefinitions="26,*">
+            <Border Grid.Row="0" Background="#131312" BorderBrush="#0A0E12" BorderThickness="0,1,0,1">
+              <ScrollViewer x:Name="TabScroll" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled"
+                            PointerWheelChanged="TabScroll_PointerWheelChanged">
+                <StackPanel x:Name="TabStrip" Orientation="Horizontal" Margin="4,0,0,0" Spacing="2" VerticalAlignment="Stretch" />
               </ScrollViewer>
             </Border>
-            <Border Grid.Row="1" Background="#0C0C0C">
+            <Border Grid.Row="1" Background="#161616">
               <NativeWebView x:Name="EditorWebView" Background="Transparent" IsVisible="False" />
+            </Border>
+          </Grid>
+
+          <!-- Console mode -->
+          <Grid x:Name="ConsoleMode" RowDefinitions="26,*" IsVisible="False">
+            <Border Grid.Row="0" Background="#131312" BorderBrush="#0A0E12" BorderThickness="0,0,0,1">
+              <Grid Margin="8,0">
+                <TextBlock Text="console" FontSize="10.5" Foreground="#8A8A8A" VerticalAlignment="Center" />
+                <Button Classes="sh-tool" Click="ConsoleClear_Click" HorizontalAlignment="Right" ToolTip.Tip="Clear console">
+                  <StackPanel Orientation="Horizontal" Spacing="6">
+                    <Path Data="{StaticResource ShTrashIcon}" Width="9" Height="9" Stretch="Uniform" Fill="#D8D8D8" StrokeThickness="0" />
+                    <TextBlock Text="Clear" VerticalAlignment="Center" />
+                  </StackPanel>
+                </Button>
+              </Grid>
+            </Border>
+            <Border Grid.Row="1" Background="#161616">
+              <ScrollViewer x:Name="ConsoleScroll" Margin="6,4" VerticalScrollBarVisibility="Auto">
+                <StackPanel x:Name="ConsoleOutput" Spacing="2" />
+              </ScrollViewer>
             </Border>
           </Grid>
 
@@ -467,12 +482,15 @@
       </Grid>
 
       <!-- ══════════ Status bar ══════════ -->
-      <Border Grid.Row="3" Background="#1668E8">
+      <Border Grid.Row="3" Background="#0182F8">
         <Grid Margin="10,0" ColumnDefinitions="*,Auto">
           <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="6">
-            <Ellipse x:Name="StatusDot" Width="7" Height="7" Fill="#FFD0D0" VerticalAlignment="Center" />
-            <TextBlock x:Name="StatusText" Text="Status: Not Injected" FontSize="10.5" FontWeight="Medium" Foreground="White" VerticalAlignment="Center" />
+            <Ellipse x:Name="StatusDot" Width="7" Height="7" Fill="#C7386C" VerticalAlignment="Center" />
+            <TextBlock x:Name="StatusText" Text="Status: Not Injected" FontSize="10" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" />
           </StackPanel>
+          <Path Grid.Column="1" Data="{StaticResource ShZapIcon}" Width="9" Height="9"
+                Stretch="Uniform" Fill="White" StrokeThickness="0"
+                HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,2,0" />
         </Grid>
       </Border>
 

@@ -59,6 +59,7 @@
     <AvaloniaResource Include="Assets\AWP\**\*" />
     <AvaloniaResource Include="Assets\Zenith\**\*" />
     <AvaloniaResource Include="Assets\Wave\**\*" />
+    <AvaloniaResource Include="Assets\SirHurt\**\*" />
     <AvaloniaResource Include="Assets\SirHurtLegacy\**\*" />
     <AvaloniaResource Include="Assets\rect200.png" />
     <AvaloniaResource Include="Assets\rect204.png" />

@@ -428,8 +428,16 @@ public sealed partial class OrionWindow
                     break;
             }
         }
-        catch
+        catch (Exception handoffException)
         {
+            try
+            {
+                File.AppendAllText(
+                    Path.Combine(Path.GetTempPath(), "orion-handoff.log"),
+                    $"{DateTime.Now:HH:mm:ss} handoff '{selection}' failed: {handoffException}\n");
+            }
+            catch { }
+
             _orionInterfaceHandoffActive = false;
             OrbitPreferences.SetLastInterface(OrbitPreferences.OrionInterface);
             Show();

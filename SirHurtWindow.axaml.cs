@@ -46,6 +46,7 @@ public sealed partial class SirHurtWindow : Window
     private readonly TextBlock _statusText;
     private readonly Ellipse _statusDot;
     private readonly Grid _editorMode;
+    private readonly Grid _consoleMode;
     private readonly Grid _settingsMode;
     private readonly StackPanel _scriptsPanel;
     private readonly StackPanel _creditsPanel;
@@ -53,7 +54,13 @@ public sealed partial class SirHurtWindow : Window
     private readonly ListBox _scriptList;
     private readonly TextBlock _scriptsEmpty;
     private readonly StackPanel _settingsList;
+    private readonly StackPanel _consoleOutput;
+    private readonly ScrollViewer _consoleScroll;
+    private readonly ScrollViewer _tabScroll;
+    private bool _consoleOpen;
+    private bool _consoleReplayed;
     private readonly Button _railCode;
+    private readonly Button _railConsole;
     private readonly Button _railSettings;
     private readonly Button _topMostToggle;
     private readonly Button _closeTabConfirmToggle;
@@ -112,6 +119,7 @@ public sealed partial class SirHurtWindow : Window
         _statusText = Required<TextBlock>("StatusText");
         _statusDot = Required<Ellipse>("StatusDot");
         _editorMode = Required<Grid>("EditorMode");
+        _consoleMode = Required<Grid>("ConsoleMode");
         _settingsMode = Required<Grid>("SettingsMode");
         _scriptsPanel = Required<StackPanel>("ScriptsPanel");
         _creditsPanel = Required<StackPanel>("CreditsPanel");
@@ -119,7 +127,11 @@ public sealed partial class SirHurtWindow : Window
         _scriptList = Required<ListBox>("ScriptList");
         _scriptsEmpty = Required<TextBlock>("ScriptsEmpty");
         _settingsList = Required<StackPanel>("SettingsList");
+        _consoleOutput = Required<StackPanel>("ConsoleOutput");
+        _consoleScroll = Required<ScrollViewer>("ConsoleScroll");
+        _tabScroll = Required<ScrollViewer>("TabScroll");
         _railCode = Required<Button>("RailCode");
+        _railConsole = Required<Button>("RailConsole");
         _railSettings = Required<Button>("RailSettings");
         _topMostToggle = new Button { Classes = { "sh-toggle" } };
         _closeTabConfirmToggle = new Button { Classes = { "sh-toggle" } };
@@ -140,7 +152,10 @@ public sealed partial class SirHurtWindow : Window
 
         _bridge.ConnectionChanged += BridgeConnectionChanged;
         _bridge.ClientsChanged += BridgeClientsChanged;
+        _bridge.LogReceived += BridgeConsole_LogReceived;
         RefreshClientTargets();
+
+        _tabScroll.PointerWheelChanged += TabScroll_PointerWheelChanged;
 
         Opened += SirHurtWindow_Opened;
         Closed += SirHurtWindow_Closed;
@@ -206,6 +221,7 @@ public sealed partial class SirHurtWindow : Window
         _editor.WebMessageReceived -= Editor_WebMessageReceived;
         _bridge.ConnectionChanged -= BridgeConnectionChanged;
         _bridge.ClientsChanged -= BridgeClientsChanged;
+        _bridge.LogReceived -= BridgeConsole_LogReceived;
 
         if (!_closingForOrion && !_returnRequested)
         {
@@ -241,7 +257,7 @@ public sealed partial class SirHurtWindow : Window
                 HideConfirmOverlay();
                 e.Handled = true;
             }
-            else if (_settingsOpen)
+            else if (_settingsOpen || _consoleOpen)
             {
                 ShowEditorMode();
                 e.Handled = true;
@@ -327,7 +343,7 @@ public sealed partial class SirHurtWindow : Window
 
     private void RailCode_Click(object? sender, RoutedEventArgs e)
     {
-        if (_settingsOpen)
+        if (_settingsOpen || _consoleOpen)
         {
             ShowEditorMode();
         }
@@ -349,12 +365,9 @@ public sealed partial class SirHurtWindow : Window
 
     private void ShowEditorMode()
     {
-        if (!_settingsOpen)
-        {
-            return;
-        }
-
         _settingsOpen = false;
+        _consoleOpen = false;
+        _consoleMode.IsVisible = false;
         _settingsMode.IsVisible = false;
         _editorMode.IsVisible = true;
         _creditsPanel.IsVisible = false;
@@ -362,6 +375,36 @@ public sealed partial class SirHurtWindow : Window
         UpdateRailVisuals();
         RevealEditor();
         _ = AnimateModeInAsync(_editorMode);
+    }
+
+    private void RailConsole_Click(object? sender, RoutedEventArgs e)
+    {
+        if (_consoleOpen)
+        {
+            ShowEditorMode();
+            return;
+        }
+
+        _settingsOpen = false;
+        _consoleOpen = true;
+        _editor.IsVisible = false;
+        _editorMode.IsVisible = false;
+        _settingsMode.IsVisible = false;
+        _scriptsPanel.IsVisible = false;
+        _creditsPanel.IsVisible = false;
+        _consoleMode.IsVisible = true;
+        UpdateRailVisuals();
+
+        if (!_consoleReplayed)
+        {
+            _consoleReplayed = true;
+            foreach (var entry in _bridge.GetLogSnapshot())
+            {
+                AppendConsoleLine(entry.Level, entry.Message);
+            }
+        }
+
+        _ = AnimateModeInAsync(_consoleMode);
     }
 
     private void ShowSettingsMode()
@@ -372,9 +415,10 @@ public sealed partial class SirHurtWindow : Window
         }
 
         _settingsOpen = true;
+        _consoleOpen = false;
         _editor.IsVisible = false;
         _editorMode.IsVisible = false;
-        _settingsMode.IsVisible = true;
+        _consoleMode.IsVisible = false;
         _scriptsPanel.IsVisible = false;
         _creditsPanel.IsVisible = true;
         UpdateRailVisuals();
@@ -384,7 +428,69 @@ public sealed partial class SirHurtWindow : Window
     private void UpdateRailVisuals()
     {
         SetClass(_railSettings.Classes, "active", _settingsOpen);
-        SetClass(_railCode.Classes, "active", !_settingsOpen);
+        SetClass(_railConsole.Classes, "active", _consoleOpen);
+        SetClass(_railCode.Classes, "active", !_settingsOpen && !_consoleOpen);
+    }
+
+    private void BridgeConsole_LogReceived(string level, string message) =>
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (_consoleOpen)
+            {
+                AppendConsoleLine(level, message);
+            }
+        });
+
+    private void AppendConsoleLine(string level, string message)
+    {
+        if (_editorDisposed || _consoleOutput is null)
+        {
+            return;
+        }
+
+        var normalized = string.IsNullOrWhiteSpace(level) ? "info" : level.ToLowerInvariant();
+        var prefix = normalized switch
+        {
+            "warn" or "warning" => "[warn]   ",
+            "error" => "[error]  ",
+            "print" or "output" => "[print]  ",
+            _ => "[info]   "
+        };
+        var color = normalized switch
+        {
+            "warn" or "warning" => "#C8A25A",
+            "error" => "#D06B6B",
+            "print" or "output" => "#9CCB6B",
+            _ => "#B8B8BA"
+        };
+
+        var line = new TextBlock
+        {
+            Text = prefix + message,
+            FontFamily = new FontFamily("Consolas"),
+            FontSize = 10,
+            Foreground = new SolidColorBrush(Color.Parse(color)),
+            TextWrapping = TextWrapping.Wrap
+        };
+        _consoleOutput.Children.Add(line);
+        while (_consoleOutput.Children.Count > 500)
+        {
+            _consoleOutput.Children.RemoveAt(0);
+        }
+
+        Dispatcher.UIThread.Post(line.BringIntoView, DispatcherPriority.Background);
+    }
+
+    private void ConsoleClear_Click(object? sender, RoutedEventArgs e)
+    {
+        _consoleOutput.Children.Clear();
+    }
+
+    private void TabScroll_PointerWheelChanged(object? sender, PointerWheelEventArgs e)
+    {
+        var offset = _tabScroll.Offset;
+        _tabScroll.Offset = new Avalonia.Vector(offset.X - e.Delta.Y * 48, offset.Y);
+        e.Handled = true;
     }
 
     private async Task AnimateModeInAsync(Control incoming)
@@ -418,15 +524,21 @@ public sealed partial class SirHurtWindow : Window
     private void RenderTabs(Guid? entranceTabId = null)
     {
         _tabStrip.Children.Clear();
+        Border? activeVisual = null;
         foreach (var tab in _workspace.Tabs)
         {
             var visual = CreateTabVisual(tab);
             _tabStrip.Children.Add(visual);
+            if (tab.Id == _activeTab.Id)
+            {
+                activeVisual = visual;
+            }
             if (entranceTabId.HasValue && tab.Id == entranceTabId.Value)
             {
                 AnimateTabEntrance(visual);
             }
         }
+        Dispatcher.UIThread.Post(() => activeVisual?.BringIntoView(), DispatcherPriority.Background);
 
         var add = new Button
         {
@@ -460,10 +572,10 @@ public sealed partial class SirHurtWindow : Window
         {
             Height = 26,
             Padding = new Thickness(10, 0, 6, 0),
-            Background = Brushes.Transparent,
-            BorderBrush = new SolidColorBrush(Color.Parse(active ? "#1B6BFA" : "#00000000")),
+            Background = new SolidColorBrush(Color.Parse(active ? "#32373A" : "#2B2E32")),
+            BorderBrush = new SolidColorBrush(Color.Parse(active ? "#32526F" : "#00000000")),
             BorderThickness = new Thickness(0, 0, 0, 2),
-            VerticalAlignment = VerticalAlignment.Top,
+            VerticalAlignment = VerticalAlignment.Stretch,
             Cursor = new Cursor(StandardCursorType.Hand)
         };
         border.Transitions = new Transitions
@@ -770,7 +882,7 @@ public sealed partial class SirHurtWindow : Window
 
     private void RevealEditor()
     {
-        if (_editorDisposed || _settingsOpen)
+        if (_editorDisposed || _settingsOpen || _consoleOpen)
         {
             return;
         }
@@ -1360,7 +1472,7 @@ public sealed partial class SirHurtWindow : Window
     {
         var connected = _bridge.IsConnected && _bridge.GetConnectedClients().Count > 0;
         _statusText.Text = connected ? "Status: Injected" : "Status: Not Injected";
-        _statusDot.Fill = new SolidColorBrush(Color.Parse(connected ? "#B8F5C4" : "#FFD0D0"));
+        _statusDot.Fill = new SolidColorBrush(Color.Parse(connected ? "#7CE38B" : "#C7386C"));
     }
 
     // ─────────────────────────── toast ───────────────────────────

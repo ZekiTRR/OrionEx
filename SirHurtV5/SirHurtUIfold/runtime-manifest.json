@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "backend": {
+    "name": "Zenith.Core",
+    "version": "1.0.0",
+    "assembly": "runtime/Zenith.Core.dll"
+  },
+  "frontend": {
+    "version": "1.2",
+    "icon": "SirHurtUI.ico",
+    "updateWelcome": "update-welcome.json",
+    "activeSkinFile": "active-ui.txt",
+    "defaultSkin": "zenith",
+    "skinsRoot": "ui"
+  },
+  "storage": {
+    "accounts": "%APPDATA%/SirHurtUI/accounts.dat",
+    "webViewProfile": "webview_data",
+    "workspace": "workspace"
+  }
+}
