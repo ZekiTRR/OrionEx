@@ -1,0 +1,454 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="OrbitAvalonia.ScriptWareWindow"
+        Title="ScriptWare v2"
+        Width="900" Height="525"
+        MinWidth="720" MinHeight="420"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        WindowDecorations="None"
+        ExtendClientAreaToDecorationsHint="True"
+        WindowStartupLocation="CenterScreen"
+        FontFamily="Segoe UI, avares://Avalonia.Fonts.Inter/Assets#Inter"
+        RenderOptions.TextRenderingMode="Antialias"
+        Icon="avares://Orion/Assets/Orion/Sharp/orion-app.ico">
+
+  <Window.Resources>
+    <StreamGeometry x:Key="SwPageIcon">M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7l-6-5Z</StreamGeometry>
+    <StreamGeometry x:Key="SwCodeIcon">M9.3 6.5 4 12l5.3 5.5 M14.7 6.5 20 12l-5.3 5.5 M13.2 4.5l-2.4 15</StreamGeometry>
+    <StreamGeometry x:Key="SwWrenchIcon">M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z</StreamGeometry>
+    <StreamGeometry x:Key="SwGearIcon">M12 15.5A3.5 3.5 0 1 0 12 8.5a3.5 3.5 0 0 0 0 7Z M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z</StreamGeometry>
+    <StreamGeometry x:Key="SwPlayIcon">M8 5.5v13L19 12Z</StreamGeometry>
+    <StreamGeometry x:Key="SwEraserIcon">M21 21H8l-4-4a2 2 0 0 1 0-2.83l9.17-9.17a2 2 0 0 1 2.83 0l5 5a2 2 0 0 1 0 2.83L14 20 M7 21l9-9 M18.5 12.5 11.5 5.5</StreamGeometry>
+    <StreamGeometry x:Key="SwFolderIcon">M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z</StreamGeometry>
+    <StreamGeometry x:Key="SwSaveIcon">M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h2v-7h10v7h2a2 2 0 0 0 2-2V8l-4-5Z M15 3v5h2V3.5L19.5 8H16a1 1 0 0 1-1-1V3Z</StreamGeometry>
+    <StreamGeometry x:Key="SwSaveTabsIcon">M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h2v-7h6v7h6a2 2 0 0 0 2-2V8l-4-5Z M15 3v5h2V3.5L19.5 8H16a1 1 0 0 1-1-1V3Z M10 14v7</StreamGeometry>
+    <StreamGeometry x:Key="SwCloseXIcon">M15 9l-6 6 M9 9l6 6</StreamGeometry>
+    <StreamGeometry x:Key="SwChevronsRightIcon">M6 5l6 7-6 7 M13 5l6 7-6 7</StreamGeometry>
+    <StreamGeometry x:Key="SwChevronsLeftIcon">M18 5l-6 7 6 7 M11 5l-6 7 6 7</StreamGeometry>
+    <StreamGeometry x:Key="SwChevronDownIcon">M5 9l7 7 7-7</StreamGeometry>
+    <StreamGeometry x:Key="SwChevronRightIcon">M9 5l7 7-7 7</StreamGeometry>
+    <StreamGeometry x:Key="SwWinMinIcon">M5 12h14</StreamGeometry>
+    <StreamGeometry x:Key="SwWinMaxIcon">M6 6h12v12H6Z</StreamGeometry>
+    <StreamGeometry x:Key="SwWinCloseIcon">M6 6l12 12 M18 6 6 18</StreamGeometry>
+  </Window.Resources>
+
+  <Window.Styles>
+    <Style Selector="Button">
+      <Setter Property="FocusAdorner" Value="{x:Null}" />
+      <Setter Property="MinWidth" Value="0" />
+      <Setter Property="MinHeight" Value="0" />
+    </Style>
+    <Style Selector="TextBox">
+      <Setter Property="FocusAdorner" Value="{x:Null}" />
+    </Style>
+
+    <!-- Window controls -->
+    <Style Selector="Button.sw-win">
+      <Setter Property="Width" Value="42" />
+      <Setter Property="Height" Value="26" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="CornerRadius" Value="0" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.12" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sw-win Path">
+      <Setter Property="Stroke" Value="#C9C9C9" />
+      <Setter Property="StrokeThickness" Value="1.2" />
+      <Setter Property="StrokeLineCap" Value="Round" />
+      <Setter Property="StrokeJoin" Value="Round" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Stroke" Duration="0:0:0.12" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sw-win:pointerover">
+      <Setter Property="Background" Value="#2A2A2A" />
+    </Style>
+    <Style Selector="Button.sw-win:pointerover Path">
+      <Setter Property="Stroke" Value="#FFFFFF" />
+    </Style>
+    <Style Selector="Button.sw-win.close:pointerover">
+      <Setter Property="Background" Value="#C42B1C" />
+    </Style>
+    <Style Selector="Button.sw-win.close:pointerover Path">
+      <Setter Property="Stroke" Value="White" />
+    </Style>
+
+    <!-- Left rail buttons -->
+    <Style Selector="Button.sw-rail">
+      <Setter Property="Width" Value="44" />
+      <Setter Property="Height" Value="40" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.12" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sw-rail Path">
+      <Setter Property="StrokeThickness" Value="1.6" />
+      <Setter Property="StrokeLineCap" Value="Round" />
+      <Setter Property="StrokeJoin" Value="Round" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Stroke" Duration="0:0:0.12" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sw-rail.blue Path">
+      <Setter Property="Stroke" Value="#429BFB" />
+    </Style>
+    <Style Selector="Button.sw-rail.dim Path">
+      <Setter Property="Stroke" Value="#9A9A9A" />
+    </Style>
+    <Style Selector="Button.sw-rail.light Path">
+      <Setter Property="Stroke" Value="#E4E4E4" />
+    </Style>
+    <Style Selector="Button.sw-rail:pointerover">
+      <Setter Property="Background" Value="#1F1F1F" />
+    </Style>
+    <Style Selector="Button.sw-rail.active Border.sw-ind">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <!-- Bottom toolbar buttons -->
+    <Style Selector="Button.sw-tool">
+      <Setter Property="Height" Value="24" />
+      <Setter Property="Padding" Value="8,0" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="CornerRadius" Value="4" />
+      <Setter Property="Foreground" Value="#E8E8E8" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.12" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sw-tool:pointerover">
+      <Setter Property="Background" Value="#262626" />
+    </Style>
+    <Style Selector="Button.sw-tool:pressed">
+      <Setter Property="Background" Value="#1C1C1C" />
+    </Style>
+
+    <!-- Scripts tree rows -->
+    <Style Selector="Border.sw-treerow">
+      <Setter Property="Height" Value="24" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="CornerRadius" Value="3" />
+      <Setter Property="Padding" Value="4,0" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Border.sw-treerow:pointerover">
+      <Setter Property="Background" Value="#2A2A2A" />
+    </Style>
+
+    <!-- Tab-close confirmation toggles / settings buttons -->
+    <Style Selector="Button.sw-toggle">
+      <Setter Property="Width" Value="92" />
+      <Setter Property="Height" Value="26" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Background" Value="#2A2A2A" />
+      <Setter Property="BorderBrush" Value="#3D3D3D" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="4" />
+      <Setter Property="Foreground" Value="#909090" />
+      <Setter Property="FontSize" Value="10" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="LetterSpacing" Value="0.6" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.16" />
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.16" />
+          <BrushTransition Property="Foreground" Duration="0:0:0.16" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sw-toggle:pointerover">
+      <Setter Property="BorderBrush" Value="#525252" />
+    </Style>
+    <Style Selector="Button.sw-toggle.checked">
+      <Setter Property="Background" Value="#036FFC" />
+      <Setter Property="BorderBrush" Value="#036FFC" />
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="Button.sw-toggle.checked:pointerover">
+      <Setter Property="Background" Value="#2B82FF" />
+      <Setter Property="BorderBrush" Value="#2B82FF" />
+    </Style>
+    <Style Selector="Button.sw-mini">
+      <Setter Property="Height" Value="26" />
+      <Setter Property="Padding" Value="11,0" />
+      <Setter Property="Background" Value="#2A2A2A" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="CornerRadius" Value="4" />
+      <Setter Property="Foreground" Value="#DDDDDD" />
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.14" />
+          <BrushTransition Property="Foreground" Duration="0:0:0.14" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sw-mini:pointerover">
+      <Setter Property="Background" Value="#333333" />
+      <Setter Property="Foreground" Value="#FFFFFF" />
+    </Style>
+  </Window.Styles>
+
+  <Border x:Name="SwChrome"
+          CornerRadius="0"
+          BorderBrush="#2A2A2A"
+          BorderThickness="1"
+          ClipToBounds="True"
+          RenderTransformOrigin="50%,50%">
+    <Border.Background>
+      <SolidColorBrush Color="#222222" />
+    </Border.Background>
+
+    <Grid RowDefinitions="26,*">
+
+      <!-- ══════════ Title bar ══════════ -->
+      <Grid Grid.Row="0" Background="#222222" PointerPressed="TitleBar_PointerPressed">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="9,0,0,0">
+          <TextBlock Text="ScriptWare" FontSize="14" FontWeight="Bold" FontStyle="Italic" Foreground="#F5F5F5" VerticalAlignment="Center" />
+          <TextBlock Text="v2" FontSize="9.5" FontWeight="Bold" Foreground="#429BFB"
+                     VerticalAlignment="Top" Margin="2,3,0,0" />
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+          <Button Classes="sw-win" Click="Minimize_Click" ToolTip.Tip="Minimize">
+            <Path Data="{StaticResource SwWinMinIcon}" Width="12" Height="12" Stretch="None" />
+          </Button>
+          <Button x:Name="MaximizeButton" Classes="sw-win" Click="Maximize_Click" ToolTip.Tip="Maximize">
+            <Path Data="{StaticResource SwWinMaxIcon}" Width="11" Height="11" Stretch="Uniform" />
+          </Button>
+          <Button Classes="sw-win close" Click="Close_Click" ToolTip.Tip="Return to Orion">
+            <Path Data="{StaticResource SwWinCloseIcon}" Width="11" Height="11" Stretch="Uniform" />
+          </Button>
+        </StackPanel>
+      </Grid>
+
+      <!-- ══════════ Body ══════════ -->
+      <Grid Grid.Row="1" x:Name="BodyGrid">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="44" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- ═══ Left rail ═══ -->
+        <Grid Grid.Column="0" Background="#222222">
+          <DockPanel>
+            <Button DockPanel.Dock="Bottom" Classes="sw-rail dim" x:Name="RailGear"
+                    Click="RailSettings_Click" ToolTip.Tip="Settings">
+              <Path Data="{StaticResource SwGearIcon}" Width="18" Height="18" Stretch="Uniform" />
+            </Button>
+            <StackPanel Margin="0,10,0,0">
+              <Button Classes="sw-rail light active" x:Name="RailCode" Click="RailCode_Click" ToolTip.Tip="Code Editor">
+                <Grid>
+                  <Border Classes="sw-ind" Width="3" Height="26" Background="#0A84FF"
+                          IsVisible="False" IsHitTestVisible="False"
+                          HorizontalAlignment="Right" />
+                  <Path Data="{StaticResource SwCodeIcon}" Width="17" Height="17" Stretch="Uniform" />
+                </Grid>
+              </Button>
+              <Button Classes="sw-rail blue" x:Name="RailTools" Click="RailSettings_Click" ToolTip.Tip="Tools">
+                <Grid>
+                  <Border Classes="sw-ind" Width="3" Height="26" Background="#0A84FF"
+                          IsVisible="False" IsHitTestVisible="False"
+                          HorizontalAlignment="Right" />
+                  <Path Data="{StaticResource SwWrenchIcon}" Width="17" Height="17" Stretch="Uniform" />
+                </Grid>
+              </Button>
+            </StackPanel>
+          </DockPanel>
+        </Grid>
+
+        <!-- ═══ Right side ═══ -->
+        <Grid Grid.Column="1" RowDefinitions="30,*,26,26">
+
+          <!-- Tab bar -->
+          <Border Grid.Row="0" Background="#2D2D2D">
+            <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+              <StackPanel x:Name="TabStrip" Orientation="Horizontal" Margin="2,0,0,0" VerticalAlignment="Stretch" />
+            </ScrollViewer>
+          </Border>
+
+          <!-- Main area: editor + scripts tree -->
+          <Grid Grid.Row="1" x:Name="MainAreaGrid" Background="#1E1E1E">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="152" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Editor / settings -->
+            <Panel Grid.Column="0">
+              <Border x:Name="EditorMode" Background="#1E1E1E">
+                <NativeWebView x:Name="EditorWebView" Background="Transparent" IsVisible="False" />
+              </Border>
+
+              <Grid x:Name="SettingsMode" IsVisible="False" Margin="18,14,18,10" Background="#1E1E1E">
+                <Grid RowDefinitions="Auto,*">
+                  <TextBlock Grid.Row="0" Text="Settings" FontSize="14" FontWeight="SemiBold" Foreground="#F0F0F0" Margin="2,0,0,10" />
+                  <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                    <StackPanel x:Name="SettingsList" />
+                  </ScrollViewer>
+                </Grid>
+              </Grid>
+            </Panel>
+
+            <!-- Scripts tree -->
+            <Border Grid.Column="1" x:Name="ScriptsPanel" Background="#2D2D2D"
+                    BorderBrush="#262626" BorderThickness="1,0,0,0">
+              <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <StackPanel x:Name="ScriptsTree" Margin="4,4,2,4" />
+              </ScrollViewer>
+            </Border>
+          </Grid>
+
+          <!-- ═══ Bottom toolbar ═══ -->
+          <Border Grid.Row="2" Background="#282828" BorderBrush="#222222" BorderThickness="0,1,0,0">
+            <Grid Margin="8,0" ColumnDefinitions="*,Auto">
+              <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="2">
+                <Button Classes="sw-tool" Click="Execute_Click" ToolTip.Tip="Execute (Ctrl+Enter)">
+                  <StackPanel Orientation="Horizontal" Spacing="6">
+                    <Path Data="{StaticResource SwPlayIcon}" Width="11" Height="11" Stretch="Uniform" Fill="#429BFB" StrokeThickness="0" />
+                    <TextBlock Text="Execute" VerticalAlignment="Center" />
+                  </StackPanel>
+                </Button>
+                <Button Classes="sw-tool" Click="Clear_Click" ToolTip.Tip="Clear the current tab">
+                  <StackPanel Orientation="Horizontal" Spacing="6">
+                    <Path Data="{StaticResource SwEraserIcon}" Width="12" Height="12" Stretch="Uniform" Stroke="#429BFB" StrokeThickness="1.5" StrokeLineCap="Round" StrokeJoin="Round" />
+                    <TextBlock Text="Clear" VerticalAlignment="Center" />
+                  </StackPanel>
+                </Button>
+                <Button Classes="sw-tool" Click="Open_Click" ToolTip.Tip="Open a script (Ctrl+O)">
+                  <StackPanel Orientation="Horizontal" Spacing="6">
+                    <Path Data="{StaticResource SwFolderIcon}" Width="12" Height="12" Stretch="Uniform" Fill="#F0C24B" StrokeThickness="0" />
+                    <TextBlock Text="Open File" VerticalAlignment="Center" />
+                  </StackPanel>
+                </Button>
+                <Button Classes="sw-tool" Click="Save_Click" ToolTip.Tip="Save the current tab (Ctrl+S)">
+                  <StackPanel Orientation="Horizontal" Spacing="6">
+                    <Path Data="{StaticResource SwSaveIcon}" Width="12" Height="12" Stretch="Uniform" Fill="#429BFB" StrokeThickness="0" />
+                    <TextBlock Text="Save File" VerticalAlignment="Center" />
+                  </StackPanel>
+                </Button>
+                <Button Classes="sw-tool" Click="CloseRoblox_Click" ToolTip.Tip="Close Roblox">
+                  <StackPanel Orientation="Horizontal" Spacing="6">
+                    <Grid Width="13" Height="13">
+                      <Ellipse Fill="#E5484D" />
+                      <Path Data="{StaticResource SwCloseXIcon}" Width="7" Height="7" Stretch="Uniform"
+                            Stroke="White" StrokeThickness="1.8" StrokeLineCap="Round"
+                            HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Grid>
+                    <TextBlock Text="Close Roblox" VerticalAlignment="Center" />
+                  </StackPanel>
+                </Button>
+                <Button Classes="sw-tool" Click="SaveTabs_Click" ToolTip.Tip="Save all script tabs">
+                  <StackPanel Orientation="Horizontal" Spacing="6">
+                    <Path Data="{StaticResource SwSaveTabsIcon}" Width="12" Height="12" Stretch="Uniform" Stroke="#429BFB" StrokeThickness="1.5" StrokeLineCap="Round" StrokeJoin="Round" />
+                    <TextBlock Text="Save Script Tabs" VerticalAlignment="Center" />
+                  </StackPanel>
+                </Button>
+              </StackPanel>
+
+              <Button Grid.Column="1" Classes="sw-tool" x:Name="PanelToggleButton"
+                      Click="PanelToggle_Click" ToolTip.Tip="Toggle scripts panel">
+                <Path x:Name="PanelToggleIcon" Data="{StaticResource SwChevronsRightIcon}" Width="13" Height="13" Stretch="Uniform"
+                      Stroke="#9A9A9A" StrokeThickness="1.6" StrokeLineCap="Round" StrokeJoin="Round" />
+              </Button>
+            </Grid>
+          </Border>
+
+          <!-- ═══ Status bar ═══ -->
+          <Border Grid.Row="3" Background="#222222" BorderBrush="#2A2A2A" BorderThickness="0,1,0,0">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0" Spacing="12">
+              <Button Classes="sw-tool" x:Name="RailToggleButton" Padding="4,0"
+                      Click="RailToggle_Click" ToolTip.Tip="Toggle toolbar rail">
+                <Path x:Name="RailToggleIcon" Data="{StaticResource SwChevronsLeftIcon}" Width="12" Height="12" Stretch="Uniform"
+                      Stroke="#9A9A9A" StrokeThickness="1.6" StrokeLineCap="Round" StrokeJoin="Round" />
+              </Button>
+              <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="0"><TextBlock Text="Status:" FontSize="12" FontWeight="SemiBold" Foreground="#F0F0F0" VerticalAlignment="Center" /><TextBlock x:Name="StatusText" Text=" Not Attached" FontSize="12" Foreground="#E0E0E0" VerticalAlignment="Center" /></StackPanel>
+            </StackPanel>
+          </Border>
+        </Grid>
+      </Grid>
+
+      <!-- ══════════ Tab-close confirmation overlay ══════════ -->
+      <Panel Grid.Row="0" Grid.RowSpan="2" x:Name="ConfirmOverlay" IsVisible="False" ZIndex="100">
+        <Border Background="#A5000000" />
+        <Border x:Name="ConfirmDialog"
+                Width="330"
+                CornerRadius="0"
+                Background="#1E1E1E"
+                BorderBrush="#3A3A3A"
+                BorderThickness="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                RenderTransformOrigin="50%,50%">
+          <StackPanel Margin="18,16,18,14">
+            <TextBlock x:Name="ConfirmTitle" Text="Close Tab" FontSize="14" FontWeight="SemiBold" Foreground="#F2F2F2" />
+            <TextBlock x:Name="ConfirmMessage" FontSize="11.5" Foreground="#A0A0A0" TextWrapping="Wrap" Margin="0,8,0,14" />
+            <Grid ColumnDefinitions="*,10,150">
+              <Button x:Name="ConfirmCancel" Classes="sw-mini" Click="ConfirmCancel_Click" Height="28" HorizontalAlignment="Stretch" Content="Cancel" />
+              <Button Grid.Column="2" x:Name="ConfirmAccept" Classes="sw-mini" Click="ConfirmAccept_Click" Height="28" HorizontalAlignment="Stretch" Content="Close" />
+            </Grid>
+          </StackPanel>
+        </Border>
+      </Panel>
+
+      <!-- ══════════ Toast ══════════ -->
+      <Border Grid.Row="1"
+              x:Name="ToastPill"
+              Background="#2A2A2A"
+              BorderBrush="#3D3D3D"
+              BorderThickness="1"
+              CornerRadius="0"
+              Padding="11,5"
+              Opacity="0"
+              IsHitTestVisible="False"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Bottom"
+              Margin="0,0,10,34"
+              ZIndex="60">
+        <TextBlock x:Name="ToastText" FontSize="11" Foreground="#E8E8E8" />
+      </Border>
+    </Grid>
+  </Border>
+</Window>

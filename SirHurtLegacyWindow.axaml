@@ -1,0 +1,423 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="OrbitAvalonia.SirHurtLegacyWindow"
+        Title="SirHurt"
+        Width="800" Height="460"
+        MinWidth="560" MinHeight="320"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        WindowDecorations="None"
+        ExtendClientAreaToDecorationsHint="True"
+        WindowStartupLocation="CenterScreen"
+        FontFamily="Tahoma, Arial"
+        RenderOptions.TextRenderingMode="Antialias"
+        Icon="avares://Orion/Assets/Orion/Sharp/orion-app.ico">
+
+  <Window.Resources>
+    <StreamGeometry x:Key="HlRefreshIcon">M21 12a9 9 0 1 1-2.64-6.36 M21 3v6h-6</StreamGeometry>
+    <StreamGeometry x:Key="HlFolderIcon">M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z</StreamGeometry>
+    <StreamGeometry x:Key="HlXIcon">M4 4l16 16 M20 4 4 20</StreamGeometry>
+    <StreamGeometry x:Key="HlGearIcon">M12 15.5A3.5 3.5 0 1 0 12 8.5a3.5 3.5 0 0 0 0 7Z M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z</StreamGeometry>
+    <StreamGeometry x:Key="HlPlusIcon">M12 5v14 M5 12h14</StreamGeometry>
+  </Window.Resources>
+
+  <Window.Styles>
+    <Style Selector="Button">
+      <Setter Property="FocusAdorner" Value="{x:Null}" />
+      <Setter Property="MinWidth" Value="0" />
+      <Setter Property="MinHeight" Value="0" />
+      <Setter Property="Padding" Value="0" />
+    </Style>
+    <Style Selector="ListBox">
+      <Setter Property="FocusAdorner" Value="{x:Null}" />
+    </Style>
+
+    <!-- Title bar system buttons -->
+    <Style Selector="Button.hl-sys">
+      <Setter Property="Width" Value="40" />
+      <Setter Property="Height" Value="29" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Foreground" Value="#777777" />
+      <Setter Property="FontSize" Value="14" />
+      <Setter Property="FontFamily" Value="Arial" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.hl-sys:pointerover">
+      <Setter Property="Background" Value="#E7E7E7" />
+      <Setter Property="Foreground" Value="#111111" />
+    </Style>
+
+    <!-- Bottom command bar buttons -->
+    <Style Selector="Button.hl-execute">
+      <Setter Property="Height" Value="26" />
+      <Setter Property="MinWidth" Value="152" />
+      <Setter Property="Padding" Value="8,0" />
+      <Setter Property="BorderBrush" Value="#62A6C9" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="0" />
+      <Setter Property="Background">
+        <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+          <GradientStop Color="#E7F4FA" Offset="0" />
+          <GradientStop Color="#BDE4F6" Offset="1" />
+        </LinearGradientBrush>
+      </Setter>
+      <Setter Property="Foreground" Value="#151515" />
+      <Setter Property="FontSize" Value="14" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="FontFamily" Value="Arial" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.hl-execute:pointerover">
+      <Setter Property="Background">
+        <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+          <GradientStop Color="#F0F8FC" Offset="0" />
+          <GradientStop Color="#CDEBF9" Offset="1" />
+        </LinearGradientBrush>
+      </Setter>
+    </Style>
+    <Style Selector="Button.hl-tiny">
+      <Setter Property="Width" Value="38" />
+      <Setter Property="Height" Value="34" />
+      <Setter Property="Margin" Value="1,0,0,0" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Foreground" Value="#777777" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.hl-tiny Path">
+      <Setter Property="StrokeThickness" Value="2" />
+      <Setter Property="StrokeLineCap" Value="Round" />
+      <Setter Property="StrokeJoin" Value="Round" />
+      <Setter Property="Stroke" Value="{Binding $parent[Button].Foreground}" />
+    </Style>
+    <Style Selector="Button.hl-tiny:pointerover">
+      <Setter Property="Background" Value="#DCEEF8" />
+    </Style>
+    <Style Selector="Button.hl-label">
+      <Setter Property="MinWidth" Value="76" />
+      <Setter Property="Height" Value="34" />
+      <Setter Property="Padding" Value="4,0" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Foreground" Value="#202020" />
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="FontFamily" Value="Arial" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.hl-label:pointerover">
+      <Setter Property="Background" Value="#E4E4E4" />
+    </Style>
+
+    <!-- Editor tabs -->
+    <Style Selector="ListBox.hl-list">
+      <Setter Property="Background" Value="White" />
+      <Setter Property="BorderBrush" Value="#AAAAAA" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="FontSize" Value="15" />
+      <Setter Property="Foreground" Value="#1F1F1F" />
+    </Style>
+    <Style Selector="ListBox.hl-list ListBoxItem">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Padding" Value="6,2" />
+      <Setter Property="MinHeight" Value="24" />
+      <Setter Property="FontSize" Value="15" />
+    </Style>
+    <Style Selector="ListBox.hl-list ListBoxItem:selected">
+      <Setter Property="Background" Value="#0C66C3" />
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+
+    <!-- Settings popup -->
+    <Style Selector="Button.hl-classic">
+      <Setter Property="MinWidth" Value="128" />
+      <Setter Property="Height" Value="32" />
+      <Setter Property="Padding" Value="12,0" />
+      <Setter Property="Background" Value="#E1E1E1" />
+      <Setter Property="BorderBrush" Value="#ADADAD" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="0" />
+      <Setter Property="Foreground" Value="#000000" />
+      <Setter Property="FontSize" Value="15" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.hl-classic:pointerover">
+      <Setter Property="Background" Value="#CCE8FF" />
+      <Setter Property="BorderBrush" Value="#0078D7" />
+    </Style>
+    <Style Selector="CheckBox.hl-check">
+      <Setter Property="FontSize" Value="15" />
+      <Setter Property="Foreground" Value="#1F1F1F" />
+    </Style>
+  </Window.Styles>
+
+  <Border x:Name="HlChrome"
+          BorderBrush="#C4C4C4"
+          BorderThickness="1"
+          ClipToBounds="True"
+          RenderTransformOrigin="50%,50%">
+    <Border.Background>
+      <SolidColorBrush Color="#F7F7F7" />
+    </Border.Background>
+
+    <Grid RowDefinitions="30,*,38,8">
+
+      <!-- ══════════ Title bar ══════════ -->
+      <Grid Grid.Row="0" Background="#FFFFFF" PointerPressed="TitleBar_PointerPressed">
+        <Grid.Background>
+          <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+            <GradientStop Color="#FFFFFF" Offset="0" />
+            <GradientStop Color="#FAFAFA" Offset="1" />
+          </LinearGradientBrush>
+        </Grid.Background>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="SirHurt" FontFamily="Arial" FontSize="16" FontWeight="Bold"
+                   Foreground="#333333" VerticalAlignment="Center" Margin="8,0,0,0" />
+        <StackPanel Grid.Column="1" Orientation="Horizontal">
+          <Button Classes="hl-sys" Click="Minimize_Click" ToolTip.Tip="Minimize">
+            <TextBlock Text="—" FontSize="13" Margin="0,4,0,0" />
+          </Button>
+          <Button x:Name="MaximizeButton" Classes="hl-sys" Click="Maximize_Click" ToolTip.Tip="Maximize">
+            <TextBlock Text="□" FontSize="13" />
+          </Button>
+          <Button Classes="hl-sys" Click="Close_Click" ToolTip.Tip="Return to Orion">
+            <TextBlock Text="×" FontSize="15" />
+          </Button>
+        </StackPanel>
+      </Grid>
+
+      <!-- ══════════ Content ══════════ -->
+      <Grid Grid.Row="1" Background="#FBFBFB">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="59*" />
+          <ColumnDefinition Width="14" />
+          <ColumnDefinition Width="41*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Editor column -->
+        <Grid Grid.Column="0" Background="#F8F8F8">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="16" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <Grid Grid.Column="1" RowDefinitions="30,30,*">
+
+            <!-- Script selector caption -->
+            <Button Grid.Row="0" x:Name="ScriptCaption" Click="ScriptCaption_Click"
+                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                    Background="#F7F7F7" BorderThickness="0,0,0,1" BorderBrush="#C0C0C0"
+                    Cursor="Hand">
+              <Grid Margin="2,0,0,0">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="32" />
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="ScriptCaptionText" Text="Script1.lua"
+                           FontSize="15" Foreground="#1F1F1F" VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                  <TextBlock Text="⌃" FontFamily="Arial" FontSize="13" Foreground="#333333" Width="16" TextAlignment="Center" />
+                  <TextBlock Text="⌄" FontFamily="Arial" FontSize="13" Foreground="#333333" Width="16" TextAlignment="Center" />
+                </StackPanel>
+              </Grid>
+            </Button>
+
+            <!-- Editor tabs -->
+            <Border Grid.Row="1" Background="#EFEFEF" BorderBrush="#C0C0C0" BorderThickness="0,0,0,1">
+              <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+                <StackPanel x:Name="TabStrip" Orientation="Horizontal" Margin="2,0,0,0" VerticalAlignment="Stretch" />
+              </ScrollViewer>
+            </Border>
+
+            <!-- Editor (shared Monaco, light surface) -->
+            <Border Grid.Row="2" Background="White" BorderBrush="#A8A8A8" BorderThickness="1,0,1,1">
+              <NativeWebView x:Name="EditorWebView" Background="White" IsVisible="False" />
+            </Border>
+          </Grid>
+        </Grid>
+
+        <!-- Gap column is the 14px middle definition -->
+
+        <!-- Right column -->
+        <Grid Grid.Column="2" Background="#F7F7F7" RowDefinitions="30,*">
+
+          <!-- Script list heading -->
+          <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="6,0,0,0">
+            <TextBlock Text="Script List (Refresh)" FontSize="15" FontWeight="Bold" Foreground="#121212"
+                       VerticalAlignment="Center" PointerPressed="RefreshList_Click" Cursor="Hand" />
+            <Button Classes="hl-tiny" Width="24" Height="24" Click="RefreshList_Click" ToolTip.Tip="Refresh script list">
+              <Path Data="{StaticResource HlRefreshIcon}" Width="15" Height="15" Stretch="Uniform" />
+            </Button>
+          </StackPanel>
+
+          <!-- List (full height) + logo / debug console -->
+          <Grid Grid.Row="1" ColumnDefinitions="55*,45*">
+            <ListBox Grid.Column="0" x:Name="ScriptList" Classes="hl-list" Margin="0,4,6,4"
+                     DoubleTapped="ScriptList_DoubleTapped" />
+
+            <DockPanel Grid.Column="1" Margin="0,4,6,4">
+              <StackPanel DockPanel.Dock="Top" HorizontalAlignment="Center" Margin="0,6,0,8">
+                <Image Source="avares://Orion/Assets/SirHurtLegacy/logo.png"
+                       Width="150" Stretch="Uniform" HorizontalAlignment="Center" />
+                <TextBlock Text="CREATOR" FontFamily="Arial" FontSize="11" FontWeight="Bold"
+                           Foreground="#CC2029" HorizontalAlignment="Center" Margin="0,4,0,0" />
+                <Border Width="36" Height="28" Background="#EEEEEE" BorderBrush="#555555"
+                        BorderThickness="1" HorizontalAlignment="Center" Margin="0,6,0,0">
+                  <TextBlock Text="Tap" FontFamily="Arial" FontSize="14" FontWeight="Bold"
+                             Foreground="#202020" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+              </StackPanel>
+
+              <!-- Debug console -->
+              <Border Background="White" BorderBrush="#AAAAAA" BorderThickness="1" Padding="5,3">
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                  <StackPanel x:Name="TelemetryLines">
+                    <TextBlock Text="IP Telpted." FontSize="13" Foreground="#4E9055" />
+                    <TextBlock FontSize="13" Foreground="#333333">
+                      <Run FontWeight="Bold">Key:</Run><Run> Verified</Run>
+                    </TextBlock>
+                    <TextBlock FontSize="13" Foreground="#333333">
+                      <Run FontWeight="Bold">HWID:</Run><Run> 0</Run>
+                    </TextBlock>
+                    <TextBlock FontSize="13" Foreground="#333333">
+                      <Run FontWeight="Bold">OS:</Run><Run> N. FOUND!</Run>
+                    </TextBlock>
+                    <TextBlock FontSize="13" Foreground="#333333">
+                      <Run FontWeight="Bold">IP:</Run><Run> N. FOUND!</Run>
+                    </TextBlock>
+                    <TextBlock FontSize="13" Foreground="#333333">
+                      <Run FontWeight="Bold">API:</Run><Run> N. FOUND!</Run>
+                    </TextBlock>
+                    <StackPanel Orientation="Horizontal">
+                      <TextBlock Text="Dll:" FontSize="13" FontWeight="Bold" Foreground="#333333" />
+                      <TextBlock x:Name="TelemetryDll" Text=" Not Attached" FontSize="13" Foreground="#333333" />
+                    </StackPanel>
+                  </StackPanel>
+                </ScrollViewer>
+              </Border>
+            </DockPanel>
+          </Grid>
+        </Grid>
+      </Grid>
+
+      <!-- ══════════ Bottom command bar ══════════ -->
+      <Border Grid.Row="2" Background="#F3F3F3" BorderBrush="#B3B3B3" BorderThickness="0,1,0,0">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="6,0,0,0">
+          <Button Classes="hl-execute" Click="Execute_Click" ToolTip.Tip="Execute script (F5)">
+            <TextBlock Text="EXECUTE SCRIPT" Margin="0,1,0,0" />
+          </Button>
+          <Button Classes="hl-tiny" Click="Open_Click" ToolTip.Tip="Open script (Ctrl+O)">
+            <Path Data="{StaticResource HlFolderIcon}" Width="24" Height="24" Stretch="Uniform"
+                  Fill="#E8A33D" StrokeThickness="0" />
+          </Button>
+          <Button Classes="hl-tiny" Click="Clear_Click" ToolTip.Tip="Clear text">
+            <Path Data="{StaticResource HlXIcon}" Width="22" Height="22" Stretch="Uniform" Stroke="#D82323" />
+          </Button>
+          <Button Classes="hl-tiny" Click="Settings_Click" ToolTip.Tip="Settings">
+            <Path Data="{StaticResource HlGearIcon}" Width="22" Height="22" Stretch="Uniform" />
+          </Button>
+          <Button Classes="hl-tiny" Click="AddTabButton_Click" ToolTip.Tip="New tab (Ctrl+T)">
+            <Path Data="{StaticResource HlPlusIcon}" Width="22" Height="22" Stretch="Uniform" />
+          </Button>
+          <Button Classes="hl-label" Click="Attach_Click" ToolTip.Tip="Attach to bridge">
+            <TextBlock Text="Attach" Margin="0,1,0,0" />
+          </Button>
+          <Button Classes="hl-label" Click="ScriptHub_Click" ToolTip.Tip="Script Hub">
+            <TextBlock Text="Script Hub" Margin="0,1,0,0" />
+          </Button>
+          <Button Classes="hl-label" Click="OpenScripts_Click" ToolTip.Tip="Open the scripts folder">
+            <TextBlock Text="Open Scripts" Margin="0,1,0,0" />
+          </Button>
+        </StackPanel>
+      </Border>
+
+      <!-- ══════════ Status line ══════════ -->
+      <Grid Grid.Row="3" Background="#F9F9F9" Margin="6,0,6,0">
+        <Ellipse Width="4" Height="4" Fill="#E74E55" HorizontalAlignment="Left" VerticalAlignment="Center" />
+        <TextBlock Text="♢" FontSize="6" Foreground="#1772C2" HorizontalAlignment="Right" VerticalAlignment="Center" />
+      </Grid>
+
+      <!-- ══════════ Script dropdown popup ══════════ -->
+      <Popup x:Name="ScriptDropdown" PlacementTarget="{Binding #ScriptCaption}" Placement="Bottom"
+             VerticalOffset="-1" IsLightDismissEnabled="True">
+        <Border Background="White" BorderBrush="#AAAAAA" BorderThickness="1" Width="460" MaxHeight="280">
+          <ListBox x:Name="DropdownList" Classes="hl-list" BorderThickness="0"
+                   DoubleTapped="DropdownList_DoubleTapped" />
+        </Border>
+      </Popup>
+
+      <!-- ══════════ Settings dialog ══════════ -->
+      <Panel x:Name="SettingsOverlay" Grid.Row="0" Grid.RowSpan="4" IsVisible="False" ZIndex="100">
+        <Border Background="#66000000" PointerPressed="SettingsBackdrop_Click" />
+        <Border Width="300" Background="#F0F0F0" BorderBrush="#7A7A7A" BorderThickness="1"
+                HorizontalAlignment="Center" VerticalAlignment="Center">
+          <StackPanel>
+            <Grid Background="#FFFFFF" PointerPressed="TitleBar_PointerPressed">
+              <Grid.Background>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                  <GradientStop Color="#FFFFFF" Offset="0" />
+                  <GradientStop Color="#E6E6F0" Offset="1" />
+                </LinearGradientBrush>
+              </Grid.Background>
+              <TextBlock Text="Settings" FontFamily="Arial" FontSize="16" FontWeight="Bold"
+                         Foreground="#333333" Margin="8,4,0,4" VerticalAlignment="Center" />
+              <Button Classes="hl-sys" Width="36" Height="28" HorizontalAlignment="Right"
+                      Click="SettingsClose_Click">
+                <TextBlock Text="×" FontSize="15" />
+              </Button>
+            </Grid>
+            <StackPanel Margin="16,16,16,16" Spacing="12">
+              <CheckBox x:Name="TopMostCheck" Classes="hl-check" Content="Top Most"
+                        IsCheckedChanged="TopMost_Changed" />
+              <Button Classes="hl-classic" Content="Return to Orion" Click="Close_Click"
+                      HorizontalAlignment="Left" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+      </Panel>
+
+      <!-- ══════════ Classic tooltip toast ══════════ -->
+      <Border x:Name="ToastTip" Grid.Row="0" Grid.RowSpan="4"
+              Background="#FFFFE1" BorderBrush="#888888" BorderThickness="1"
+              Padding="10,4" Opacity="0" IsHitTestVisible="False"
+              HorizontalAlignment="Right" VerticalAlignment="Bottom"
+              Margin="0,0,12,52" ZIndex="60">
+        <TextBlock x:Name="ToastText" FontSize="15" Foreground="#000000" />
+      </Border>
+    </Grid>
+  </Border>
+</Window>

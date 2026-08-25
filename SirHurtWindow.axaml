@@ -1,0 +1,525 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="OrbitAvalonia.SirHurtWindow"
+        Title="SirHurt V5"
+        Width="936" Height="672"
+        MinWidth="680" MinHeight="460"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        WindowDecorations="None"
+        ExtendClientAreaToDecorationsHint="True"
+        WindowStartupLocation="CenterScreen"
+        FontFamily="avares://Avalonia.Fonts.Inter/Assets#Inter"
+        RenderOptions.TextRenderingMode="Antialias"
+        Icon="avares://Orion/Assets/Orion/Sharp/orion-app.ico">
+
+  <Window.Resources>
+    <StreamGeometry x:Key="ShCodeIcon">M9.3 6.5 4 12l5.3 5.5 M14.7 6.5 20 12l-5.3 5.5 M13.2 4.5l-2.4 15</StreamGeometry>
+    <StreamGeometry x:Key="ShFileIcon">M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z M14 2v4a2 2 0 0 0 2 2h4</StreamGeometry>
+    <StreamGeometry x:Key="ShImageIcon">M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z M8.5 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z M21 15l-5-5L5 21</StreamGeometry>
+    <StreamGeometry x:Key="ShGearIcon">M12 15.5A3.5 3.5 0 1 0 12 8.5a3.5 3.5 0 0 0 0 7Z M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z</StreamGeometry>
+    <StreamGeometry x:Key="ShPlayIcon">M7 5.5v13L18 12Z</StreamGeometry>
+    <StreamGeometry x:Key="ShTrashIcon">M9 3h6l1 2h4v2H4V5h4l1-2Z M6 9h12l-1 11a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 9Z</StreamGeometry>
+    <StreamGeometry x:Key="ShExecuteFileIcon">M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7l-6-5Z M13 8V3.5L18.5 9H14a1 1 0 0 1-1-1Z</StreamGeometry>
+    <StreamGeometry x:Key="ShOpenIcon">M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7l-6-5Z M13 8V3.5L18.5 9H14a1 1 0 0 1-1-1Z</StreamGeometry>
+    <StreamGeometry x:Key="ShSaveIcon">M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h2v-7h10v7h2a2 2 0 0 0 2-2V8l-4-5Z M15 3v5h2V3.5L19.5 8H16a1 1 0 0 1-1-1V3Z</StreamGeometry>
+    <StreamGeometry x:Key="ShPencilIcon">M17.66 2.34a2.8 2.8 0 0 1 4 4L8 20l-5.5 1.5L4 16 17.66 2.34Z</StreamGeometry>
+    <StreamGeometry x:Key="ShCloseIcon">M6 6l12 12 M18 6 6 18</StreamGeometry>
+    <StreamGeometry x:Key="ShMinimizeIcon">M5 12h14</StreamGeometry>
+    <StreamGeometry x:Key="ShMaximizeIcon">M6 6h12v12H6Z M6 10h12</StreamGeometry>
+    <StreamGeometry x:Key="ShSearchIcon">M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z M21 21l-4.35-4.35</StreamGeometry>
+  </Window.Resources>
+
+  <Window.Styles>
+    <Style Selector="Button">
+      <Setter Property="FocusAdorner" Value="{x:Null}" />
+      <Setter Property="MinWidth" Value="0" />
+      <Setter Property="MinHeight" Value="0" />
+    </Style>
+    <Style Selector="TextBox">
+      <Setter Property="FocusAdorner" Value="{x:Null}" />
+    </Style>
+    <Style Selector="ListBox">
+      <Setter Property="FocusAdorner" Value="{x:Null}" />
+    </Style>
+
+    <!-- Window controls -->
+    <Style Selector="Button.sh-win">
+      <Setter Property="Width" Value="38" />
+      <Setter Property="Height" Value="28" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="CornerRadius" Value="0" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.14" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sh-win Path">
+      <Setter Property="Stroke" Value="#9A9A9A" />
+      <Setter Property="StrokeThickness" Value="1.6" />
+      <Setter Property="StrokeLineCap" Value="Round" />
+      <Setter Property="StrokeJoin" Value="Round" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Stroke" Duration="0:0:0.14" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sh-win:pointerover">
+      <Setter Property="Background" Value="#242424" />
+    </Style>
+    <Style Selector="Button.sh-win:pointerover Path">
+      <Setter Property="Stroke" Value="#E6E6E6" />
+    </Style>
+    <Style Selector="Button.sh-win.close:pointerover">
+      <Setter Property="Background" Value="#B3323C" />
+    </Style>
+    <Style Selector="Button.sh-win.close:pointerover Path">
+      <Setter Property="Stroke" Value="White" />
+    </Style>
+
+    <!-- Toolbar buttons -->
+    <Style Selector="Button.sh-tool">
+      <Setter Property="Height" Value="14" />
+      <Setter Property="Padding" Value="5,0" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="CornerRadius" Value="0" />
+      <Setter Property="Foreground" Value="#D8D8D8" />
+      <Setter Property="FontSize" Value="10" />
+      <Setter Property="FontWeight" Value="Medium" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.13" />
+          <BrushTransition Property="Foreground" Duration="0:0:0.13" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sh-tool Path">
+      <Setter Property="Stroke" Value="#B8B8B8" />
+      <Setter Property="StrokeThickness" Value="1.6" />
+      <Setter Property="StrokeLineCap" Value="Round" />
+      <Setter Property="StrokeJoin" Value="Round" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Stroke" Duration="0:0:0.13" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sh-tool:pointerover">
+      <Setter Property="Background" Value="#242424" />
+      <Setter Property="Foreground" Value="#FFFFFF" />
+    </Style>
+    <Style Selector="Button.sh-tool:pointerover Path">
+      <Setter Property="Stroke" Value="#FFFFFF" />
+    </Style>
+    <Style Selector="Button.sh-tool:pressed">
+      <Setter Property="Background" Value="#1B1B1B" />
+    </Style>
+    <Style Selector="Button.sh-tool.execute Path">
+      <Setter Property="Stroke" Value="#3FBF3F" />
+    </Style>
+    <Style Selector="Button.sh-tool.execute:pointerover Path">
+      <Setter Property="Stroke" Value="#5CDF5C" />
+    </Style>
+    <Style Selector="Button.sh-tool.init Path">
+      <Setter Property="Stroke" Value="#4D8DFF" />
+    </Style>
+    <Style Selector="Button.sh-tool.init:pointerover Path">
+      <Setter Property="Stroke" Value="#7DAEFF" />
+    </Style>
+
+    <!-- Rail buttons -->
+    <Style Selector="Button.sh-rail">
+      <Setter Property="Width" Value="44" />
+      <Setter Property="Height" Value="38" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Margin" Value="0,2" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.14" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sh-rail Path">
+      <Setter Property="Stroke" Value="#9A9A9A" />
+      <Setter Property="StrokeThickness" Value="1.6" />
+      <Setter Property="StrokeLineCap" Value="Round" />
+      <Setter Property="StrokeJoin" Value="Round" />
+      <Setter Property="RenderTransformOrigin" Value="50%,50%" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Stroke" Duration="0:0:0.14" />
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.16" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sh-rail:pointerover">
+      <Setter Property="Background" Value="#222222" />
+    </Style>
+    <Style Selector="Button.sh-rail:pointerover Path">
+      <Setter Property="Stroke" Value="#E6E6E6" />
+      <Setter Property="RenderTransform" Value="scale(1.08)" />
+    </Style>
+    <Style Selector="Button.sh-rail.active">
+      <Setter Property="Background" Value="#262626" />
+    </Style>
+    <Style Selector="Button.sh-rail.active Path">
+      <Setter Property="Stroke" Value="#4D8DFF" />
+    </Style>
+
+    <!-- Search input -->
+    <Style Selector="TextBox.sh-search">
+      <Setter Property="Height" Value="26" />
+      <Setter Property="Background" Value="#1A1A1A" />
+      <Setter Property="BorderBrush" Value="#2E2E2E" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="0" />
+      <Setter Property="Foreground" Value="#D8D8D8" />
+      <Setter Property="CaretBrush" Value="#9C9C9C" />
+      <Setter Property="FontSize" Value="10.5" />
+      <Setter Property="Padding" Value="7,0" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="SelectionBrush" Value="#1B6BFA" />
+    </Style>
+    <Style Selector="TextBox.sh-search /template/ Border#PART_BorderElement">
+      <Setter Property="Background" Value="#1A1A1A" />
+      <Setter Property="BorderBrush" Value="#2E2E2E" />
+      <Setter Property="CornerRadius" Value="0" />
+    </Style>
+    <Style Selector="TextBox.sh-search:focus /template/ Border#PART_BorderElement">
+      <Setter Property="BorderBrush" Value="#3D3D3D" />
+    </Style>
+
+    <!-- Script list -->
+    <Style Selector="ListBox.sh-list">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Padding" Value="0" />
+    </Style>
+    <Style Selector="ListBox.sh-list ListBoxItem">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="MinHeight" Value="30" />
+      <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+      <Setter Property="CornerRadius" Value="0" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.12" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="ListBox.sh-list ListBoxItem:pointerover">
+      <Setter Property="Background" Value="#1F1F1F" />
+    </Style>
+    <Style Selector="ListBox.sh-list ListBoxItem:selected">
+      <Setter Property="Background" Value="#262626" />
+    </Style>
+
+    <!-- Settings rows -->
+    <Style Selector="Button.sh-toggle">
+      <Setter Property="Width" Value="86" />
+      <Setter Property="Height" Value="24" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Background" Value="#1F1F1F" />
+      <Setter Property="BorderBrush" Value="#333333" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="0" />
+      <Setter Property="Foreground" Value="#8A8A8A" />
+      <Setter Property="FontSize" Value="10" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="LetterSpacing" Value="0.6" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.16" />
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.16" />
+          <BrushTransition Property="Foreground" Duration="0:0:0.16" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sh-toggle:pointerover">
+      <Setter Property="BorderBrush" Value="#4A4A4A" />
+    </Style>
+    <Style Selector="Button.sh-toggle.checked">
+      <Setter Property="Background" Value="#1B6BFA" />
+      <Setter Property="BorderBrush" Value="#1B6BFA" />
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="Button.sh-toggle.checked:pointerover">
+      <Setter Property="Background" Value="#3D82FF" />
+      <Setter Property="BorderBrush" Value="#3D82FF" />
+    </Style>
+
+    <!-- Settings action buttons -->
+    <Style Selector="Button.sh-mini">
+      <Setter Property="Height" Value="24" />
+      <Setter Property="Padding" Value="9,0" />
+      <Setter Property="Background" Value="#1F1F1F" />
+      <Setter Property="BorderBrush" Value="#333333" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="0" />
+      <Setter Property="Foreground" Value="#C9C9C9" />
+      <Setter Property="FontSize" Value="10.5" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.14" />
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.14" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sh-mini:pointerover">
+      <Setter Property="Background" Value="#2A2A2A" />
+      <Setter Property="BorderBrush" Value="#454545" />
+      <Setter Property="Foreground" Value="#FFFFFF" />
+    </Style>
+  </Window.Styles>
+
+  <Border x:Name="ShChrome"
+          CornerRadius="0"
+          BorderBrush="#2E2E2E"
+          BorderThickness="1"
+          ClipToBounds="True"
+          RenderTransformOrigin="50%,50%">
+    <Border.Background>
+      <SolidColorBrush Color="#0C0C0C" />
+    </Border.Background>
+
+      <Grid RowDefinitions="36,20,*,26">
+
+      <!-- ══════════ Title bar ══════════ -->
+      <Grid Grid.Row="0" Background="#111111" PointerPressed="TitleBar_PointerPressed">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0" Spacing="8">
+          <Border Width="16" Height="16" Background="#1B6BFA">
+            <TextBlock Text="SH" FontSize="7" FontWeight="Black" Foreground="White"
+                       HorizontalAlignment="Center" VerticalAlignment="Center" />
+          </Border>
+          <TextBlock Text="SirHurt V5" FontSize="12" FontWeight="SemiBold" Foreground="#E8E8E8" VerticalAlignment="Center" />
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+          <TextBlock Text="www.SirHurt.net" FontSize="10.5" Foreground="#6E6E6E" VerticalAlignment="Center" Margin="0,0,14,0" />
+          <Button Classes="sh-win" Click="Minimize_Click" ToolTip.Tip="Minimize">
+            <Path Data="{StaticResource ShMinimizeIcon}" Width="12" Height="12" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
+          </Button>
+          <Button x:Name="MaximizeButton" Classes="sh-win" Click="Maximize_Click" ToolTip.Tip="Maximize">
+            <Path Data="{StaticResource ShMaximizeIcon}" Width="12" Height="12" Stretch="Uniform" />
+          </Button>
+          <Button Classes="sh-win close" Margin="0,0,6,0" Click="Close_Click" ToolTip.Tip="Return to Orion">
+            <Path Data="{StaticResource ShCloseIcon}" Width="11" Height="11" Stretch="Uniform" />
+          </Button>
+        </StackPanel>
+      </Grid>
+
+      <!-- ══════════ Toolbar ══════════ -->
+      <Border Grid.Row="1" Background="#141414" BorderBrush="#262626" BorderThickness="0,1,0,1">
+        <Grid Margin="10,0" ColumnDefinitions="*,Auto">
+          <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+            <Button Classes="sh-tool execute" Click="Execute_Click" ToolTip.Tip="Execute (Ctrl+Enter)">
+              <StackPanel Orientation="Horizontal" Spacing="6">
+                <Path Data="{StaticResource ShPlayIcon}" Width="9" Height="9" Stretch="Uniform" Fill="#3FBF3F" StrokeThickness="0" />
+                <TextBlock Text="Execute" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+            <Button Classes="sh-tool" Click="Clear_Click" ToolTip.Tip="Clear the current tab">
+              <StackPanel Orientation="Horizontal" Spacing="6">
+                <Path Data="{StaticResource ShTrashIcon}" Width="9" Height="9" Stretch="Uniform" Fill="#D8D8D8" StrokeThickness="0" />
+                <TextBlock Text="Clear Text" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+            <Button Classes="sh-tool" Click="ExecuteFile_Click" ToolTip.Tip="Open a script and execute it">
+              <StackPanel Orientation="Horizontal" Spacing="6">
+                <Path Data="{StaticResource ShExecuteFileIcon}" Width="9" Height="9" Stretch="Uniform" Fill="#D8D8D8" StrokeThickness="0" />
+                <TextBlock Text="Execute File" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+            <Button Classes="sh-tool" Click="Open_Click" ToolTip.Tip="Open a script (Ctrl+O)">
+              <StackPanel Orientation="Horizontal" Spacing="6">
+                <Path Data="{StaticResource ShOpenIcon}" Width="9" Height="9" Stretch="Uniform" Fill="#D8D8D8" StrokeThickness="0" />
+                <TextBlock Text="Open File" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+            <Button Classes="sh-tool" Click="Save_Click" ToolTip.Tip="Save the current tab (Ctrl+S)">
+              <StackPanel Orientation="Horizontal" Spacing="6">
+                <Path Data="{StaticResource ShSaveIcon}" Width="9" Height="9" Stretch="Uniform" Fill="#D8D8D8" StrokeThickness="0" />
+                <TextBlock Text="Save File" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+          </StackPanel>
+
+          <Button Grid.Column="1" Classes="sh-tool init" Click="Initialize_Click" ToolTip.Tip="Check injection bridge status">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+              <Path Data="{StaticResource ShPencilIcon}" Width="9" Height="9" Stretch="Uniform" Fill="#4D8DFF" StrokeThickness="0" />
+              <TextBlock Text="Initialize" VerticalAlignment="Center" />
+            </StackPanel>
+          </Button>
+        </Grid>
+      </Border>
+
+      <!-- ══════════ Main ══════════ -->
+      <Grid Grid.Row="2" ColumnDefinitions="44,168,*">
+
+        <!-- Rail -->
+        <Border Grid.Column="0" Background="#111111" BorderBrush="#262626" BorderThickness="0,0,1,0">
+          <Grid>
+            <DockPanel Margin="0,8,0,8">
+              <Button DockPanel.Dock="Bottom" Classes="sh-rail" x:Name="RailSettings" Click="RailSettings_Click" ToolTip.Tip="Settings">
+                <Path Data="{StaticResource ShGearIcon}" Width="17" Height="17" Stretch="Uniform" />
+              </Button>
+              <StackPanel>
+                <Button Classes="sh-rail active" x:Name="RailCode" Click="RailCode_Click" ToolTip.Tip="Editor">
+                  <Path Data="{StaticResource ShCodeIcon}" Width="17" Height="17" Stretch="Uniform" />
+                </Button>
+              </StackPanel>
+            </DockPanel>
+            <Border Width="7" Height="26"
+                    Background="#1B6BFA"
+                    Opacity="0.35"
+                    IsHitTestVisible="False"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Margin="0,14,0,0" />
+            <Border Width="3" Height="22"
+                    Background="#1B6BFA"
+                    IsHitTestVisible="False"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Margin="0,16,0,0" />
+          </Grid>
+        </Border>
+
+        <!-- Left panel -->
+        <Border Grid.Column="1" Background="#2D2D2D" BorderBrush="#262626" BorderThickness="0,0,1,0">
+          <Panel Margin="8,8,8,8">
+            <!-- Scripts search -->
+            <StackPanel x:Name="ScriptsPanel">
+              <TextBlock x:Name="ScriptsHeader" Text="Search your scripts folder" FontSize="10" Foreground="#B0B0B0" Margin="2,0,0,6" TextTrimming="CharacterEllipsis" />
+              <TextBox x:Name="ScriptSearch" Classes="sh-search" PlaceholderText="Search here..." TextChanged="ScriptSearch_TextChanged" />
+              <ListBox x:Name="ScriptList" Classes="sh-list" Margin="0,8,0,0" DoubleTapped="ScriptList_DoubleTapped" />
+              <TextBlock x:Name="ScriptsEmpty" Text="No scripts found" FontSize="10.5" Foreground="#8A8A8A" HorizontalAlignment="Center" Margin="0,14,0,0" />
+            </StackPanel>
+
+            <!-- Credits (settings mode) -->
+            <StackPanel x:Name="CreditsPanel" IsVisible="False" VerticalAlignment="Top">
+              <Border Width="84" Height="84" CornerRadius="42" BorderBrush="#1B6BFA" BorderThickness="2" HorizontalAlignment="Center" Margin="0,14,0,0">
+                <Panel>
+                  <Ellipse Width="68" Height="68" Stroke="#1B6BFA" StrokeThickness="1" StrokeDashArray="2,1.4" />
+                  <TextBlock Text="SH" FontSize="22" FontWeight="Black" Foreground="#4D8DFF"
+                             HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Panel>
+              </Border>
+              <TextBlock Text="Lead Developer" FontSize="10" Foreground="#6E6E6E" HorizontalAlignment="Center" Margin="0,18,0,2" />
+              <TextBlock Text="Spook" FontSize="13" FontWeight="SemiBold" Foreground="#E8E8E8" HorizontalAlignment="Center" />
+              <TextBlock Text="UI Design by" FontSize="10" Foreground="#6E6E6E" HorizontalAlignment="Center" Margin="0,12,0,2" />
+              <TextBlock Text="Zeridiant" FontSize="13" FontWeight="SemiBold" Foreground="#E8E8E8" HorizontalAlignment="Center" />
+            </StackPanel>
+          </Panel>
+        </Border>
+
+        <!-- Content -->
+        <Panel Grid.Column="2">
+
+          <!-- Editor mode -->
+          <Grid x:Name="EditorMode" RowDefinitions="32,*">
+            <Border Grid.Row="0" Background="#0C0C0C">
+              <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+                <StackPanel x:Name="TabStrip" Orientation="Horizontal" Margin="6,4,0,0" Spacing="4" VerticalAlignment="Top" />
+              </ScrollViewer>
+            </Border>
+            <Border Grid.Row="1" Background="#0C0C0C">
+              <NativeWebView x:Name="EditorWebView" Background="Transparent" IsVisible="False" />
+            </Border>
+          </Grid>
+
+          <!-- Settings mode -->
+          <Grid x:Name="SettingsMode" IsVisible="False" Margin="18,14,18,10">
+            <Grid RowDefinitions="Auto,*">
+              <TextBlock Grid.Row="0" Text="SirHurt Settings" FontSize="15" FontWeight="SemiBold" Foreground="#E8E8E8" Margin="2,0,0,12" />
+              <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <StackPanel x:Name="SettingsList" />
+              </ScrollViewer>
+            </Grid>
+          </Grid>
+        </Panel>
+      </Grid>
+
+      <!-- ══════════ Status bar ══════════ -->
+      <Border Grid.Row="3" Background="#1668E8">
+        <Grid Margin="10,0" ColumnDefinitions="*,Auto">
+          <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="6">
+            <Ellipse x:Name="StatusDot" Width="7" Height="7" Fill="#FFD0D0" VerticalAlignment="Center" />
+            <TextBlock x:Name="StatusText" Text="Status: Not Injected" FontSize="10.5" FontWeight="Medium" Foreground="White" VerticalAlignment="Center" />
+          </StackPanel>
+        </Grid>
+      </Border>
+
+      <!-- ══════════ Tab-close confirmation overlay ══════════ -->
+      <Panel Grid.Row="0" Grid.RowSpan="4" x:Name="ConfirmOverlay" IsVisible="False" ZIndex="100">
+        <Border Background="#A5000000" />
+        <Border x:Name="ConfirmDialog"
+                Width="320"
+                CornerRadius="0"
+                Background="#161616"
+                BorderBrush="#333333"
+                BorderThickness="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                RenderTransformOrigin="50%,50%">
+          <StackPanel Margin="18,16,18,14">
+            <TextBlock x:Name="ConfirmTitle" Text="Close Tab" FontSize="14" FontWeight="SemiBold" Foreground="#E8E8E8" />
+            <TextBlock x:Name="ConfirmMessage" FontSize="11.5" Foreground="#9A9A9A" TextWrapping="Wrap" Margin="0,8,0,14" />
+            <Grid ColumnDefinitions="*,10,150">
+              <Button x:Name="ConfirmCancel" Classes="sh-mini" Click="ConfirmCancel_Click" Height="28" HorizontalAlignment="Stretch" Content="Cancel" />
+              <Button Grid.Column="2" x:Name="ConfirmAccept" Classes="sh-mini" Click="ConfirmAccept_Click" Height="28" HorizontalAlignment="Stretch" Content="Close" />
+            </Grid>
+          </StackPanel>
+        </Border>
+      </Panel>
+
+      <!-- ══════════ Toast ══════════ -->
+      <Border Grid.Row="2"
+              x:Name="ToastPill"
+              Background="#1F1F1F"
+              BorderBrush="#3A3A3A"
+              BorderThickness="1"
+              CornerRadius="0"
+              Padding="10,4"
+              Opacity="0"
+              IsHitTestVisible="False"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Bottom"
+              Margin="0,0,10,10"
+              ZIndex="60">
+        <TextBlock x:Name="ToastText" FontSize="10.5" Foreground="#D8D8D8" />
+      </Border>
+    </Grid>
+  </Border>
+</Window>
+
+
+
+
+

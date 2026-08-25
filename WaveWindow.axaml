@@ -1,0 +1,797 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="OrbitAvalonia.WaveWindow"
+        Title="Wave"
+        Width="936" Height="672"
+        MinWidth="680" MinHeight="460"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        WindowDecorations="None"
+        ExtendClientAreaToDecorationsHint="True"
+        WindowStartupLocation="CenterScreen"
+        FontFamily="avares://Avalonia.Fonts.Inter/Assets#Inter"
+        RenderOptions.TextRenderingMode="Antialias"
+        Icon="avares://Orion/Assets/Orion/Sharp/orion-app.ico">
+
+  <Window.Resources>
+    <!-- Stroke icon geometry (24x24 grid) -->
+    <StreamGeometry x:Key="WaveFolderIcon">M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z</StreamGeometry>
+    <StreamGeometry x:Key="WaveScriptIcon">M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z M14 2v4a2 2 0 0 0 2 2h4 M10 12l-2 2.5L10 17 M14 12l2 2.5L14 17</StreamGeometry>
+    <StreamGeometry x:Key="WaveCloudIcon">M17.5 19a4.5 4.5 0 1 0-.88-8.91 6 6 0 1 0-11.06 3.32A3.5 3.5 0 0 0 7.5 19Z</StreamGeometry>
+    <StreamGeometry x:Key="WaveServerIcon">M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v3a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 8.5Z M4 15.5A1.5 1.5 0 0 1 5.5 14h13a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5Z M7.5 7.25h.01 M7.5 17.25h.01</StreamGeometry>
+    <StreamGeometry x:Key="WaveTerminalIcon">M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z M7.5 9l3 3-3 3 M12.5 15H17</StreamGeometry>
+    <StreamGeometry x:Key="WaveGearIcon">M12 15.5A3.5 3.5 0 1 0 12 8.5a3.5 3.5 0 0 0 0 7Z M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z</StreamGeometry>
+    <StreamGeometry x:Key="WavePlayIcon">M8.5 5.5v13L19 12Z</StreamGeometry>
+    <StreamGeometry x:Key="WaveTrashIcon">M3 6h18 M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2 M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6 M10 11v6 M14 11v6</StreamGeometry>
+    <StreamGeometry x:Key="WaveOpenIcon">m6 14 1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2h3.93a2 2 0 0 1 1.66.9l.82 1.2a2 2 0 0 0 1.66.9H18a2 2 0 0 1 2 2v2</StreamGeometry>
+    <StreamGeometry x:Key="WaveSaveIcon">M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z M17 21v-8H7v8 M7 3v5h8</StreamGeometry>
+    <StreamGeometry x:Key="WavePopoutIcon">M7 17 17 7 M8 7h9v9</StreamGeometry>
+    <StreamGeometry x:Key="WaveMinimizeIcon">M0 0h14</StreamGeometry>
+    <StreamGeometry x:Key="WaveCloseIcon">M6 6l12 12 M18 6 6 18</StreamGeometry>
+    <StreamGeometry x:Key="WavePlusIcon">M12 5v14 M5 12h14</StreamGeometry>
+    <StreamGeometry x:Key="WaveCheckIcon">M4.5 12.5l4.5 4.5L19.5 6.5</StreamGeometry>
+    <StreamGeometry x:Key="WaveSearchIcon">M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z M21 21l-4.35-4.35</StreamGeometry>
+    <StreamGeometry x:Key="WaveRefreshIcon">M21 12a9 9 0 1 1-2.64-6.36L21 8 M21 3v5h-5</StreamGeometry>
+    <StreamGeometry x:Key="WaveHomeIcon">M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8 M3 10a2 2 0 0 1 .71-1.53l7-6a2 2 0 0 1 2.58 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z</StreamGeometry>
+    <StreamGeometry x:Key="WaveBookIcon">M4 19.5A2.5 2.5 0 0 1 6.5 17H20 M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z</StreamGeometry>
+    <StreamGeometry x:Key="WaveBackIcon">M19 12H5 M12 19l-7-7 7-7</StreamGeometry>
+    <StreamGeometry x:Key="WaveStarIcon">M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1L3.2 9.5l6.1-.9Z</StreamGeometry>
+    <StreamGeometry x:Key="WaveTargetIcon">M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z</StreamGeometry>
+    <StreamGeometry x:Key="WaveZapIcon">M13 2 3 14h7l-1 8 11-14h-7l1-6Z</StreamGeometry>
+    <StreamGeometry x:Key="WaveChevronDownIcon">M6 9l6 6 6-6</StreamGeometry>
+    <StreamGeometry x:Key="WaveChevronRightIcon">M9 6l6 6-6 6</StreamGeometry>
+  </Window.Resources>
+
+  <Window.Styles>
+    <Style Selector="Button">
+      <Setter Property="FocusAdorner" Value="{x:Null}" />
+      <Setter Property="MinWidth" Value="0" />
+      <Setter Property="MinHeight" Value="0" />
+    </Style>
+    <Style Selector="TextBox">
+      <Setter Property="FocusAdorner" Value="{x:Null}" />
+    </Style>
+    <Style Selector="ListBox">
+      <Setter Property="FocusAdorner" Value="{x:Null}" />
+    </Style>
+
+    <!-- Window control buttons -->
+    <Style Selector="Button.Wave-win">
+      <Setter Property="Width" Value="40" />
+      <Setter Property="Height" Value="30" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="CornerRadius" Value="7" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.14" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.Wave-win Path">
+      <Setter Property="Stroke" Value="#8892A6" />
+      <Setter Property="StrokeThickness" Value="1.7" />
+      <Setter Property="StrokeLineCap" Value="Round" />
+      <Setter Property="StrokeJoin" Value="Round" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Stroke" Duration="0:0:0.14" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.Wave-win:pointerover">
+      <Setter Property="Background" Value="#182742" />
+    </Style>
+    <Style Selector="Button.Wave-win:pointerover Path">
+      <Setter Property="Stroke" Value="#D7E3F6" />
+    </Style>
+    <Style Selector="Button.Wave-win:pressed">
+      <Setter Property="Background" Value="#13203A" />
+    </Style>
+    <Style Selector="Button.Wave-win.close:pointerover">
+      <Setter Property="Background" Value="#B33A46" />
+    </Style>
+    <Style Selector="Button.Wave-win.close:pointerover Path">
+      <Setter Property="Stroke" Value="White" />
+    </Style>
+
+    <!-- Rail buttons -->
+    <Style Selector="Button.Wave-rail">
+      <Setter Property="Width" Value="48" />
+      <Setter Property="Height" Value="40" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Margin" Value="0,3" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="CornerRadius" Value="0" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.Wave-rail Path">
+      <Setter Property="Stroke" Value="#C4CBDA" />
+      <Setter Property="StrokeThickness" Value="1.7" />
+      <Setter Property="StrokeLineCap" Value="Round" />
+      <Setter Property="StrokeJoin" Value="Round" />
+      <Setter Property="RenderTransformOrigin" Value="50%,50%" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Stroke" Duration="0:0:0.15" />
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.18" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.Wave-rail:pointerover">
+      <Setter Property="Background" Value="#2A4066" />
+    </Style>
+    <Style Selector="Button.Wave-rail:pointerover Path">
+      <Setter Property="Stroke" Value="#E8EEF8" />
+      <Setter Property="RenderTransform" Value="scale(1.08)" />
+    </Style>
+    <Style Selector="Button.Wave-rail.active Path">
+      <Setter Property="Stroke" Value="#FFFFFF" />
+    </Style>
+    <Style Selector="Button.Wave-rail:pressed Path">
+      <Setter Property="RenderTransform" Value="scale(0.96)" />
+    </Style>
+
+    <!-- Bottom-bar icon button (settings gear) -->
+    <Style Selector="Button.Wave-icon">
+      <Setter Property="Width" Value="32" />
+      <Setter Property="Height" Value="32" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.Wave-icon Path">
+      <Setter Property="Stroke" Value="#7E93B4" />
+      <Setter Property="StrokeThickness" Value="1.6" />
+      <Setter Property="StrokeLineCap" Value="Round" />
+      <Setter Property="StrokeJoin" Value="Round" />
+      <Setter Property="RenderTransformOrigin" Value="50%,50%" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Stroke" Duration="0:0:0.15" />
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.4" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.Wave-icon:pointerover">
+      <Setter Property="Background" Value="#16243E" />
+    </Style>
+    <Style Selector="Button.Wave-icon:pointerover Path">
+      <Setter Property="Stroke" Value="#D7E3F6" />
+      <Setter Property="RenderTransform" Value="rotate(40deg)" />
+    </Style>
+
+    <!-- Action buttons -->
+    <Style Selector="Button.Wave-action">
+      <Setter Property="Height" Value="30" />
+      <Setter Property="Padding" Value="10,0" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="Foreground" Value="#D5E0F2" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="FontWeight" Value="Medium" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.15" />
+          <BrushTransition Property="Foreground" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.Wave-action Path">
+      <Setter Property="Stroke" Value="#C6D3E8" />
+      <Setter Property="StrokeThickness" Value="1.6" />
+      <Setter Property="StrokeLineCap" Value="Round" />
+      <Setter Property="StrokeJoin" Value="Round" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Stroke" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.Wave-action:pointerover">
+      <Setter Property="Background" Value="#1E304F" />
+      <Setter Property="Foreground" Value="#FFFFFF" />
+    </Style>
+    <Style Selector="Button.Wave-action:pointerover Path">
+      <Setter Property="Stroke" Value="#FFFFFF" />
+    </Style>
+    <Style Selector="Button.Wave-action:pressed">
+      <Setter Property="Background" Value="#182742" />
+    </Style>
+    <Style Selector="Button.Wave-action:disabled">
+      <Setter Property="Foreground" Value="#5E7295" />
+      <Setter Property="Background" Value="Transparent" />
+    </Style>
+    <Style Selector="Button.Wave-action:disabled Path">
+      <Setter Property="Stroke" Value="#5E7295" />
+    </Style>
+
+    <!-- Settings nav -->
+    <Style Selector="Button.Wave-nav">
+      <Setter Property="Height" Value="34" />
+      <Setter Property="Padding" Value="10,0" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="Foreground" Value="#8CA0BA" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="FontWeight" Value="Medium" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="HorizontalContentAlignment" Value="Left" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.15" />
+          <BrushTransition Property="Foreground" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.Wave-nav Path">
+      <Setter Property="Stroke" Value="#8CA0BA" />
+      <Setter Property="StrokeThickness" Value="1.6" />
+      <Setter Property="StrokeLineCap" Value="Round" />
+      <Setter Property="StrokeJoin" Value="Round" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Stroke" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.Wave-nav:pointerover">
+      <Setter Property="Background" Value="#142036" />
+      <Setter Property="Foreground" Value="#C9D8F0" />
+    </Style>
+    <Style Selector="Button.Wave-nav:pointerover Path">
+      <Setter Property="Stroke" Value="#C9D8F0" />
+    </Style>
+    <Style Selector="Button.Wave-nav.active">
+      <Setter Property="Background" Value="#1B2A45" />
+      <Setter Property="Foreground" Value="#EAF2FF" />
+    </Style>
+    <Style Selector="Button.Wave-nav.active Path">
+      <Setter Property="Stroke" Value="#EAF2FF" />
+    </Style>
+
+    <!-- Settings cards -->
+    <Style Selector="Border.Wave-card">
+      <Setter Property="Background" Value="#101B30" />
+      <Setter Property="BorderBrush" Value="#1E2C46" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="10" />
+      <Setter Property="Padding" Value="14,12" />
+    </Style>
+
+    <!-- Checkbox -->
+    <Style Selector="ToggleButton.Wave-check">
+      <Setter Property="Width" Value="22" />
+      <Setter Property="Height" Value="22" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border x:Name="Root"
+                  Width="22" Height="22"
+                  CornerRadius="6"
+                  Background="#0D1830"
+                  BorderBrush="#2A3C5C"
+                  BorderThickness="1">
+            <Border.Transitions>
+              <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.16" />
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.16" />
+              </Transitions>
+            </Border.Transitions>
+            <Path x:Name="Check"
+                  Data="{StaticResource WaveCheckIcon}"
+                  Width="12" Height="12"
+                  Stretch="Uniform"
+                  Stroke="White"
+                  StrokeThickness="2.4"
+                  StrokeLineCap="Round"
+                  StrokeJoin="Round"
+                  Opacity="0"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center">
+              <Path.Transitions>
+                <Transitions>
+                  <DoubleTransition Property="Opacity" Duration="0:0:0.16" />
+                </Transitions>
+              </Path.Transitions>
+            </Path>
+          </Border>
+        </ControlTemplate>
+      </Setter>
+    </Style>
+    <Style Selector="ToggleButton.Wave-check:pointerover /template/ Border#Root">
+      <Setter Property="BorderBrush" Value="#3A5480" />
+      <Setter Property="Background" Value="#12203A" />
+    </Style>
+    <Style Selector="ToggleButton.Wave-check:checked /template/ Border#Root">
+      <Setter Property="Background" Value="#1C3A68" />
+      <Setter Property="BorderBrush" Value="#4C9EF8" />
+    </Style>
+    <Style Selector="ToggleButton.Wave-check:checked /template/ Path#Check">
+      <Setter Property="Opacity" Value="1" />
+    </Style>
+
+    <!-- Inputs -->
+    <Style Selector="TextBox.Wave-input">
+      <Setter Property="Height" Value="30" />
+      <Setter Property="Background" Value="#0C1628" />
+      <Setter Property="BorderBrush" Value="#223452" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="Foreground" Value="#DCE7F8" />
+      <Setter Property="CaretBrush" Value="#9CC0F5" />
+      <Setter Property="FontSize" Value="11.5" />
+      <Setter Property="Padding" Value="9,0" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="SelectionBrush" Value="#4C9EF8" />
+    </Style>
+    <Style Selector="TextBox.Wave-input /template/ Border#PART_BorderElement">
+      <Setter Property="Background" Value="#0C1628" />
+      <Setter Property="BorderBrush" Value="#223452" />
+      <Setter Property="CornerRadius" Value="8" />
+    </Style>
+    <Style Selector="TextBox.Wave-input:focus /template/ Border#PART_BorderElement">
+      <Setter Property="BorderBrush" Value="#3D6FB8" />
+    </Style>
+    <Style Selector="TextBox.Wave-input:pointerover /template/ Border#PART_BorderElement">
+      <Setter Property="BorderBrush" Value="#2C4166" />
+    </Style>
+
+    <!-- Lists -->
+    <Style Selector="ListBox.Wave-list">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Padding" Value="0" />
+    </Style>
+    <Style Selector="ListBox.Wave-list ListBoxItem">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="MinHeight" Value="40" />
+      <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.13" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="ListBox.Wave-list ListBoxItem:pointerover">
+      <Setter Property="Background" Value="#12203A" />
+    </Style>
+    <Style Selector="ListBox.Wave-list ListBoxItem:selected">
+      <Setter Property="Background" Value="#17253F" />
+    </Style>
+
+    <!-- Secondary page header buttons -->
+    <Style Selector="Button.Wave-mini">
+      <Setter Property="Height" Value="28" />
+      <Setter Property="Padding" Value="10,0" />
+      <Setter Property="Background" Value="#101B30" />
+      <Setter Property="BorderBrush" Value="#223452" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="7" />
+      <Setter Property="Foreground" Value="#B9C8E2" />
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.15" />
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.Wave-mini Path">
+      <Setter Property="Stroke" Value="#8CA3C4" />
+      <Setter Property="StrokeThickness" Value="1.6" />
+      <Setter Property="StrokeLineCap" Value="Round" />
+      <Setter Property="StrokeJoin" Value="Round" />
+    </Style>
+    <Style Selector="Button.Wave-mini:pointerover">
+      <Setter Property="Background" Value="#17253F" />
+      <Setter Property="BorderBrush" Value="#2E4468" />
+    </Style>
+  </Window.Styles>
+
+  <Border x:Name="WaveChrome"
+          CornerRadius="10"
+          BorderBrush="#152540"
+          BorderThickness="1"
+          ClipToBounds="True"
+          RenderTransformOrigin="50%,50%">
+    <Border.Background>
+      <LinearGradientBrush StartPoint="0%,0%" EndPoint="70%,100%">
+        <GradientStop Color="#1C2E4A" Offset="0" />
+        <GradientStop Color="#152238" Offset="1" />
+      </LinearGradientBrush>
+    </Border.Background>
+
+    <Grid RowDefinitions="41,*,40">
+
+      <!-- ══════════ Title bar ══════════ -->
+      <Grid Grid.Row="0" Background="#1C2E4A" PointerPressed="TitleBar_PointerPressed">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Grid.ColumnSpan="3" IsHitTestVisible="False">
+          <Border.Background>
+            <ImageBrush Source="avares://Orion/Assets/Wave/pattern.png"
+                        TileMode="Tile"
+                        Stretch="None"
+                        DestinationRect="0,0,44,62" />
+          </Border.Background>
+        </Border>
+
+        <Border Grid.Column="0" Grid.ColumnSpan="3" Height="1" Background="#203354"
+                VerticalAlignment="Bottom" IsHitTestVisible="False" />
+
+        <Border Grid.Column="0" Width="44" Height="40" Background="Transparent">
+          <Image Source="avares://Orion/Assets/Wave/wave-logo.png"
+                 Width="20" Height="20"
+                 HorizontalAlignment="Center" VerticalAlignment="Center"
+                 RenderOptions.BitmapInterpolationMode="HighQuality" />
+        </Border>
+
+        <TextBlock Grid.Column="0" Grid.ColumnSpan="3"
+                   Text="Wave"
+                   FontSize="12.5"
+                   FontWeight="SemiBold"
+                   LetterSpacing="0.4"
+                   Foreground="#C4CBDA"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center" />
+
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="0,0,8,0" VerticalAlignment="Center" Spacing="2">
+          <Button x:Name="PopoutButton" Classes="Wave-win" Click="Maximize_Click" ToolTip.Tip="Maximize">
+            <Path Data="{StaticResource WavePopoutIcon}" Width="13" Height="13" Stretch="Uniform" />
+          </Button>
+          <Button x:Name="MinimizeButton" Classes="Wave-win" Click="Minimize_Click" ToolTip.Tip="Minimize">
+            <Path Data="{StaticResource WaveMinimizeIcon}" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
+          </Button>
+          <Button x:Name="CloseButton" Classes="Wave-win close" Click="Close_Click" ToolTip.Tip="Return to Orion">
+            <Path Data="{StaticResource WaveCloseIcon}" Width="12" Height="12" Stretch="Uniform" />
+          </Button>
+        </StackPanel>
+      </Grid>
+
+      <!-- ══════════ Body ══════════ -->
+      <Grid Grid.Row="1" ColumnDefinitions="48,*">
+
+        <!-- Rail -->
+        <Border Grid.Column="0" Background="#1C2E4A" BorderBrush="#203354" BorderThickness="0,0,1,0">
+          <Grid x:Name="RailHost" Margin="0,10,0,0">
+            <Canvas>
+              <Border x:Name="RailIndicator"
+                      Canvas.Left="6"
+                      Width="36" Height="36"
+                      CornerRadius="9"
+                      Background="#002A4066"
+                      IsHitTestVisible="False">
+                <Border.RenderTransform>
+                  <TranslateTransform Y="10" />
+                </Border.RenderTransform>
+              </Border>
+            </Canvas>
+            <StackPanel x:Name="RailButtons">
+              <Button x:Name="RailExplorer" Classes="Wave-rail" Click="RailExplorer_Click" ToolTip.Tip="Explorer">
+                <Path Data="{StaticResource WaveFolderIcon}" Width="20" Height="20" Stretch="Uniform" />
+              </Button>
+              <Button x:Name="RailEditor" Classes="Wave-rail" Click="RailEditor_Click" ToolTip.Tip="Editor">
+                <Path Data="{StaticResource WaveScriptIcon}" Width="20" Height="20" Stretch="Uniform" />
+              </Button>
+              <Button x:Name="RailCloud" Classes="Wave-rail" Click="RailCloud_Click" ToolTip.Tip="Script Hub">
+                <Path Data="{StaticResource WaveCloudIcon}" Width="20" Height="20" Stretch="Uniform" />
+              </Button>
+              <Button x:Name="RailConsole" Classes="Wave-rail" Click="RailConsole_Click" ToolTip.Tip="Console">
+                <Path Data="{StaticResource WaveTerminalIcon}" Width="20" Height="20" Stretch="Uniform" />
+              </Button>
+            </StackPanel>
+          </Grid>
+        </Border>
+
+        <!-- Pages -->
+        <Grid Grid.Column="1">
+
+          <!-- ── Editor page ── -->
+          <Grid x:Name="PageEditor" RowDefinitions="40,*">
+            <Border Grid.Row="0" Background="#152238">
+              <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+                <StackPanel x:Name="TabStrip" Orientation="Horizontal" Margin="8,7,0,7" Spacing="6" VerticalAlignment="Center" />
+              </ScrollViewer>
+            </Border>
+
+            <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
+              <Border x:Name="ExplorerSidebar"
+                      Width="0"
+                      Background="#101B30"
+                      BorderBrush="#1E2E4C"
+                      BorderThickness="0,0,1,0"
+                      ClipToBounds="True">
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                  <StackPanel x:Name="ExplorerTree" Margin="10,10,10,10" Spacing="4" />
+                </ScrollViewer>
+              </Border>
+              <Border Grid.Column="1" Background="#152238">
+                <NativeWebView x:Name="EditorWebView" Background="Transparent" IsVisible="False" />
+              </Border>
+            </Grid>
+          </Grid>
+
+          <!-- ── Cloud page ── -->
+          <Grid x:Name="PageCloud" RowDefinitions="Auto,Auto,*,Auto" Margin="14,12,14,12" IsVisible="False">
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,10">
+              <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                <Path Data="{StaticResource WaveCloudIcon}" Width="15" Height="15" Stretch="Uniform" Stroke="#8CA3C4" StrokeThickness="1.6" StrokeLineCap="Round" StrokeJoin="Round" />
+                <TextBlock Text="Script Hub" FontSize="14" FontWeight="SemiBold" Foreground="#EAF2FF" VerticalAlignment="Center" />
+              </StackPanel>
+              <Button Grid.Column="1" Classes="Wave-mini" x:Name="CloudRefresh" Click="CloudRefresh_Click" ToolTip.Tip="Refresh">
+                <Path Data="{StaticResource WaveRefreshIcon}" Width="13" Height="13" Stretch="Uniform" />
+              </Button>
+            </Grid>
+            <TextBox Grid.Row="1" x:Name="CloudSearch" Classes="Wave-input" PlaceholderText="Search cloud scripts…" TextChanged="CloudSearch_TextChanged" />
+            <ListBox Grid.Row="2" x:Name="CloudList" Classes="Wave-list" Margin="0,8,0,0" DoubleTapped="CloudList_DoubleTapped" />
+            <TextBlock Grid.Row="3" x:Name="CloudEmpty" Text="Type to search cloud scripts" FontSize="11" Foreground="#55688A" HorizontalAlignment="Center" Margin="0,12,0,4" TextWrapping="Wrap" />
+          </Grid>
+
+          <!-- ── Console page ── -->
+          <Grid x:Name="PageConsole" RowDefinitions="Auto,*" Margin="14,12,14,12" IsVisible="False">
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,10">
+              <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                <Path Data="{StaticResource WaveTerminalIcon}" Width="15" Height="15" Stretch="Uniform" Stroke="#8CA3C4" StrokeThickness="1.6" StrokeLineCap="Round" StrokeJoin="Round" />
+                <TextBlock Text="Console" FontSize="14" FontWeight="SemiBold" Foreground="#EAF2FF" VerticalAlignment="Center" />
+              </StackPanel>
+              <Button Grid.Column="1" Classes="Wave-mini" x:Name="ConsoleClear" Click="ConsoleClear_Click">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                  <Path Data="{StaticResource WaveTrashIcon}" Width="12" Height="12" Stretch="Uniform" />
+                  <TextBlock Text="Clear" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+            </Grid>
+            <Border Grid.Row="1" Background="#0A1120" BorderBrush="#1C2B45" BorderThickness="1" CornerRadius="10" ClipToBounds="True">
+              <ScrollViewer x:Name="ConsoleScroll" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Margin="10,8">
+                <SelectableTextBlock x:Name="ConsoleText" FontFamily="Consolas, Courier New, monospace" FontSize="11.5" Foreground="#C6D4EA" TextWrapping="Wrap" />
+              </ScrollViewer>
+            </Border>
+          </Grid>
+        </Grid>
+      </Grid>
+
+      <!-- ══════════ Action bar ══════════ -->
+      <Border Grid.Row="2" Background="#152238" BorderBrush="#203354" BorderThickness="0,1,0,0">
+        <Grid Margin="10,0,12,0" ColumnDefinitions="Auto,Auto,*,Auto">
+          <Button x:Name="SettingsButton" Classes="Wave-icon" Click="Settings_Click" ToolTip.Tip="Settings" VerticalAlignment="Center">
+            <Path Data="{StaticResource WaveGearIcon}" Width="17" Height="17" Stretch="Uniform" />
+          </Button>
+
+          <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="7" Margin="12,0,0,0" VerticalAlignment="Center">
+            <Button x:Name="ExecuteButton" Classes="Wave-action" Click="Execute_Click" ToolTip.Tip="Execute (Ctrl+Enter)">
+              <StackPanel Orientation="Horizontal" Spacing="7">
+                <Path Data="{StaticResource WavePlayIcon}" Width="11" Height="11" Stretch="Uniform" />
+                <TextBlock Text="Execute" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+            <Button Classes="Wave-action" Click="Clear_Click" ToolTip.Tip="Clear editor">
+              <StackPanel Orientation="Horizontal" Spacing="7">
+                <Path Data="{StaticResource WaveTrashIcon}" Width="12" Height="12" Stretch="Uniform" />
+                <TextBlock Text="Clear" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+            <Button Classes="Wave-action" Click="Open_Click" ToolTip.Tip="Open script (Ctrl+O)">
+              <StackPanel Orientation="Horizontal" Spacing="7">
+                <Path Data="{StaticResource WaveOpenIcon}" Width="13" Height="13" Stretch="Uniform" />
+                <TextBlock Text="Open" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+            <Button Classes="Wave-action" Click="Save_Click" ToolTip.Tip="Save script (Ctrl+S)">
+              <StackPanel Orientation="Horizontal" Spacing="7">
+                <Path Data="{StaticResource WaveSaveIcon}" Width="12" Height="12" Stretch="Uniform" />
+                <TextBlock Text="Save" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+          </StackPanel>
+
+          <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center" Spacing="8">
+            <Border x:Name="ToastPill"
+                    Background="#17253F"
+                    BorderBrush="#2E4468"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="10,5"
+                    Opacity="0"
+                    IsHitTestVisible="False">
+              <TextBlock x:Name="ToastText" FontSize="11" Foreground="#DCE7F8" />
+            </Border>
+          </StackPanel>
+        </Grid>
+      </Border>
+
+      <!-- ══════════ Settings overlay ══════════ -->
+      <Panel Grid.Row="0" Grid.RowSpan="3" x:Name="SettingsOverlay" IsVisible="False" ZIndex="100">
+        <Border x:Name="SettingsBackdrop" Background="#C40A1120" />
+        <Border x:Name="SettingsDialog"
+                Width="600"
+                MaxHeight="470"
+                MinHeight="360"
+                CornerRadius="12"
+                Background="#0D1626"
+                BorderBrush="#26375A"
+                BorderThickness="1"
+                ClipToBounds="True"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                RenderTransformOrigin="50%,50%">
+          <Border.Effect>
+            <DropShadowEffect BlurRadius="34" Opacity="0.55" Color="#02060E" />
+          </Border.Effect>
+          <Grid ColumnDefinitions="172,*">
+
+            <!-- Settings nav -->
+            <StackPanel Grid.Column="0" Margin="16,18,12,16">
+              <TextBlock Text="Settings" FontSize="16" FontWeight="SemiBold" Foreground="#EAF2FF" Margin="8,0,0,16" />
+              <StackPanel Spacing="4">
+                <Button x:Name="SettingsNavGeneral" Classes="Wave-nav active" Click="SettingsNavGeneral_Click">
+                  <StackPanel Orientation="Horizontal" Spacing="9">
+                    <Path Data="{StaticResource WaveHomeIcon}" Width="15" Height="15" Stretch="Uniform" />
+                    <TextBlock Text="General" VerticalAlignment="Center" />
+                  </StackPanel>
+                </Button>
+                <Button x:Name="SettingsNavEditor" Classes="Wave-nav" Click="SettingsNavEditor_Click">
+                  <StackPanel Orientation="Horizontal" Spacing="9">
+                    <Path Data="{StaticResource WaveBookIcon}" Width="15" Height="15" Stretch="Uniform" />
+                    <TextBlock Text="Editor" VerticalAlignment="Center" />
+                  </StackPanel>
+                </Button>
+              </StackPanel>
+            </StackPanel>
+
+            <!-- Settings content -->
+            <Border Grid.Column="1" Background="#0B1322" BorderBrush="#1C2B45" BorderThickness="1,0,0,0">
+              <Panel Margin="20,18,20,16">
+
+                <!-- General -->
+                <StackPanel x:Name="SettingsGeneralPage" Spacing="10">
+                  <TextBlock Text="General" FontSize="14" FontWeight="SemiBold" Foreground="#EAF2FF" Margin="2,0,0,4" />
+
+                  <Border Classes="Wave-card">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                      <StackPanel Spacing="3" VerticalAlignment="Center">
+                        <TextBlock Text="Top Most" FontSize="13" FontWeight="SemiBold" Foreground="#EAF2FF" />
+                        <TextBlock Text="Keeps the window always on top of other applications." FontSize="10.5" Foreground="#8CA0BA" TextWrapping="Wrap" />
+                        <TextBlock Text="May obscure other windows during normal usage." FontSize="9.5" Foreground="#D4686E" TextWrapping="Wrap" />
+                      </StackPanel>
+                      <ToggleButton x:Name="TopMostCheck" Classes="Wave-check" Grid.Column="1" VerticalAlignment="Center" />
+                    </Grid>
+                  </Border>
+
+                  <Border Classes="Wave-card">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                      <StackPanel Spacing="3" VerticalAlignment="Center">
+                        <TextBlock Text="Scripts Folder" FontSize="13" FontWeight="SemiBold" Foreground="#EAF2FF" />
+                        <TextBlock Text="Folder shown under the Scripts section in the Explorer sidebar." FontSize="10.5" Foreground="#8CA0BA" TextWrapping="Wrap" />
+                        <TextBlock x:Name="ScriptsFolderLabel" FontSize="9.5" Foreground="#6E82A4" TextTrimming="CharacterEllipsis" Margin="0,1,0,0" />
+                      </StackPanel>
+                      <Button x:Name="ScriptsFolderButton" Classes="Wave-action" Grid.Column="1" Click="ScriptsFolderBrowse_Click" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" Spacing="7">
+                          <Path Data="{StaticResource WaveFolderIcon}" Width="13" Height="13" Stretch="Uniform" />
+                          <TextBlock Text="Browse" VerticalAlignment="Center" />
+                        </StackPanel>
+                      </Button>
+                    </Grid>
+                  </Border>
+
+                  <Border Classes="Wave-card">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                      <StackPanel Spacing="3" VerticalAlignment="Center">
+                        <TextBlock Text="Workspace Folder" FontSize="13" FontWeight="SemiBold" Foreground="#EAF2FF" />
+                        <TextBlock Text="Folder shown under the Workspace section in the Explorer sidebar." FontSize="10.5" Foreground="#8CA0BA" TextWrapping="Wrap" />
+                        <TextBlock x:Name="WorkspaceFolderLabel" FontSize="9.5" Foreground="#6E82A4" TextTrimming="CharacterEllipsis" Margin="0,1,0,0" />
+                      </StackPanel>
+                      <Button x:Name="WorkspaceFolderButton" Classes="Wave-action" Grid.Column="1" Click="WorkspaceFolderBrowse_Click" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" Spacing="7">
+                          <Path Data="{StaticResource WaveFolderIcon}" Width="13" Height="13" Stretch="Uniform" />
+                          <TextBlock Text="Browse" VerticalAlignment="Center" />
+                        </StackPanel>
+                      </Button>
+                    </Grid>
+                  </Border>
+
+                  <Button x:Name="ReturnToOrionButton" Classes="Wave-action" Click="ReturnToOrion_Click" HorizontalAlignment="Stretch" Height="36">
+                    <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                      <Path Data="{StaticResource WaveBackIcon}" Width="13" Height="13" Stretch="Uniform" />
+                      <TextBlock Text="Return to Orion UI" VerticalAlignment="Center" />
+                    </StackPanel>
+                  </Button>
+                </StackPanel>
+
+                <!-- Editor -->
+                <StackPanel x:Name="SettingsEditorPage" Spacing="10" IsVisible="False">
+                  <TextBlock Text="Editor" FontSize="14" FontWeight="SemiBold" Foreground="#EAF2FF" Margin="2,0,0,4" />
+
+                  <Border Classes="Wave-card">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                      <StackPanel Spacing="3" VerticalAlignment="Center">
+                        <TextBlock Text="Minimap" FontSize="13" FontWeight="SemiBold" Foreground="#EAF2FF" />
+                        <TextBlock Text="Displays a code preview panel on the side for easier navigation in large files." FontSize="10.5" Foreground="#8CA0BA" TextWrapping="Wrap" />
+                      </StackPanel>
+                      <ToggleButton x:Name="MinimapCheck" Classes="Wave-check" Grid.Column="1" VerticalAlignment="Center" />
+                    </Grid>
+                  </Border>
+
+                  <Border Classes="Wave-card">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                      <StackPanel Spacing="3" VerticalAlignment="Center">
+                        <TextBlock Text="Inlay Hints" FontSize="13" FontWeight="SemiBold" Foreground="#EAF2FF" />
+                        <TextBlock Text="Shows inline hints such as parameter names and inferred types directly in the code editor." FontSize="10.5" Foreground="#8CA0BA" TextWrapping="Wrap" />
+                        <TextBlock Text="May slightly impact editor performance on large files." FontSize="9.5" Foreground="#D4686E" TextWrapping="Wrap" />
+                      </StackPanel>
+                      <ToggleButton x:Name="InlayHintsCheck" Classes="Wave-check" Grid.Column="1" VerticalAlignment="Center" />
+                    </Grid>
+                  </Border>
+
+                  <Border Classes="Wave-card">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                      <StackPanel Spacing="3" VerticalAlignment="Center">
+                        <TextBlock Text="Smooth Cursor" FontSize="13" FontWeight="SemiBold" Foreground="#EAF2FF" />
+                        <TextBlock Text="Animates the caret as it glides between positions instead of jumping." FontSize="10.5" Foreground="#8CA0BA" TextWrapping="Wrap" />
+                      </StackPanel>
+                      <ToggleButton x:Name="SmoothCursorCheck" Classes="Wave-check" Grid.Column="1" VerticalAlignment="Center" />
+                    </Grid>
+                  </Border>
+
+                  <Border Classes="Wave-card">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                      <StackPanel Spacing="3" VerticalAlignment="Center">
+                        <TextBlock Text="Smooth Scroll" FontSize="13" FontWeight="SemiBold" Foreground="#EAF2FF" />
+                        <TextBlock Text="Eases editor scrolling for a fluid, animated feel." FontSize="10.5" Foreground="#8CA0BA" TextWrapping="Wrap" />
+                      </StackPanel>
+                      <ToggleButton x:Name="SmoothScrollCheck" Classes="Wave-check" Grid.Column="1" VerticalAlignment="Center" />
+                    </Grid>
+                  </Border>
+                </StackPanel>
+              </Panel>
+            </Border>
+          </Grid>
+        </Border>
+      </Panel>
+    </Grid>
+  </Border>
+</Window>
+
+
+
+
+
+
+
+
