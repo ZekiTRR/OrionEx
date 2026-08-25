@@ -37,6 +37,7 @@ public sealed partial class OrionWindow
     private bool _orionPageTransitionActive;
     private bool _orionPagesDisposed;
     private Window? _orionPreservedWindow;
+    private OrionConsoleWindow? _orionUniversalConsole;
     private bool _orionInterfaceHandoffActive;
     private bool _orionInterfaceReturnActive;
 
@@ -292,6 +293,24 @@ public sealed partial class OrionWindow
 
     private async Task LaunchSelectedOrionInterfaceAsync(string selection)
     {
+        if (selection == "Console")
+        {
+            // Universal companion window: opens on top of any menu without
+            // hiding Orion or changing the saved interface selection.
+            if (_orionUniversalConsole is null)
+            {
+                _orionUniversalConsole = new OrionConsoleWindow();
+                _orionUniversalConsole.Closed += (_, _) => _orionUniversalConsole = null;
+                _orionUniversalConsole.Show(this);
+            }
+            else
+            {
+                _orionUniversalConsole.Activate();
+            }
+
+            return;
+        }
+
         if (_orionInterfaceHandoffActive)
         {
             return;

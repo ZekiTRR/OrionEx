@@ -1,0 +1,159 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="OrbitAvalonia.OrionConsoleWindow"
+        Title="Console"
+        Width="720" Height="420"
+        MinWidth="480" MinHeight="280"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        WindowDecorations="None"
+        ExtendClientAreaToDecorationsHint="True"
+        WindowStartupLocation="CenterScreen"
+        FontFamily="Tahoma, Arial"
+        RenderOptions.TextRenderingMode="Antialias"
+        Icon="avares://Orion/Assets/Orion/Sharp/orion-app.ico">
+
+  <Window.Resources>
+    <StreamGeometry x:Key="CnTrashIcon">M9 3h6l1 2h4v2H4V5h4l1-2Z M6 9h12l-1 11a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 9Z</StreamGeometry>
+    <StreamGeometry x:Key="CnPinIcon">M12 17v5 M9 3h6l1 7 2 2H6l2-2 1-7Z</StreamGeometry>
+  </Window.Resources>
+
+  <Window.Styles>
+    <Style Selector="Button">
+      <Setter Property="FocusAdorner" Value="{x:Null}" />
+      <Setter Property="MinWidth" Value="0" />
+      <Setter Property="MinHeight" Value="0" />
+      <Setter Property="Padding" Value="0" />
+    </Style>
+
+    <!-- Title bar system buttons -->
+    <Style Selector="Button.cn-sys">
+      <Setter Property="Width" Value="40" />
+      <Setter Property="Height" Value="29" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Foreground" Value="#777777" />
+      <Setter Property="FontSize" Value="14" />
+      <Setter Property="FontFamily" Value="Arial" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.cn-sys:pointerover">
+      <Setter Property="Background" Value="#E7E7E7" />
+      <Setter Property="Foreground" Value="#111111" />
+    </Style>
+
+    <!-- Classic bottom bar buttons -->
+    <Style Selector="Button.cn-tool">
+      <Setter Property="Height" Value="26" />
+      <Setter Property="Padding" Value="10,0" />
+      <Setter Property="Background" Value="#E1E1E1" />
+      <Setter Property="BorderBrush" Value="#ADADAD" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="0" />
+      <Setter Property="Foreground" Value="#000000" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.1" />
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.cn-tool:pointerover">
+      <Setter Property="Background" Value="#CCE8FF" />
+      <Setter Property="BorderBrush" Value="#0078D7" />
+    </Style>
+    <Style Selector="Button.cn-tool.checked">
+      <Setter Property="Background" Value="#CCE8FF" />
+      <Setter Property="BorderBrush" Value="#0078D7" />
+    </Style>
+    <Style Selector="Button.cn-tool Path">
+      <Setter Property="Stroke" Value="#333333" />
+      <Setter Property="StrokeThickness" Value="1.6" />
+      <Setter Property="StrokeLineCap" Value="Round" />
+      <Setter Property="StrokeJoin" Value="Round" />
+    </Style>
+  </Window.Styles>
+
+  <Border x:Name="CnChrome"
+          BorderBrush="#C4C4C4"
+          BorderThickness="1"
+          ClipToBounds="True"
+          RenderTransformOrigin="50%,50%">
+    <Border.Background>
+      <SolidColorBrush Color="#F7F7F7" />
+    </Border.Background>
+
+    <Grid RowDefinitions="30,*,26">
+
+      <!-- ══════════ Title bar ══════════ -->
+      <Grid Grid.Row="0" Background="#FFFFFF" PointerPressed="TitleBar_PointerPressed">
+        <Grid.Background>
+          <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+            <GradientStop Color="#FFFFFF" Offset="0" />
+            <GradientStop Color="#FAFAFA" Offset="1" />
+          </LinearGradientBrush>
+        </Grid.Background>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0,0,0" Spacing="6">
+          <TextBlock Text="Console" FontFamily="Arial" FontSize="14" FontWeight="Bold"
+                     Foreground="#333333" VerticalAlignment="Center" />
+          <TextBlock Text="universal companion" FontSize="10" Foreground="#8A8A8A"
+                     VerticalAlignment="Center" Margin="4,1,0,0" />
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal">
+          <Button Classes="cn-sys" Click="Minimize_Click" ToolTip.Tip="Minimize">
+            <TextBlock Text="—" FontSize="13" Margin="0,4,0,0" />
+          </Button>
+          <Button x:Name="MaximizeButton" Classes="cn-sys" Click="Maximize_Click" ToolTip.Tip="Maximize">
+            <TextBlock Text="□" FontSize="13" />
+          </Button>
+          <Button Classes="cn-sys" Click="Close_Click" ToolTip.Tip="Close">
+            <TextBlock Text="×" FontSize="15" />
+          </Button>
+        </StackPanel>
+      </Grid>
+
+      <!-- ══════════ Console output ══════════ -->
+      <Border Grid.Row="1" Background="#1E1E1E" BorderBrush="#C0C0C0" BorderThickness="0,1,0,1">
+        <ScrollViewer x:Name="ConsoleScroll" Margin="6,4"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto">
+          <StackPanel x:Name="ConsoleOutput" Spacing="2" />
+        </ScrollViewer>
+      </Border>
+
+      <!-- ══════════ Bottom bar ══════════ -->
+      <Border Grid.Row="2" Background="#F3F3F3" BorderBrush="#B3B3B3" BorderThickness="0,1,0,0">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="6,0,0,0" Spacing="6">
+          <Button x:Name="ClearButton" Classes="cn-tool" Click="Clear_Click" ToolTip.Tip="Clear the console view">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+              <Path Data="{StaticResource CnTrashIcon}" Width="12" Height="12" Stretch="Uniform" />
+              <TextBlock Text="Clear" VerticalAlignment="Center" />
+            </StackPanel>
+          </Button>
+          <Button x:Name="TopMostButton" Classes="cn-tool" Click="TopMost_Click" ToolTip.Tip="Keep the console on top">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+              <Path Data="{StaticResource CnPinIcon}" Width="12" Height="12" Stretch="Uniform" />
+              <TextBlock Text="Top Most" VerticalAlignment="Center" />
+            </StackPanel>
+          </Button>
+          <TextBlock x:Name="LineCountText" FontSize="11" Foreground="#8A8A8A"
+                     VerticalAlignment="Center" Margin="8,0,0,0" />
+        </StackPanel>
+      </Border>
+    </Grid>
+  </Border>
+</Window>
