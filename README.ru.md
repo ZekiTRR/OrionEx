@@ -14,6 +14,13 @@ dotnet publish -c Release -p:RuntimeIdentifier=win-x64
 
 Готовый exe: `bin/Release/net8.0-windows/win-x64/publish/Orion.exe`
 
+## Контрибьюция
+
+В оригинальном репозитории Orion не указаны лицензия и условия контрибьюции. Этот форк создан для отслеживания изменений и экспериментов.
+
+- Issues и pull requests приветствуются.
+- Если переиспользуете код — укажите ссылку на [оригинальный Orion](https://github.com/snooped-xl/Orion).
+
 ---
 
 📄 English version: [README.md](README.md)
