@@ -55,6 +55,8 @@ public sealed partial class SirHurtV5RemakeWindow : Window
         _webView = this.FindControl<NativeWebView>("UiWebView");
 
         _bridge.LogReceived += BridgeLogReceived;
+        _bridge.ConnectionChanged += BridgeConnectionChanged;
+        _bridge.ClientsChanged += BridgeClientsChanged;
         Closed += SirHurtV5RemakeWindow_Closed;
         Opened += SirHurtV5RemakeWindow_Opened;
     }
@@ -92,6 +94,7 @@ public sealed partial class SirHurtV5RemakeWindow : Window
                 webView.NavigationCompleted += async (_, _) =>
                 {
                     PushConsoleSnapshot();
+                    PushBridgeStatus();
                 };
             }
 
@@ -128,6 +131,8 @@ public sealed partial class SirHurtV5RemakeWindow : Window
         }
 
         _bridge.LogReceived -= BridgeLogReceived;
+        _bridge.ConnectionChanged -= BridgeConnectionChanged;
+        _bridge.ClientsChanged -= BridgeClientsChanged;
         _edgeTimer?.Stop();
         _uiServer?.Dispose();
         _filesService.Dispose();
@@ -143,6 +148,31 @@ public sealed partial class SirHurtV5RemakeWindow : Window
 
     private void BridgeLogReceived(string level, string message) =>
         Dispatcher.UIThread.Post(() => PushConsoleToWebUi(level, message));
+
+    private void BridgeConnectionChanged(bool connected) =>
+        Dispatcher.UIThread.Post(PushBridgeStatus);
+
+    private void BridgeClientsChanged() =>
+        Dispatcher.UIThread.Post(PushBridgeStatus);
+
+    private void PushBridgeStatus()
+    {
+        if (_webViewDisposed || _webView is not { } webView)
+        {
+            return;
+        }
+
+        try
+        {
+            var connected = _bridge.IsConnected && _bridge.GetConnectedClients().Count > 0;
+            var status = connected ? "injected" : "inactive";
+            webView.InvokeScript(
+                $"window.updateInjectionStatus && window.updateInjectionStatus('{status}');");
+        }
+        catch (InvalidOperationException)
+        {
+        }
+    }
 
     // ─────────────────────────── bridge dispatch ───────────────────────────
 
