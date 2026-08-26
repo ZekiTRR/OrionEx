@@ -406,10 +406,12 @@ public sealed partial class OrionWindow
                         RestoreOrionWorkspace));
                     break;
                 case "Sentinel":
+                    try { System.IO.File.AppendAllText(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "orion-handoff.log"), $"{DateTime.Now:HH:mm:ss.fff} [Orion] launching Sentinel\n"); } catch { }
                     ShowPreservedAvaloniaWindow(new SentinelWindow(
                         _orionWorkspace.ScriptsDirectory,
                         workspace,
                         RestoreOrionWorkspace));
+                    try { System.IO.File.AppendAllText(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "orion-handoff.log"), $"{DateTime.Now:HH:mm:ss.fff} [Orion] Sentinel launched, preserved={_orionPreservedWindow?.GetType().Name}\n"); } catch { }
                     break;
                 case "SirHurtV5Remake":
                     ShowPreservedAvaloniaWindow(new SirHurtV5RemakeWindow(
@@ -474,8 +476,11 @@ public sealed partial class OrionWindow
     private void ShowPreservedAvaloniaWindow(Window window)
     {
         _orionPreservedWindow = window;
+        try { System.IO.File.AppendAllText(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "orion-handoff.log"), $"{DateTime.Now:HH:mm:ss.fff} [Orion] ShowPreservedAvaloniaWindow: Show {window.GetType().Name}\n"); } catch { }
         window.Show();
+        try { System.IO.File.AppendAllText(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "orion-handoff.log"), $"{DateTime.Now:HH:mm:ss.fff} [Orion] ShowPreservedAvaloniaWindow: Activate {window.GetType().Name}\n"); } catch { }
         window.Activate();
+        try { System.IO.File.AppendAllText(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "orion-handoff.log"), $"{DateTime.Now:HH:mm:ss.fff} [Orion] ShowPreservedAvaloniaWindow: Hide Orion\n"); } catch { }
         Hide();
     }
 
@@ -513,6 +518,7 @@ public sealed partial class OrionWindow
 
     private void RestoreOrionWorkspace(EditorWorkspaceState workspace)
     {
+        try { System.IO.File.AppendAllText(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "orion-handoff.log"), $"{DateTime.Now:HH:mm:ss.fff} [Orion] RestoreOrionWorkspace called\n"); } catch { }
         // A deliberate return from a preserved UI makes Orion the most
         // recently used interface, so the next launch opens here.
         OrbitPreferences.SetLastInterface(OrbitPreferences.OrionInterface);
@@ -528,6 +534,7 @@ public sealed partial class OrionWindow
             {
                 var returningWindow = _orionPreservedWindow;
                 _orionPreservedWindow = null;
+                try { System.IO.File.AppendAllText(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "orion-handoff.log"), $"{DateTime.Now:HH:mm:ss.fff} [Orion] returningWindow={returningWindow?.GetType().Name}\n"); } catch { }
 
                 if (returningWindow is XenoWindow xeno)
                 {
@@ -565,8 +572,14 @@ public sealed partial class OrionWindow
                 {
                     sirHurtLegacy.CloseForOrion();
                 }
+                else if (returningWindow is SentinelWindow sentinel)
+                {
+                    sentinel.CloseForOrion();
+                }
 
+                try { System.IO.File.AppendAllText(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "orion-handoff.log"), $"{DateTime.Now:HH:mm:ss.fff} [Orion] about to ApplyOrionWorkspace\n"); } catch { }
                 ApplyOrionWorkspace(workspace);
+                try { System.IO.File.AppendAllText(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "orion-handoff.log"), $"{DateTime.Now:HH:mm:ss.fff} [Orion] ApplyOrionWorkspace done\n"); } catch { }
                 _orionMonacoWebView.IsVisible = false;
                 _orionPageTransitionActive = false;
 
@@ -578,13 +591,16 @@ public sealed partial class OrionWindow
                 Show();
                 Activate();
                 await Task.Delay(32);
+                try { System.IO.File.AppendAllText(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "orion-handoff.log"), $"{DateTime.Now:HH:mm:ss.fff} [Orion] after delay 32; pagesDisposed={_orionPagesDisposed} isVisible={IsVisible}\n"); } catch { }
 
                 if (_orionPagesDisposed)
                 {
+                    try { System.IO.File.AppendAllText(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "orion-handoff.log"), $"{DateTime.Now:HH:mm:ss.fff} [Orion] early-return due to _orionPagesDisposed\n"); } catch { }
                     return;
                 }
 
                 ShowOrionPageImmediately(OrionPage.Editor);
+                try { System.IO.File.AppendAllText(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "orion-handoff.log"), $"{DateTime.Now:HH:mm:ss.fff} [Orion] ShowOrionPageImmediately done; isVisible={IsVisible}\n"); } catch { }
                 _orionEditorPage.RenderTransform = null;
                 _editorLayer.Opacity = 1;
                 _editorLayer.IsVisible = true;
@@ -619,8 +635,9 @@ public sealed partial class OrionWindow
 
                 PushOrionActiveTabToMonaco();
             }
-            catch
+            catch (Exception ex)
             {
+                try { System.IO.File.AppendAllText(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "orion-handoff.log"), $"{DateTime.Now:HH:mm:ss.fff} [Orion] restore failed: {ex}\n"); } catch { }
                 Opacity = 1;
                 Show();
                 Activate();
