@@ -223,6 +223,7 @@ internal static class OrbitPreferences
         "SirHurt" => "SirHurt",
         "ScriptWare" => "ScriptWare",
         "SirHurtLegacy" => "SirHurtLegacy",
+        "SirHurtV5Remake" => "SirHurtV5Remake",
         _ => OrionInterface
     };
 

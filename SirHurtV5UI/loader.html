@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SirHurt V5 - Loader</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rubik:wght@300;400;500&display=swap');
+
+        :root {
+            --bg: #0c0c0e;
+            --bg2: #101013;
+            --bg3: #141417;
+            --bd: rgba(255, 255, 255, 0.07);
+            --t1: #ffffff;
+            --t2: #a0a0a5;
+            --t3: #55555a;
+            --green: #30d158;
+            --red: #ff453a;
+            --v5-gradient: linear-gradient(135deg, #ff5e97 0%, #ec96ba 50%, #f7b0c8 100%);
+            --v5-glow: rgba(123, 127, 246, 0.4);
+            --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: transparent;
+            color: var(--t1);
+            overflow: hidden;
+            width: 380px;
+            height: 215px;
+            border-radius: 8px;
+            border: 1px solid var(--bd);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg);
+            z-index: -2;
+            border-radius: 8px;
+            opacity: 1;
+            transition: opacity 1.5s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+            pointer-events: none;
+        }
+
+        body.window-acrylic-active::after {
+            opacity: 0 !important;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(12, 12, 14, 0.45);
+            backdrop-filter: blur(12px) saturate(140%);
+            -webkit-backdrop-filter: blur(12px) saturate(140%);
+            z-index: -1;
+            border-radius: 8px;
+            opacity: 0;
+            transition: opacity 1.5s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+            pointer-events: none;
+        }
+
+        body.window-acrylic-active::before {
+            opacity: 1 !important;
+        }
+
+
+        .titlebar {
+            height: 45px;
+            min-height: 45px;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: none;
+            background: var(--bg);
+            transition: background 1.5s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+        }
+
+        body.window-acrylic-active .titlebar {
+            background: transparent !important;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .brand-logo {
+            width: 16px;
+            height: 16px;
+            background: var(--v5-gradient);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px var(--v5-glow);
+        }
+
+        .brand-text {
+            font-family: 'Rubik', sans-serif;
+            background: var(--v5-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .main-logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 16px;
+            perspective: 1200px;
+            cursor: pointer;
+            position: relative;
+            z-index: 1001;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .main-logo-3d {
+            position: relative;
+            width: 56px;
+            height: 56px;
+            background: var(--v5-gradient);
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            transition: all 0.5s var(--ease);
+            animation: float-3d 6s ease-in-out infinite, pulse-glow 4s ease-in-out infinite;
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+        }
+
+        .logo-layer-wrapper {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 36px;
+            height: 36px;
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+
+        .logo-layer {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .layer-bottom {
+            animation: layer-breath-bot 6s ease-in-out infinite;
+        }
+
+        .layer-middle {
+            animation: layer-breath-mid 6s ease-in-out infinite;
+        }
+
+        .layer-top {
+            animation: layer-breath-top 6s ease-in-out infinite;
+            filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.25));
+        }
+
+        .main-logo-container:not(.easter-egg-active):hover .main-logo-3d {
+            transform: scale(1.08) rotateX(15deg) rotateY(25deg);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+        }
+
+
+        #easter-egg-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(12, 12, 14, 0);
+            backdrop-filter: blur(0px);
+            -webkit-backdrop-filter: blur(0px);
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+
+        #easter-egg-backdrop.active {
+            opacity: 1;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: color-mix(in srgb, var(--purple) 18%, rgba(12, 12, 14, 0.8));
+            pointer-events: auto;
+        }
+
+
+        .ee-fluid-blobs {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fluid-blob {
+            position: absolute;
+            border-radius: 50%;
+
+            opacity: 0;
+            transform: scale(0.2);
+            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity;
+        }
+
+        .fluid-blob.blob-1 {
+            width: 480px;
+            height: 480px;
+            background: radial-gradient(circle at center,
+                    color-mix(in srgb, var(--purple) 70%, white) 0%,
+                    color-mix(in srgb, var(--purple) 45%, transparent) 25%,
+                    color-mix(in srgb, var(--purple) 20%, transparent) 50%,
+                    transparent 75%);
+            left: calc(50% - 280px);
+            top: calc(50% - 260px);
+            animation: blob-float-1 24s ease-in-out infinite;
+        }
+
+        .fluid-blob.blob-2 {
+            width: 420px;
+            height: 420px;
+            background: radial-gradient(circle at center,
+                    color-mix(in srgb, var(--purple) 80%, white) 0%,
+                    color-mix(in srgb, var(--purple) 45%, transparent) 22%,
+                    color-mix(in srgb, var(--purple) 20%, transparent) 48%,
+                    transparent 72%);
+            left: calc(50% - 80px);
+            top: calc(50% - 220px);
+            animation: blob-float-2 29s ease-in-out infinite;
+        }
+
+        .fluid-blob.blob-3 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle at center,
+                    color-mix(in srgb, var(--purple) 55%, white) 0%,
+                    color-mix(in srgb, var(--purple) 30%, transparent) 30%,
+                    color-mix(in srgb, var(--purple) 10%, transparent) 55%,
+                    transparent 78%);
+            left: calc(50% - 180px);
+            top: calc(50% - 120px);
+            animation: blob-float-3 34s ease-in-out infinite;
+            opacity: 0;
+        }
+
+        #easter-egg-backdrop.active .fluid-blob.blob-1 {
+            opacity: 0.75;
+            transform: scale(1);
+        }
+
+        #easter-egg-backdrop.active .fluid-blob.blob-2 {
+            opacity: 0.8;
+            transform: scale(1);
+        }
+
+        #easter-egg-backdrop.active .fluid-blob.blob-3 {
+            opacity: 0.65;
+            transform: scale(1);
+        }
+
+        @keyframes blob-float-1 {
+            0% {
+                transform: scale(1.0) translate(0px, 0px);
+            }
+
+            15% {
+                transform: scale(1.1) translate(120px, -40px);
+            }
+
+            30% {
+                transform: scale(0.95) translate(260px, 30px);
+            }
+
+            45% {
+                transform: scale(1.05) translate(180px, -70px);
+            }
+
+            60% {
+                transform: scale(1.12) translate(300px, 20px);
+            }
+
+            75% {
+                transform: scale(0.98) translate(80px, 50px);
+            }
+
+            88% {
+                transform: scale(1.08) translate(-30px, -20px);
+            }
+
+            100% {
+                transform: scale(1.0) translate(0px, 0px);
+            }
+        }
+
+        @keyframes blob-float-2 {
+            0% {
+                transform: scale(1.0) translate(0px, 0px);
+            }
+
+            18% {
+                transform: scale(0.9) translate(-90px, -60px);
+            }
+
+            35% {
+                transform: scale(1.1) translate(180px, 40px);
+            }
+
+            52% {
+                transform: scale(0.92) translate(240px, -30px);
+            }
+
+            68% {
+                transform: scale(1.05) translate(60px, 70px);
+            }
+
+            82% {
+                transform: scale(0.97) translate(-60px, 20px);
+            }
+
+            100% {
+                transform: scale(1.0) translate(0px, 0px);
+            }
+        }
+
+        @keyframes blob-float-3 {
+            0% {
+                transform: scale(1.0) translate(0px, 0px);
+            }
+
+            20% {
+                transform: scale(1.15) translate(200px, -90px);
+            }
+
+            40% {
+                transform: scale(0.92) translate(300px, 50px);
+            }
+
+            55% {
+                transform: scale(1.08) translate(130px, -60px);
+            }
+
+            70% {
+                transform: scale(0.95) translate(260px, 30px);
+            }
+
+            85% {
+                transform: scale(1.1) translate(40px, 60px);
+            }
+
+            100% {
+                transform: scale(1.0) translate(0px, 0px);
+            }
+        }
+
+
+        .main-logo-container.easter-egg-active {
+            transform: translateY(42px);
+            z-index: 1005 !important;
+        }
+
+        .view.ee-view-active {
+            transform: none !important;
+            animation: none !important;
+            opacity: 1 !important;
+            z-index: auto !important;
+        }
+
+        .main-logo-container.easter-egg-active .main-logo-3d {
+            transform: scale(2.2) rotateX(18deg) rotateY(-22deg);
+            background: rgba(12, 12, 14, 0.75);
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            box-shadow:
+                0 30px 70px rgba(0, 0, 0, 0.6),
+                0 0 50px var(--v5-glow),
+                inset 0 1px 1px rgba(255, 255, 255, 0.2);
+            animation: logo-active-float 28s ease-in-out infinite;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+
+        .logo-layer-wrapper.layer-top::after {
+            content: '';
+            position: absolute;
+            inset: -20px;
+            background: linear-gradient(135deg, transparent 30%, rgba(255, 255, 255, 0.4) 50%, transparent 70%);
+            transform: skewX(-25deg) translateX(-180%);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s ease;
+        }
+
+        .main-logo-container.easter-egg-active .logo-layer-wrapper.layer-top::after {
+            animation: gloss-sweep 7s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes gloss-sweep {
+            0% {
+                transform: skewX(-25deg) translateX(-200%);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0;
+            }
+
+            30% {
+                opacity: 0.35;
+            }
+
+            70% {
+                opacity: 0.35;
+            }
+
+            90% {
+                opacity: 0;
+            }
+
+            100% {
+                transform: skewX(-25deg) translateX(200%);
+                opacity: 0;
+            }
+        }
+
+
+        .main-logo-container.easter-egg-active .layer-bottom {
+            animation: layer-active-bot 22s ease-in-out infinite;
+        }
+
+        .main-logo-container.easter-egg-active .layer-middle {
+            animation: layer-active-mid 26s ease-in-out infinite;
+        }
+
+        .main-logo-container.easter-egg-active .layer-top {
+            animation: layer-active-top 30s ease-in-out infinite;
+        }
+
+        @keyframes layer-active-bot {
+            0% {
+                transform: translate3d(0px, 0px, 8px) rotate(0deg);
+                opacity: 0.65;
+            }
+
+            20% {
+                transform: translate3d(4px, -3px, 16px) rotate(8deg);
+                opacity: 0.85;
+            }
+
+            40% {
+                transform: translate3d(-3px, 2px, 10px) rotate(-6deg);
+                opacity: 0.7;
+            }
+
+            60% {
+                transform: translate3d(2px, 4px, 18px) rotate(4deg);
+                opacity: 0.9;
+            }
+
+            80% {
+                transform: translate3d(-2px, -2px, 12px) rotate(-4deg);
+                opacity: 0.75;
+            }
+
+            100% {
+                transform: translate3d(0px, 0px, 8px) rotate(0deg);
+                opacity: 0.65;
+            }
+        }
+
+        @keyframes layer-active-mid {
+            0% {
+                transform: translate3d(0px, 0px, 26px) rotate(0deg);
+                opacity: 0.95;
+            }
+
+            20% {
+                transform: translate3d(-5px, 4px, 40px) rotate(-12deg);
+                opacity: 1;
+            }
+
+            40% {
+                transform: translate3d(4px, -3px, 32px) rotate(10deg);
+                opacity: 0.88;
+            }
+
+            60% {
+                transform: translate3d(-3px, -4px, 44px) rotate(-8deg);
+                opacity: 1;
+            }
+
+            80% {
+                transform: translate3d(3px, 3px, 36px) rotate(6deg);
+                opacity: 0.92;
+            }
+
+            100% {
+                transform: translate3d(0px, 0px, 26px) rotate(0deg);
+                opacity: 0.95;
+            }
+        }
+
+        @keyframes layer-active-top {
+            0% {
+                transform: translate3d(0px, 0px, 52px) rotate(0deg);
+            }
+
+            20% {
+                transform: translate3d(6px, -5px, 80px) rotate(16deg);
+            }
+
+            40% {
+                transform: translate3d(-4px, 6px, 62px) rotate(-14deg);
+            }
+
+            60% {
+                transform: translate3d(5px, 4px, 84px) rotate(12deg);
+            }
+
+            80% {
+                transform: translate3d(-3px, -3px, 70px) rotate(-8deg);
+            }
+
+            100% {
+                transform: translate3d(0px, 0px, 52px) rotate(0deg);
+            }
+        }
+
+        @keyframes logo-active-float {
+            0% {
+                transform: scale(2.2) rotateX(18deg) rotateY(-22deg) rotateZ(0deg) translate3d(0, 0, 0);
+            }
+
+            12.5% {
+                transform: scale(2.23) rotateX(24deg) rotateY(-12deg) rotateZ(2deg) translate3d(3px, -5px, 10px);
+            }
+
+            25% {
+                transform: scale(2.2) rotateX(15deg) rotateY(-28deg) rotateZ(-3deg) translate3d(-4px, 2px, -5px);
+            }
+
+            37.5% {
+                transform: scale(2.22) rotateX(22deg) rotateY(-18deg) rotateZ(1deg) translate3d(2px, -3px, 5px);
+            }
+
+            50% {
+                transform: scale(2.18) rotateX(12deg) rotateY(-10deg) rotateZ(-2deg) translate3d(-5px, 6px, 15px);
+            }
+
+            62.5% {
+                transform: scale(2.24) rotateX(28deg) rotateY(-32deg) rotateZ(4deg) translate3d(6px, -2px, -10px);
+            }
+
+            75% {
+                transform: scale(2.21) rotateX(16deg) rotateY(-20deg) rotateZ(-1deg) translate3d(-2px, -4px, 8px);
+            }
+
+            87.5% {
+                transform: scale(2.23) rotateX(25deg) rotateY(-15deg) rotateZ(3deg) translate3d(4px, 3px, -2px);
+            }
+
+            100% {
+                transform: scale(2.2) rotateX(18deg) rotateY(-22deg) rotateZ(0deg) translate3d(0, 0, 0);
+            }
+        }
+
+        @keyframes float-3d {
+            0% {
+                transform: rotateX(14deg) rotateY(-28deg) rotateZ(-6deg);
+            }
+
+            50% {
+                transform: rotateX(-14deg) rotateY(28deg) rotateZ(6deg);
+            }
+
+            100% {
+                transform: rotateX(14deg) rotateY(-28deg) rotateZ(-6deg);
+            }
+        }
+
+        @keyframes layer-breath-bot {
+
+            0%,
+            100% {
+                transform: translateZ(6px);
+            }
+
+            50% {
+                transform: translateZ(16px);
+            }
+        }
+
+        @keyframes layer-breath-mid {
+
+            0%,
+            100% {
+                transform: translateZ(18px);
+            }
+
+            50% {
+                transform: translateZ(34px);
+            }
+        }
+
+        @keyframes layer-breath-top {
+
+            0%,
+            100% {
+                transform: translateZ(30px);
+            }
+
+            50% {
+                transform: translateZ(52px);
+            }
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                filter: drop-shadow(0 0 8px var(--v5-glow));
+            }
+
+            50% {
+                filter: drop-shadow(0 0 20px var(--v5-glow));
+            }
+        }
+
+        .close-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--t2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s var(--ease);
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 69, 58, 0.1);
+            color: var(--red);
+            border-color: rgba(255, 69, 58, 0.2);
+        }
+
+
+        .content {
+            flex: 1;
+            padding: 12px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .view {
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: -20px;
+            animation: fadeIn 0.3s var(--ease) forwards;
+        }
+
+        .view.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.96);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+
+        .welcome-title {
+            font-family: 'Rubik', sans-serif;
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: var(--t1);
+        }
+
+        .welcome-sub {
+            font-size: 11px;
+            color: var(--t2);
+            margin-bottom: 14px;
+            text-align: center;
+        }
+
+
+        .btn {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 11.5px;
+            padding: 8px 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-purple {
+            background: var(--v5-gradient);
+            border-color: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 12px var(--v5-glow);
+        }
+
+        .btn-purple:hover {
+            transform: translateY(-1.5px);
+            box-shadow: 0 0 18px var(--v5-glow);
+            filter: brightness(1.1);
+        }
+
+        .btn-purple:active {
+            transform: translateY(0.5px);
+            filter: brightness(0.95);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--bd);
+            color: var(--t2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--t1);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+
+        .spinner {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            margin-bottom: 20px;
+        }
+
+        .spinner-inner {
+            box-sizing: border-box;
+            display: block;
+            position: absolute;
+            width: 48px;
+            height: 48px;
+            border: 3px solid transparent;
+            border-top-color: var(--purple);
+            border-right-color: var(--purple);
+            border-radius: 50%;
+            animation: spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        }
+
+        .spinner-inner2 {
+            border-bottom-color: var(--purple);
+            animation: spin 1.2s linear infinite reverse;
+            opacity: 0.7;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-status {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--t1);
+            margin-bottom: 6px;
+            text-align: center;
+        }
+
+        .loading-substatus {
+            font-size: 11px;
+            color: var(--t2);
+            text-align: center;
+            height: 14px;
+        }
+
+
+        .alert-text {
+            font-size: 11.5px;
+            color: var(--t2);
+            text-align: center;
+            margin-bottom: 12px;
+            max-width: 280px;
+            line-height: 1.55;
+        }
+
+
+        #transition-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 99999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #transition-overlay.visible {
+            opacity: 1;
+        }
+
+        #welcome-update-modal {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), backdrop-filter 0.6s ease;
+        }
+
+        #welcome-update-modal.modal-active {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+
+        #welcome-update-modal .modal-box {
+            transform: scale(0.85) translateY(15px);
+            opacity: 0;
+            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        #welcome-update-modal.modal-active .modal-box {
+            transform: scale(1) translateY(0) !important;
+            opacity: 1 !important;
+        }
+
+        #btn-welcome-yes:hover {
+            transform: none !important;
+            box-shadow: 0 0 18px var(--v5-glow) !important;
+            filter: brightness(1.1) !important;
+        }
+
+        #btn-welcome-yes:active {
+            transform: none !important;
+            filter: brightness(0.95) !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="transition-overlay"></div>
+    <div id="welcome-update-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 10000; align-items: center; justify-content: center; padding: 20px;">
+        <div class="modal-box" style="background: var(--bg2); border: 1px solid var(--bd); border-radius: 12px; width: 320px; padding: 18px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); text-align: center;">
+            <div style="font-size: 15px; font-weight: 700; background: var(--v5-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Welcome to version 1.2!</div>
+            <div style="font-size: 11.5px; color: var(--t2); line-height: 1.5;">Biggest visual change is Acrylic. Would you like to enable it?</div>
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 4px;">
+                <button class="btn btn-purple" id="btn-welcome-yes" style="flex: 1; padding: 8px; font-size: 11.5px; height: 32px; border-radius: 6px;">Yes</button>
+                <button class="btn btn-secondary" id="btn-welcome-no" style="flex: 1; padding: 8px; font-size: 11.5px; height: 32px; border-radius: 6px;">No</button>
+            </div>
+        </div>
+    </div>
+    <div id="easter-egg-backdrop" onclick="triggerEasterEgg()">
+        <div class="ee-fluid-blobs">
+            <div class="fluid-blob blob-1"></div>
+            <div class="fluid-blob blob-2"></div>
+            <div class="fluid-blob blob-3"></div>
+        </div>
+    </div>
+    <div class="titlebar">
+        <div class="brand">
+            <div class="brand-logo">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                    stroke-linecap="round" stroke-linejoin="round" style="color: white;">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                </svg>
+            </div>
+            <span class="brand-text">SirHurt V5</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 11px; color: var(--t2); font-weight: 500;">v1.2</span>
+            <button class="close-btn" onclick="closeApp()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="content">
+
+        <div id="view-home" class="view active">
+            <div class="main-logo-container" onclick="triggerEasterEgg()">
+                <div class="main-logo-3d">
+                    <div class="logo-layer-wrapper layer-bottom">
+                        <svg class="logo-layer" viewBox="0 0 24 24">
+                            <path d="M2 17l10 5 10-5" stroke="white" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" fill="none" />
+                        </svg>
+                    </div>
+                    <div class="logo-layer-wrapper layer-middle">
+                        <svg class="logo-layer" viewBox="0 0 24 24">
+                            <path d="M2 12l10 5 10-5" stroke="white" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" fill="none" />
+                        </svg>
+                    </div>
+                    <div class="logo-layer-wrapper layer-top">
+                        <svg class="logo-layer" viewBox="0 0 24 24">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z" fill="white" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="welcome-title">SirHurt V5</div>
+            <div class="welcome-sub">Press Load to start SirHurt</div>
+            <button class="btn btn-purple" id="btn-load" onclick="startLoading()">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor"
+                    stroke-width="6" stroke-linejoin="round">
+                    <polygon points="6 4 18 12 6 20"></polygon>
+                </svg>
+                Load
+            </button>
+        </div>
+
+
+        <div id="view-loading" class="view">
+            <div class="spinner">
+                <div class="spinner-inner"></div>
+                <div class="spinner-inner spinner-inner2"></div>
+            </div>
+            <div class="loading-status" id="loading-status">Loading UI</div>
+            <div class="loading-substatus" id="loading-substatus">Initializing...</div>
+        </div>
+
+
+        <div id="view-update" class="view">
+            <div class="welcome-title" style="color: var(--yellow);">UI Update Available</div>
+            <div class="alert-text" id="update-alert-text">A new UI update is available. Would you like to download and
+                install it now?</div>
+            <div class="btn-group">
+                <button class="btn btn-purple" onclick="doUpdate()">Update Now</button>
+                <button class="btn btn-secondary" onclick="skipUpdate()">Skip</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        function applySavedTheme() {
+            const THEMES_CONFIG = {
+                v5: {
+                    '--bg': '#0c0c0e', '--bg2': '#101013', '--bg3': '#141417',
+                    '--bd': 'rgba(255, 255, 255, 0.07)',
+                    '--t1': '#ffffff', '--t2': '#a0a0a5', '--t3': '#55555a',
+                    '--purple': '#ec96ba',
+                    '--v5-gradient': 'linear-gradient(135deg, #ff5e97 0%, #ec96ba 50%, #f7b0c8 100%)',
+                    '--v5-glow': 'rgba(236, 150, 186, 0.4)'
+                },
+                dark: {
+                    '--bg': '#0c0c0e', '--bg2': '#101013', '--bg3': '#141417',
+                    '--bd': 'rgba(255, 255, 255, 0.07)',
+                    '--t1': '#ffffff', '--t2': '#a0a0a5', '--t3': '#55555a',
+                    '--purple': '#7b7ff6',
+                    '--v5-gradient': 'linear-gradient(135deg, #7b7ff6 0%, #6266dc 100%)',
+                    '--v5-glow': 'rgba(123, 127, 246, 0.4)'
+                },
+                light: {
+                    '--bg': '#f5f5f7', '--bg2': '#ffffff', '--bg3': '#ebeaee',
+                    '--bd': 'rgba(0, 0, 0, 0.08)',
+                    '--t1': '#1d1d1f', '--t2': '#4c4c4f', '--t3': '#86868b',
+                    '--purple': '#7b7ff6',
+                    '--v5-gradient': 'linear-gradient(135deg, #7b7ff6 0%, #6266dc 100%)',
+                    '--v5-glow': 'rgba(123, 127, 246, 0.2)'
+                },
+                sirhurt: {
+                    '--bg': '#0c0c0e', '--bg2': '#101013', '--bg3': '#141417',
+                    '--bd': 'rgba(255, 255, 255, 0.07)',
+                    '--t1': '#ffffff', '--t2': '#a0a0a5', '--t3': '#55555a',
+                    '--purple': '#0083fd',
+                    '--v5-gradient': 'linear-gradient(135deg, #0083fd 0%, #00c3ff 100%)',
+                    '--v5-glow': 'rgba(0, 131, 253, 0.4)'
+                },
+
+                bloodfall: {
+                    '--bg': '#0d0404', '--bg2': '#120505', '--bg3': '#1a0808',
+                    '--bd': 'rgba(255, 69, 58, 0.15)',
+                    '--t1': '#ffe5e5', '--t2': '#a87c7c', '--t3': '#5e4343',
+                    '--purple': '#ff453a',
+                    '--v5-gradient': 'linear-gradient(135deg, #ff453a 0%, #ff5252 50%, #ff8a80 100%)',
+                    '--v5-glow': 'rgba(255, 69, 58, 0.5)'
+                },
+                midnight_ocean: {
+                    '--bg': '#05070a', '--bg2': '#0a0d14', '--bg3': '#0f141e',
+                    '--bd': 'rgba(0, 195, 255, 0.08)',
+                    '--t1': '#e0f4ff', '--t2': '#8ca6b5', '--t3': '#5a6d7a',
+                    '--purple': '#00c3ff',
+                    '--v5-gradient': 'linear-gradient(135deg, #00c3ff 0%, #0091ff 50%, #00e5ff 100%)',
+                    '--v5-glow': 'rgba(0, 195, 255, 0.4)'
+                },
+                cyberwave: {
+                    '--bg': '#050505', '--bg2': '#0a0a0a', '--bg3': '#111111',
+                    '--bd': 'rgba(255, 0, 255, 0.12)',
+                    '--t1': '#ffffff', '--t2': '#ff00ff', '--t3': '#880088',
+                    '--purple': '#ff00ff',
+                    '--v5-gradient': 'linear-gradient(135deg, #ff00ff 0%, #7000ff 50%, #00ffff 100%)',
+                    '--v5-glow': 'rgba(255, 0, 255, 0.4)'
+                },
+                forest_moss: {
+                    '--bg': '#060806', '--bg2': '#0c110c', '--bg3': '#131913',
+                    '--bd': 'rgba(48, 209, 88, 0.12)',
+                    '--t1': '#e2ffe9', '--t2': '#86a88e', '--t3': '#4d6352',
+                    '--purple': '#30d158',
+                    '--v5-gradient': 'linear-gradient(135deg, #30d158 0%, #b9f6ca 50%, #ccff90 100%)',
+                    '--v5-glow': 'rgba(48, 209, 88, 0.4)'
+                },
+                rose_gold: {
+                    '--bg': '#1a1416', '--bg2': '#241c1f', '--bg3': '#2e2428',
+                    '--bd': 'rgba(226, 175, 160, 0.15)',
+                    '--t1': '#fff0f0', '--t2': '#d4b0ac', '--t3': '#8e716e',
+                    '--purple': '#e2afa0',
+                    '--v5-gradient': 'linear-gradient(135deg, #e2afa0 0%, #ffccbc 50%, #ffe0b2 100%)',
+                    '--v5-glow': 'rgba(226, 175, 160, 0.4)'
+                },
+                lavender_breeze: {
+                    '--bg': '#f3f2f7', '--bg2': '#ffffff', '--bg3': '#e6e4ed',
+                    '--bd': 'rgba(108, 92, 231, 0.1)',
+                    '--t1': '#2d3436', '--t2': '#636e72', '--t3': '#b2bec3',
+                    '--purple': '#6c5ce7',
+                    '--v5-gradient': 'linear-gradient(135deg, #6c5ce7 0%, #a29bfe 50%, #fab1a0 100%)',
+                    '--v5-glow': 'rgba(108, 92, 231, 0.3)'
+                },
+                gold_rush: {
+                    '--bg': '#0a0a0c', '--bg2': '#121215', '--bg3': '#18181b',
+                    '--bd': 'rgba(212, 175, 55, 0.15)',
+                    '--t1': '#ffffff', '--t2': '#d4af37', '--t3': '#7a6523',
+                    '--purple': '#d4af37',
+                    '--v5-gradient': 'linear-gradient(135deg, #d4af37 0%, #fff176 50%, #ffd54f 100%)',
+                    '--v5-glow': 'rgba(212, 175, 55, 0.4)'
+                },
+                neon_mint: {
+                    '--bg': '#050505', '--bg2': '#0c0c0c', '--bg3': '#141414',
+                    '--bd': 'rgba(0, 255, 163, 0.12)',
+                    '--t1': '#ffffff', '--t2': '#00ffa3', '--t3': '#008a58',
+                    '--purple': '#00ffa3',
+                    '--v5-gradient': 'linear-gradient(135deg, #00ffa3 0%, #00e5ff 50%, #76ff03 100%)',
+                    '--v5-glow': 'rgba(0, 255, 163, 0.4)'
+                },
+                nord: {
+                    '--bg': '#242933', '--bg2': '#2e3440', '--bg3': '#3b4252',
+                    '--bd': 'rgba(136, 192, 208, 0.15)',
+                    '--t1': '#eceff4', '--t2': '#d8dee9', '--t3': '#4c566a',
+                    '--purple': '#88c0d0',
+                    '--v5-gradient': 'linear-gradient(135deg, #88c0d0 0%, #81a1c1 50%, #8fbcbb 100%)',
+                    '--v5-glow': 'rgba(136, 192, 208, 0.4)'
+                }
+            };
+
+            const activeThemeId = localStorage.getItem('sh_theme') || 'v5';
+            const THEME_ACCENTS = {
+                coffee: ['#dfa579', 'linear-gradient(135deg, #dfa579 0%, #c79081 50%, #d7a59a 100%)'],
+                solarized: ['#b58900', 'linear-gradient(135deg, #b58900 0%, #cb4b16 50%, #dc322f 100%)'],
+                aura: ['#a272ff', 'linear-gradient(135deg, #a272ff 0%, #61ffca 50%, #ff6767 100%)'],
+                frostbite: ['#00bcd4', 'linear-gradient(135deg, #00bcd4 0%, #80deea 100%)'],
+                amber_glow: ['#ff8f00', 'linear-gradient(135deg, #ff8f00 0%, #ffcc80 100%)'],
+                night_city: ['#ffd600', 'linear-gradient(135deg, #ffd600 0%, #fff176 100%)'],
+                classic_v1: ['#ff4136', 'linear-gradient(135deg, #ff4136 0%, #ff726b 100%)'],
+                abyssal: ['#18ffff', 'linear-gradient(135deg, #18ffff 0%, #84ffff 100%)'],
+                sakura_blossom: ['#f48fb1', 'linear-gradient(135deg, #f48fb1 0%, #f8bbd0 50%, #ce93d8 100%)'],
+                matrix: ['#00ff41', 'linear-gradient(135deg, #00ff41 0%, #a2ffd0 100%)'],
+                solar_flare: ['#ff6a00', 'linear-gradient(135deg, #ff6a00 0%, #ffddb0 100%)'],
+                midnight_slate: ['#738adb', 'linear-gradient(135deg, #738adb 0%, #b8c7ff 100%)'],
+                royal_gold: ['#d4af37', 'linear-gradient(135deg, #d4af37 0%, #fbe7b2 100%)'],
+                neon_sage: ['#00ffa3', 'linear-gradient(135deg, #00ffa3 0%, #b2ffeb 100%)'],
+                cyber_industrial: ['#ffd600', 'linear-gradient(135deg, #ffd600 0%, #fffde7 100%)'],
+                crimson_peak: ['#dc143c', 'linear-gradient(135deg, #dc143c 0%, #ff6b81 100%)'],
+                champagne: ['#d4af37', 'linear-gradient(135deg, #d4af37 0%, #f5deb3 100%)'],
+                deep_berry: ['#ff00ff', 'linear-gradient(135deg, #ff00ff 0%, #ea80fc 100%)'],
+                desert_storm: ['#c2b280', 'linear-gradient(135deg, #c2b280 0%, #ede6d6 100%)'],
+                glacier: ['#00d2ff', 'linear-gradient(135deg, #00d2ff 0%, #b3e5fc 100%)'],
+                titanium: ['#ffffff', 'linear-gradient(135deg, #ffffff 0%, #888888 100%)'],
+                discord_classic: ['#5865f2', 'linear-gradient(135deg, #5865f2 0%, #00d2ff 100%)'],
+                discord_modern: ['#5865f2', 'linear-gradient(135deg, #5865f2 0%, #eb459e 100%)'],
+                github_dark: ['#58a6ff', 'linear-gradient(135deg, #58a6ff 0%, #7ee787 100%)'],
+                carbon_slate: ['#ce9178', 'linear-gradient(135deg, #ce9178 0%, #dcdcaa 100%)'],
+                obsidian_dark: ['#7a72ff', 'linear-gradient(135deg, #7a72ff 0%, #ff79c6 100%)'],
+                onyx_mid: ['#ffffff', 'linear-gradient(135deg, #ffffff 0%, #999999 50%, #4d4d4d 100%)']
+            };
+            try {
+                const customThemes = JSON.parse(localStorage.getItem('sh_custom_themes') || '{}');
+                Object.keys(customThemes).forEach(id => {
+                    if (customThemes[id] && customThemes[id].styles) THEMES_CONFIG[id] = customThemes[id].styles;
+                });
+            } catch (e) { }
+            let theme = THEMES_CONFIG[activeThemeId] || THEMES_CONFIG.v5;
+            if (!THEMES_CONFIG[activeThemeId] && THEME_ACCENTS[activeThemeId]) {
+                theme = Object.assign({}, THEMES_CONFIG.v5, {
+                    '--purple': THEME_ACCENTS[activeThemeId][0],
+                    '--v5-gradient': THEME_ACCENTS[activeThemeId][1],
+                    '--v5-glow': THEME_ACCENTS[activeThemeId][0] + '66'
+                });
+            }
+            try {
+                const savedThemeId = localStorage.getItem('sh_active_theme_id');
+                const savedStyles = JSON.parse(localStorage.getItem('sh_active_theme_styles') || 'null');
+                if (savedThemeId === activeThemeId && savedStyles) theme = savedStyles;
+            } catch (e) { }
+
+
+            let settings = {};
+            try {
+                settings = JSON.parse(localStorage.getItem('sh_settings') || '{}');
+            } catch (e) { }
+
+            let color = theme['--purple'];
+            if (settings.accentColor && settings.accentColor.toLowerCase() !== '#7b7ff6') {
+                color = settings.accentColor;
+            }
+
+
+            const root = document.documentElement;
+            Object.keys(theme).forEach(key => {
+                root.style.setProperty(key, theme[key]);
+            });
+
+
+            if (color && color.toLowerCase() !== '#7b7ff6') {
+                root.style.setProperty('--purple', color);
+                const r = parseInt(color.slice(1, 3), 16);
+                const g = parseInt(color.slice(3, 5), 16);
+                const b = parseInt(color.slice(5, 7), 16);
+                const secondary = `rgba(${Math.max(0, r - 40)}, ${Math.max(0, g - 40)}, ${Math.max(0, b - 40)}, 1)`;
+                const gradient = `linear-gradient(135deg, ${color} 0%, ${secondary} 100%)`;
+                root.style.setProperty('--v5-gradient', gradient);
+                root.style.setProperty('--v5-glow', color + '33');
+            }
+        }
+
+
+        applySavedTheme();
+
+        function applySavedAcrylic() {
+            let settings = {};
+            try {
+                settings = JSON.parse(localStorage.getItem('sh_settings') || '{}');
+            } catch (e) { }
+            if (settings.acrylicEnabled) {
+                document.documentElement.classList.add('window-acrylic-active');
+                document.body.classList.add('window-acrylic-active');
+                var bridge = getBridge();
+                if (bridge && bridge.SetAcrylicEnabled) {
+                    bridge.SetAcrylicEnabled(true);
+                } else {
+                    setTimeout(function() {
+                        var b = getBridge();
+                        if (b && b.SetAcrylicEnabled) b.SetAcrylicEnabled(true);
+                    }, 100);
+                }
+            }
+        }
+
+        function checkAndShowWelcomePopup() {
+            let settings = {};
+            try {
+                settings = JSON.parse(localStorage.getItem('sh_settings') || '{}');
+            } catch (e) { }
+            if (!settings.welcome12PromptShown) {
+                setTimeout(() => {
+                    const modal = document.getElementById('welcome-update-modal');
+                    if (modal) {
+                        modal.style.display = 'flex';
+                        modal.offsetHeight;
+                        modal.classList.add('modal-active');
+                    }
+                }, 800);
+            }
+        }
+
+        function closeWelcomeModal() {
+            const modal = document.getElementById('welcome-update-modal');
+            if (modal) {
+                modal.classList.remove('modal-active');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 600);
+            }
+        }
+
+        document.getElementById('btn-welcome-yes').addEventListener('click', function() {
+            let settings = {};
+            try {
+                settings = JSON.parse(localStorage.getItem('sh_settings') || '{}');
+            } catch (e) { }
+            settings.acrylicEnabled = true;
+            settings.welcome12PromptShown = true;
+            try {
+                localStorage.setItem('sh_settings', JSON.stringify(settings));
+            } catch (e) { }
+            var bridge = getBridge();
+            if (bridge && bridge.SetAcrylicEnabled) {
+                bridge.SetAcrylicEnabled(true);
+            }
+            if (bridge && bridge.SaveSettings) {
+                bridge.SaveSettings(JSON.stringify(settings));
+            }
+            document.documentElement.classList.add('window-acrylic-active');
+            document.body.classList.add('window-acrylic-active');
+            closeWelcomeModal();
+        });
+
+        document.getElementById('btn-welcome-no').addEventListener('click', function() {
+            let settings = {};
+            try {
+                settings = JSON.parse(localStorage.getItem('sh_settings') || '{}');
+            } catch (e) { }
+            settings.welcome12PromptShown = true;
+            try {
+                localStorage.setItem('sh_settings', JSON.stringify(settings));
+            } catch (e) { }
+            var bridge = getBridge();
+            if (bridge && bridge.SaveSettings) {
+                bridge.SaveSettings(JSON.stringify(settings));
+            }
+            closeWelcomeModal();
+        });
+
+        applySavedAcrylic();
+        checkAndShowWelcomePopup();
+
+
+        let idleTimer = null;
+        let isIdleActive = false;
+        let idleTriggerTime = 0;
+
+        function triggerEasterEgg() {
+            const container = document.querySelector('.main-logo-container');
+            const backdrop = document.getElementById('easter-egg-backdrop');
+            const viewHome = document.getElementById('view-home');
+
+            const isActive = container.classList.toggle('easter-egg-active');
+
+            if (isActive) {
+                backdrop.classList.add('active');
+                if (viewHome) viewHome.classList.add('ee-view-active');
+            } else {
+                backdrop.classList.remove('active');
+                if (viewHome) viewHome.classList.remove('ee-view-active');
+                isIdleActive = false;
+                resetIdleTimer();
+            }
+        }
+
+        function resetIdleTimer() {
+            if (idleTimer) clearTimeout(idleTimer);
+
+            if (isIdleActive) {
+
+                if (Date.now() - idleTriggerTime > 800) {
+                    isIdleActive = false;
+                    const container = document.querySelector('.main-logo-container');
+                    if (container && container.classList.contains('easter-egg-active')) {
+                        triggerEasterEgg();
+                    }
+                }
+            }
+
+            const viewHome = document.getElementById('view-home');
+            const container = document.querySelector('.main-logo-container');
+            if (viewHome && viewHome.classList.contains('active') && container && !container.classList.contains('easter-egg-active')) {
+                idleTimer = setTimeout(triggerIdleState, 20000);
+            }
+        }
+
+        function triggerIdleState() {
+            const viewHome = document.getElementById('view-home');
+            const container = document.querySelector('.main-logo-container');
+            if (viewHome && viewHome.classList.contains('active') && container && !container.classList.contains('easter-egg-active')) {
+                isIdleActive = true;
+                idleTriggerTime = Date.now();
+                triggerEasterEgg();
+            }
+        }
+
+
+        ['mousemove', 'mousedown', 'keydown', 'touchstart'].forEach(evt => {
+            window.addEventListener(evt, resetIdleTimer, { passive: true });
+        });
+
+
+        resetIdleTimer();
+
+
+        let isDragging = false;
+        let startMouseX = 0;
+        let startMouseY = 0;
+
+        window.addEventListener('mousedown', function (e) {
+
+            if (e.target.closest('.main-logo-container') || e.target.closest('#easter-egg-backdrop')) {
+                return;
+            }
+
+            if (e.target.closest('.btn') || e.target.closest('.close-btn') || e.target.closest('a') || e.target.closest('button')) {
+                return;
+            }
+
+            if (e.target.closest('.welcome-title') || e.target.closest('.welcome-sub') ||
+                e.target.closest('.loading-status') || e.target.closest('.loading-substatus') ||
+                e.target.closest('.alert-text') || e.target.closest('.brand-text')) {
+                return;
+            }
+
+            var bridge = getBridge();
+            if (bridge) {
+                isDragging = true;
+                startMouseX = e.screenX;
+                startMouseY = e.screenY;
+                bridge.StartCustomDrag(startMouseX, startMouseY);
+            }
+        });
+
+        window.addEventListener('mousemove', function (e) {
+            if (!isDragging) return;
+            var bridge = getBridge();
+            if (bridge) {
+                bridge.UpdateCustomDrag(e.screenX, e.screenY);
+            }
+        });
+
+        window.addEventListener('mouseup', function () {
+            if (isDragging) {
+                isDragging = false;
+                var bridge = getBridge();
+                if (bridge) {
+                    bridge.EndCustomDrag();
+                }
+            }
+        });
+
+
+        function getBridge() {
+            return (typeof chrome !== 'undefined' && chrome.webview && chrome.webview.hostObjects && chrome.webview.hostObjects.bridge) ? chrome.webview.hostObjects.bridge : null;
+        }
+
+        function closeApp() {
+            var bridge = getBridge();
+            if (bridge) bridge.Close();
+            else window.close();
+        }
+
+        function switchView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+        }
+
+
+        const steps = [
+            { status: "Checking for updates...", action: checkUpdates },
+            { status: "Loading UI", action: simulateLoadingUi },
+            { status: "Fetching WEAO", action: fetchWeaoStatus },
+            { status: "Searching Roblox versions", action: searchRobloxVersions },
+            { status: "Finishing", action: finishLoader }
+        ];
+
+        let currentStepIndex = 0;
+
+        function startLoading() {
+            try {
+                sessionStorage.setItem('sirhurt_loader_ran', 'true');
+                fetch('https://api.counterapi.dev/v1/sh-ui-launches/launches/up').catch(() => {});
+            } catch (e) {}
+
+            if (idleTimer) {
+                clearTimeout(idleTimer);
+                idleTimer = null;
+            }
+            switchView('view-loading');
+            currentStepIndex = 0;
+            runNextStep();
+        }
+
+        async function runNextStep() {
+            if (currentStepIndex >= steps.length) {
+                return;
+            }
+
+            const step = steps[currentStepIndex];
+            document.getElementById('loading-status').innerText = step.status;
+            document.getElementById('loading-substatus').innerText = "Processing...";
+
+            try {
+                await step.action();
+            } catch (e) {
+                console.error(e);
+                document.getElementById('loading-substatus').innerText = "Error: " + e.message;
+
+                setTimeout(() => {
+                    currentStepIndex++;
+                    runNextStep();
+                }, 1500);
+            }
+        }
+
+
+
+
+        let _pendingUpdateUrl = null;
+
+        window.showUiUpdateModal = function (version, changelog, downloadUrl) {
+            _pendingUpdateUrl = downloadUrl;
+            const alertEl = document.getElementById('update-alert-text');
+            if (alertEl) alertEl.innerText = 'v' + version + ' is available.';
+            switchView('view-update');
+        };
+
+        function checkUpdates() {
+            var bridge = getBridge();
+            if (bridge && bridge.CheckForUiUpdates) {
+                var _updateCheckDone = false;
+                window.onUiUpdateCheckComplete = function (hasUpdate) {
+                    if (_updateCheckDone) return;
+                    _updateCheckDone = true;
+                    if (!hasUpdate) {
+                        currentStepIndex++;
+                        runNextStep();
+                    }
+                };
+                
+                var _origShowUiUpdateModal = window.showUiUpdateModal;
+                window.showUiUpdateModal = function (version, changelog, downloadUrl) {
+                    _updateCheckDone = true;
+                    _origShowUiUpdateModal(version, changelog, downloadUrl);
+                };
+
+                bridge.CheckForUiUpdates();
+
+                setTimeout(() => {
+                    if (!_updateCheckDone) {
+                        _updateCheckDone = true;
+                        currentStepIndex++;
+                        runNextStep();
+                    }
+                }, 1500);
+            } else {
+                currentStepIndex++;
+                runNextStep();
+            }
+        }
+
+        window.onUpdateCheck = function (res) {
+            currentStepIndex++;
+            runNextStep();
+        };
+
+        function doUpdate() {
+            switchView('view-loading');
+            document.getElementById('loading-status').innerText = "Updating UI...";
+            document.getElementById('loading-substatus').innerText = "Downloading latest files from GitHub...";
+            var bridge = getBridge();
+            if (bridge && bridge.InstallUiUpdate && _pendingUpdateUrl) {
+                bridge.InstallUiUpdate(_pendingUpdateUrl);
+            } else {
+                setTimeout(() => {
+                    window.onSirHurtUpdateResult(false, "Bridge not available, please update manually.");
+                }, 1500);
+            }
+        }
+
+        window.onSirHurtUpdateResult = function (success, message) {
+            if (success) {
+                document.getElementById('loading-substatus').innerText = "Update complete! Restarting...";
+            } else {
+                document.getElementById('loading-substatus').innerText = "Update failed: " + message;
+                setTimeout(() => {
+                    currentStepIndex++;
+                    runNextStep();
+                }, 2000);
+            }
+        };
+
+        function skipUpdate() {
+            switchView('view-loading');
+            currentStepIndex++;
+            runNextStep();
+        }
+
+
+        function simulateLoadingUi() {
+            return new Promise(resolve => {
+                let percent = 0;
+                const interval = setInterval(() => {
+                    percent += 10;
+                    document.getElementById('loading-substatus').innerText = "Setting up interface: " + percent + "%";
+                    if (percent >= 100) {
+                        clearInterval(interval);
+                        currentStepIndex++;
+                        runNextStep();
+                        resolve();
+                    }
+                }, 80);
+            });
+        }
+
+
+        async function fetchWeaoStatus() {
+            document.getElementById('loading-substatus').innerText = "Connecting...";
+            try {
+                const targetUrl = 'https://weao.xyz/sirhurt/windows';
+                const encodedUrl = encodeURIComponent(targetUrl);
+                const urls = [
+                    'https://api.codetabs.com/v1/proxy/?quest=' + encodedUrl,
+                    'https://api.allorigins.win/raw?url=' + encodedUrl,
+                    'https://corsproxy.io/?' + encodedUrl
+                ];
+
+                const fetchWithTimeout = (url) => {
+                    return new Promise((resolve, reject) => {
+                        const controller = new AbortController();
+                        const id = setTimeout(() => controller.abort(), 2000);
+                        fetch(url, { signal: controller.signal })
+                            .then(res => {
+                                clearTimeout(id);
+                                if (res.ok) resolve(true);
+                                else reject();
+                            })
+                            .catch(() => {
+                                clearTimeout(id);
+                                reject();
+                            });
+                    });
+                };
+
+                const success = await Promise.any(urls.map(url => fetchWithTimeout(url)))
+                    .then(() => true)
+                    .catch(() => false);
+
+                document.getElementById('loading-substatus').innerText = success ? "SirHurt status fixed" : "Status offline (using cache)";
+            } catch (e) {
+                document.getElementById('loading-substatus').innerText = "Offline mode";
+            }
+
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    currentStepIndex++;
+                    runNextStep();
+                    resolve();
+                }, 100);
+            });
+        }
+
+
+        function searchRobloxVersions() {
+            var bridge = getBridge();
+            if (bridge) {
+                try {
+                    const rawJson = bridge.GetRobloxVersionsJSON();
+                    const versions = JSON.parse(rawJson);
+                    document.getElementById('loading-substatus').innerText = "Found " + versions.length + " Roblox versions.";
+                } catch (e) {
+                    document.getElementById('loading-substatus').innerText = "Scanning game files...";
+                }
+            } else {
+                document.getElementById('loading-substatus').innerText = "Scanning default versions folder...";
+            }
+
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    currentStepIndex++;
+                    runNextStep();
+                    resolve();
+                }, 100);
+            });
+        }
+
+
+        function finishLoader() {
+            document.getElementById('loading-substatus').innerText = "Ready to launch SirHurt!";
+            setTimeout(() => {
+
+                var overlay = document.getElementById('transition-overlay');
+                overlay.classList.add('visible');
+                setTimeout(() => {
+                    var bridge = getBridge();
+                    if (bridge) bridge.StartUiMorph();
+                }, 300);
+            }, 400);
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,17 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="OrbitAvalonia.SirHurtV5RemakeWindow"
+        Title="SirHurt V5 Remake"
+        Width="820" Height="500"
+        MinWidth="600" MinHeight="380"
+        Background="#0B0D10"
+        TransparencyLevelHint="Transparent"
+        ExtendClientAreaToDecorationsHint="True"
+        WindowStartupLocation="CenterScreen"
+        RenderOptions.TextRenderingMode="Antialias"
+        Icon="avares://Orion/Assets/Orion/Sharp/orion-app.ico">
+
+  <Border>
+    <NativeWebView x:Name="UiWebView" Background="#0B0D10" />
+  </Border>
+</Window>

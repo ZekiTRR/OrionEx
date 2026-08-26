@@ -405,6 +405,12 @@ public sealed partial class OrionWindow
                         workspace,
                         RestoreOrionWorkspace));
                     break;
+                case "SirHurtV5Remake":
+                    ShowPreservedAvaloniaWindow(new SirHurtV5RemakeWindow(
+                        _orionWorkspace.ScriptsDirectory,
+                        workspace,
+                        RestoreOrionWorkspace));
+                    break;
                 case "SirHurtLegacy":
                     ShowPreservedAvaloniaWindow(new SirHurtLegacyWindow(
                         _orionMonacoServer.Address,

@@ -1675,6 +1675,20 @@
                       </Border>
                     </Grid>
                   </Button>
+                  <Button Classes="orion-ui-card" Tag="SirHurtV5Remake"
+                          Click="OrionUiChoice_Click" Margin="0,0,7,8">
+                    <Grid>
+                      <Image Source="avares://Orion/Assets/Orion/UiSelection/sirhurt-v5-remake.png"
+                             Stretch="UniformToFill" Opacity="0.26"
+                             RenderOptions.BitmapInterpolationMode="HighQuality" />
+                      <Border Height="12.363" VerticalAlignment="Bottom"
+                              Background="#C708090A" BorderBrush="#66696C"
+                              BorderThickness="0.333" CornerRadius="0,0,10,10">
+                        <TextBlock Text="SirHurt V5 Remake" FontSize="6" Foreground="White"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                      </Border>
+                    </Grid>
+                  </Button>
                 </WrapPanel>
               </StackPanel>
             </ScrollViewer>
