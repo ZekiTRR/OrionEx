@@ -1,11 +1,13 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using System.Diagnostics;
 
 namespace OrbitAvalonia;
 
@@ -18,6 +20,7 @@ public sealed partial class SentinelWindow : Window
     private readonly Action<EditorWorkspaceState> _returnToOrion;
     private NativeWebView? _webView;
     private MonacoStaticServer? _uiServer;
+    private ListBox? _scriptsList;
     private bool _webViewReady;
     private bool _webViewDisposed;
     private bool _closingForOrion;
@@ -41,6 +44,7 @@ public sealed partial class SentinelWindow : Window
 
         AvaloniaXamlLoader.Load(this);
         _webView = this.FindControl<NativeWebView>("EditorWebView");
+        _scriptsList = this.FindControl<ListBox>("ScriptsList");
 
         Topmost = OrbitPreferences.TopMostEnabled;
         Closed += SentinelWindow_Closed;
@@ -50,14 +54,21 @@ public sealed partial class SentinelWindow : Window
 
     private static EditorWorkspaceState CreateDefaultWorkspace()
     {
-        var tab = new EditorTabState { Title = "Script 1", Extension = ".lua", Content = "print(\"Tutorial\")" };
+        var tab = new EditorTabState { Title = "Script 1", Extension = ".lua", Content = "print(\"I love life\")" };
         return new EditorWorkspaceState { Tabs = [tab], ActiveTabId = tab.Id };
     }
 
     private async void SentinelWindow_Opened(object? sender, EventArgs e)
     {
         Opened -= SentinelWindow_Opened;
+        RefreshScriptList();
         RevealEditor();
+    }
+
+    private void RefreshScriptList()
+    {
+        if (_scriptsList is null) return;
+        _scriptsList.ItemsSource = GetScriptFileNames();
     }
 
     private void SentinelWindow_Closed(object? sender, EventArgs e)
@@ -80,6 +91,29 @@ public sealed partial class SentinelWindow : Window
         _returnRequested = true;
         Close();
     }
+
+    private async Task ReturnToOrionAsync()
+    {
+        if (_returnRequested) return;
+        _returnRequested = true;
+        _closingForOrion = true;
+        _returnToOrion(_workspace.CloneDetached());
+        Close();
+    }
+
+    // ─────────────────────── title bar ───────────────────────
+
+    private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        var point = e.GetCurrentPoint(this);
+        if (!point.Properties.IsLeftButtonPressed) return;
+        if (e.Source is Avalonia.Visual v && (v is Button || v.GetVisualAncestors().OfType<Button>().Any())) return;
+        if (WindowState != WindowState.Maximized) BeginMoveDrag(e);
+    }
+
+    private void Minimize_Click(object? s, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+
+    private void Close_Click(object? s, RoutedEventArgs e) => _ = ReturnToOrionAsync();
 
     // ─────────────────────── editor ───────────────────────
 
@@ -174,30 +208,78 @@ public sealed partial class SentinelWindow : Window
 
     private void Attach_Click(object? s, RoutedEventArgs e)
     {
-        // Attach is automatic in Orion bridge; no action needed.
+        // Attach is automatic in Orion bridge.
     }
 
-    // ─────────────────────── title bar ───────────────────────
-
-    private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e)
+    private void ScriptHub_Click(object? s, RoutedEventArgs e)
     {
-        var point = e.GetCurrentPoint(this);
-        if (!point.Properties.IsLeftButtonPressed) return;
-        if (e.Source is Avalonia.Visual v && (v is Button || v.GetVisualAncestors().OfType<Button>().Any())) return;
-        if (WindowState != WindowState.Maximized) BeginMoveDrag(e);
     }
 
-    private void Minimize_Click(object? s, RoutedEventArgs e) => WindowState = WindowState.Minimized;
-
-    private void Close_Click(object? s, RoutedEventArgs e) => _ = ReturnToOrionAsync();
-
-    private async Task ReturnToOrionAsync()
+    private async void KillRoblox_Click(object? s, RoutedEventArgs e)
     {
-        if (_returnRequested) return;
-        _returnRequested = true;
-        _closingForOrion = true;
-        _returnToOrion(_workspace.CloneDetached());
-        Close();
+        try
+        {
+            foreach (var process in Process.GetProcessesByName("RobloxPlayerBeta"))
+            {
+                try { process.Kill(true); }
+                finally { process.Dispose(); }
+            }
+        }
+        catch { }
+    }
+
+    private void Settings_Click(object? s, RoutedEventArgs e)
+    {
+        if (this.FindControl<Panel>("SettingsOverlay") is { } overlay)
+        {
+            overlay.IsVisible = !overlay.IsVisible;
+        }
+    }
+
+    private void SettingsBackdrop_Click(object? s, PointerPressedEventArgs e)
+    {
+        if (this.FindControl<Panel>("SettingsOverlay") is { } overlay)
+        {
+            overlay.IsVisible = false;
+        }
+    }
+
+    private void TglTopMost_Changed(object? s, RoutedEventArgs e)
+    {
+        if (this.FindControl<ToggleButton>("TglTopMost") is { } toggle)
+        {
+            Topmost = toggle.IsChecked == true;
+            OrbitPreferences.SetTopMost(Topmost);
+        }
+    }
+
+    private async void ScriptsList_DoubleTapped(object? sender, TappedEventArgs e)
+    {
+        if (_scriptsList?.SelectedItem is not string fileName) return;
+        _scriptsList.SelectedItem = null;
+        try
+        {
+            var path = System.IO.Path.Combine(_scriptsDirectory, fileName);
+            var content = await File.ReadAllTextAsync(path);
+            SetEditorContent(content);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { }
+    }
+
+    private System.Collections.Generic.List<string> GetScriptFileNames()
+    {
+        var files = new System.Collections.Generic.List<string>();
+        try
+        {
+            Directory.CreateDirectory(_scriptsDirectory);
+            files.AddRange(Directory.EnumerateFiles(_scriptsDirectory)
+                .Where(f => new[] { ".lua", ".luau", ".txt" }
+                    .Contains(Path.GetExtension(f), StringComparer.OrdinalIgnoreCase))
+                .OrderBy(Path.GetFileName, StringComparer.OrdinalIgnoreCase)
+                .Select(Path.GetFileName));
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { }
+        return files;
     }
 
     private void SentinelWindow_KeyDown(object? sender, KeyEventArgs e)
