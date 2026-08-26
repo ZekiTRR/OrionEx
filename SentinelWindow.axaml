@@ -103,8 +103,9 @@
               Margin="6,6,11,10" Spacing="9">
 
     <!-- ═══ 1. Options Panel (120×215) ═══ -->
-    <Border Background="#191919" BorderBrush="#101010" BorderThickness="1" CornerRadius="7"
-            BoxShadow="0 4px 8px rgba(0,0,0,0.55)" ClipToBounds="True"
+    <Border x:Name="OptionsPanel" IsVisible="False"
+            Background="#191919" BorderBrush="#101010" BorderThickness="1" CornerRadius="7"
+            ClipToBounds="True"
             Width="120" Height="215">
       <Grid RowDefinitions="33,*">
         <Border Grid.Row="0" BorderBrush="#111111" BorderThickness="0,0,0,1">
@@ -129,7 +130,7 @@
 
     <!-- ═══ 2. Editor Window (586×306) ═══ -->
     <Border Background="#191919" BorderBrush="#101010" BorderThickness="1" CornerRadius="7"
-            BoxShadow="0 4px 8px rgba(0,0,0,0.55)" ClipToBounds="True"
+            ClipToBounds="True"
             Width="586" Height="306">
       <Grid RowDefinitions="33,247,26">
         <!-- Title bar -->
@@ -168,8 +169,13 @@
             </Border>
           </Grid>
           <Border Grid.Column="2" Background="#151515">
-            <TextBlock Text="BSS.txt" FontSize="12" Foreground="#F4F4F4"
-                       HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,5,0,0" />
+            <Grid RowDefinitions="24,*">
+              <TextBlock Grid.Row="0" Text="Script List" FontSize="11" Foreground="#999999"
+                         HorizontalAlignment="Center" VerticalAlignment="Center" />
+              <ListBox Grid.Row="1" x:Name="ScriptsList" Classes="sn-files" Background="Transparent"
+                       BorderThickness="0" FontSize="11" Foreground="#CCCCCC"
+                       DoubleTapped="ScriptsList_DoubleTapped" Margin="4,0" />
+            </Grid>
           </Border>
         </Grid>
 
@@ -200,8 +206,9 @@
     </Border>
 
     <!-- ═══ 3. Script Hub Window (386×335) ═══ -->
-    <Border Background="#191919" BorderBrush="#101010" BorderThickness="1" CornerRadius="7"
-            BoxShadow="0 4px 8px rgba(0,0,0,0.55)" ClipToBounds="True"
+    <Border x:Name="HubPanel" IsVisible="False"
+            Background="#191919" BorderBrush="#101010" BorderThickness="1" CornerRadius="7"
+            ClipToBounds="True"
             Width="386" Height="335">
       <Grid RowDefinitions="33,*">
         <Border Grid.Row="0" BorderBrush="#111111" BorderThickness="0,0,0,1">

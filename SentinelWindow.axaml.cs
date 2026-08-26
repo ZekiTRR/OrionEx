@@ -23,6 +23,9 @@ public sealed partial class SentinelWindow : Window
     private bool _closingForOrion;
     private bool _returnRequested;
     private StackPanel? _consoleOutput;
+    private ListBox? _scriptsList;
+    private List<string> _scriptFiles = [];
+    private StackPanel? _tabStrip;
 
     public SentinelWindow() : this(
         System.IO.Path.Combine(AppContext.BaseDirectory, "Scripts"),
@@ -43,6 +46,8 @@ public sealed partial class SentinelWindow : Window
         AvaloniaXamlLoader.Load(this);
         _webView = this.FindControl<NativeWebView>("EditorWebView");
         _consoleOutput = this.FindControl<StackPanel>("ConsoleOutput");
+        _scriptsList = this.FindControl<ListBox>("ScriptsList");
+        _tabStrip = this.FindControl<StackPanel>("EditorTabStrip");
 
         Topmost = OrbitPreferences.TopMostEnabled;
         if (this.FindControl<CheckBox>("OptTopMost") is { } optTop)
@@ -63,6 +68,7 @@ public sealed partial class SentinelWindow : Window
     private async void SentinelWindow_Opened(object? sender, EventArgs e)
     {
         Opened -= SentinelWindow_Opened;
+        RefreshScriptList();
         RevealEditor();
     }
 
@@ -303,6 +309,36 @@ public sealed partial class SentinelWindow : Window
     private void ConsoleClear_Click(object? s, RoutedEventArgs e) => _consoleOutput?.Children.Clear();
 
     // ─────────────────────── keyboard ───────────────────────
+
+    private void RefreshScriptList()
+    {
+        if (_scriptsList is null) return;
+        _scriptFiles.Clear();
+        try
+        {
+            Directory.CreateDirectory(_scriptsDirectory);
+            _scriptFiles.AddRange(Directory.EnumerateFiles(_scriptsDirectory)
+                .Where(f => new[] { ".lua", ".luau", ".txt" }
+                    .Contains(Path.GetExtension(f), StringComparer.OrdinalIgnoreCase))
+                .OrderBy(Path.GetFileName, StringComparer.OrdinalIgnoreCase)
+                .Select(Path.GetFileName));
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { }
+        _scriptsList.ItemsSource = _scriptFiles;
+    }
+
+    private async void ScriptsList_DoubleTapped(object? sender, TappedEventArgs e)
+    {
+        if (_scriptsList?.SelectedItem is not string fileName) return;
+        _scriptsList.SelectedItem = null;
+        try
+        {
+            var path = System.IO.Path.Combine(_scriptsDirectory, fileName);
+            var content = await File.ReadAllTextAsync(path);
+            SetEditorContent(content);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { }
+    }
 
     private void SentinelWindow_KeyDown(object? sender, KeyEventArgs e)
     {
