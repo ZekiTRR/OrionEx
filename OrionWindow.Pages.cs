@@ -405,12 +405,6 @@ public sealed partial class OrionWindow
                         workspace,
                         RestoreOrionWorkspace));
                     break;
-                case "AimWareV4":
-                    ShowPreservedAvaloniaWindow(new AimWareV4Window(
-                        _orionWorkspace.ScriptsDirectory,
-                        workspace,
-                        RestoreOrionWorkspace));
-                    break;
                 case "SirHurtV5Remake":
                     ShowPreservedAvaloniaWindow(new SirHurtV5RemakeWindow(
                         _orionWorkspace.ScriptsDirectory,
