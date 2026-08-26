@@ -54,6 +54,7 @@ public sealed partial class SentinelWindow : Window
             optTop.IsChecked = Topmost;
 
         _bridge.LogReceived += Bridge_LogReceived;
+        _bridge.ConnectionChanged += Bridge_ConnectionChanged;
         Closed += SentinelWindow_Closed;
         Opened += SentinelWindow_Opened;
         KeyDown += SentinelWindow_KeyDown;
@@ -76,6 +77,7 @@ public sealed partial class SentinelWindow : Window
     {
         _webViewDisposed = true;
         _bridge.LogReceived -= Bridge_LogReceived;
+        _bridge.ConnectionChanged -= Bridge_ConnectionChanged;
         _uiServer?.Dispose();
 
         if (!_closingForOrion && !_returnRequested)
@@ -140,8 +142,26 @@ public sealed partial class SentinelWindow : Window
             var uiRoot = System.IO.Path.Combine(AppContext.BaseDirectory, "MonacoPreview");
             _uiServer = new MonacoStaticServer(uiRoot);
             _webView.Source = _uiServer.Address;
+            _webView.NavigationCompleted += async (_, _) =>
+            {
+                _webViewReady = true;
+                PushConsoleSnapshot();
+                await SetEditorContentFromWorkspace();
+            };
         }
         catch { }
+    }
+
+    private async Task SetEditorContentFromWorkspace()
+    {
+        var content = _workspace.Tabs.FirstOrDefault()?.Content ?? "";
+        if (string.IsNullOrEmpty(content)) return;
+        try
+        {
+            var json = System.Text.Json.JsonSerializer.Serialize(content);
+            _webView?.InvokeScript($"window.orbitSetContent && window.orbitSetContent({json}, 'lua');");
+        }
+        catch (InvalidOperationException) { }
     }
 
     private async Task<string> GetEditorContentAsync()
@@ -272,6 +292,37 @@ public sealed partial class SentinelWindow : Window
     }
 
     // ─────────────────────── console ───────────────────────
+
+    private void Bridge_ConnectionChanged(bool connected)
+    {
+        // Orion bridge is always available; no action needed.
+    }
+
+    private void PushConsoleSnapshot()
+    {
+        if (_webViewDisposed || _webView is null || !_webViewReady) return;
+        try
+        {
+            var lines = new List<string>();
+            foreach (var entry in _bridge.GetLogSnapshot())
+            {
+                var normalized = string.IsNullOrWhiteSpace(entry.Level) ? "info" : entry.Level.ToLowerInvariant();
+                var prefix = normalized switch
+                {
+                    "warn" or "warning" => "[warn]   ",
+                    "error" => "[error]  ",
+                    "print" or "output" => "[print]  ",
+                    _ => "[info]   "
+                };
+                lines.Add(System.Text.Json.JsonSerializer.Serialize(prefix + (entry.Message ?? "")));
+            }
+
+            if (lines.Count == 0) return;
+            var array = "[" + string.Join(",", lines) + "]";
+            _webView.InvokeScript($"window.addConsoleLines && window.addConsoleLines({array});");
+        }
+        catch (InvalidOperationException) { }
+    }
 
     private void Bridge_LogReceived(string level, string message)
     {

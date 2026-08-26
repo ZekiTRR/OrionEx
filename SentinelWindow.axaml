@@ -2,10 +2,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="OrbitAvalonia.SentinelWindow"
         Title="Sentinel"
-        Width="1111" Height="335"
-        MinWidth="700" MinHeight="335"
+        Width="600" Height="335"
+        MinWidth="560" MinHeight="335"
         Background="#0C1014"
-        ExtendClientAreaToDecorationsHint="True"
+        WindowDecorations="None"
         WindowStartupLocation="CenterScreen"
         FontFamily="Segoe UI, Arial"
         FontSize="12"
@@ -99,8 +99,8 @@
     </Style>
   </Window.Styles>
 
-  <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top"
-              Margin="6,6,11,10" Spacing="9">
+  <Grid HorizontalAlignment="Center" VerticalAlignment="Top"
+        Margin="6,6,11,10" ColumnDefinitions="Auto,Auto,Auto" ColumnSpacing="9">
 
     <!-- ═══ 1. Options Panel (120×215) ═══ -->
     <Border x:Name="OptionsPanel" IsVisible="False"
@@ -232,5 +232,5 @@
       </Grid>
     </Border>
 
-  </StackPanel>
+  </Grid>
 </Window>
