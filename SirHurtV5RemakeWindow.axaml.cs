@@ -27,6 +27,9 @@ public sealed partial class SirHurtV5RemakeWindow : Window
     private NativeWebView? _webView;
     private MonacoStaticServer? _uiServer;
     private bool _webViewDisposed;
+    private bool _closingForOrion;
+    private bool _returnRequested;
+    private string? _lastKnownContent;
 
     internal SirHurtV5RemakeWindow() : this(
         System.IO.Path.Combine(AppContext.BaseDirectory, "Scripts"),
@@ -121,6 +124,13 @@ public sealed partial class SirHurtV5RemakeWindow : Window
         }
     }
 
+    internal void CloseForOrion()
+    {
+        _closingForOrion = true;
+        _returnRequested = true;
+        Close();
+    }
+
     private void SirHurtV5RemakeWindow_Closed(object? sender, EventArgs e)
     {
         _webViewDisposed = true;
@@ -133,6 +143,13 @@ public sealed partial class SirHurtV5RemakeWindow : Window
         _uiServer?.Dispose();
         _filesService.Dispose();
         _http.Dispose();
+
+        if (!_closingForOrion && !_returnRequested)
+        {
+            _returnRequested = true;
+            _closingForOrion = true;
+            _returnToOrion(_workspace.CloneDetached());
+        }
     }
 
     // ─────────────────────────── bridge dispatch ───────────────────────────
@@ -313,8 +330,9 @@ public sealed partial class SirHurtV5RemakeWindow : Window
             case "Close":
                 Dispatcher.UIThread.Post(() =>
                 {
+                    // workspace is passed back as-is
                     _returnToOrion(_workspace.CloneDetached());
-                    Close();
+                    Hide();
                 });
                 return "ok";
 
@@ -398,11 +416,11 @@ public sealed partial class SirHurtV5RemakeWindow : Window
                 return "ok";
 
             case "OpenFile":
-                OpenFileViaPicker();
+                OpenFileWinForms();
                 return "ok";
 
             case "SaveFile":
-                SaveFileViaPicker(Arg(0));
+                SaveFileWinForms(Arg(0));
                 return "ok";
 
             case "StartCustomDrag":
@@ -551,102 +569,70 @@ public sealed partial class SirHurtV5RemakeWindow : Window
 
     // ─────────────────────────── file pickers ───────────────────────────
 
-    private TaskCompletionSource<string[]?>? _openFileCompletion;
-    private TaskCompletionSource<string?>? _saveFileCompletion;
-
-    private void OpenFileViaPicker()
+    private void OpenFileWinForms()
     {
-        var completion = _openFileCompletion = new TaskCompletionSource<string[]?>(TaskCreationOptions.RunContinuationsAsynchronously);
-        Dispatcher.UIThread.Post(async () =>
+        var thread = new System.Threading.Thread(() =>
         {
             try
             {
-                var files = await StorageProvider.OpenFilePickerAsync(new Avalonia.Platform.Storage.FilePickerOpenOptions
+                using var dialog = new System.Windows.Forms.OpenFileDialog
                 {
                     Title = "Open script",
-                    AllowMultiple = false,
-                    FileTypeFilter =
-                    [
-                        new Avalonia.Platform.Storage.FilePickerFileType("Script files")
+                    Filter = "Script files (*.lua;*.luau;*.txt)|*.lua;*.luau;*.txt|All files (*.*)|*.*"
+                };
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    var content = File.ReadAllText(dialog.FileName);
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        try
                         {
-                            Patterns = ["*.lua", "*.luau", "*.txt"]
+                            _webView?.InvokeScript(
+                                "window.__zenithOpenFile && window.__zenithOpenFile(" +
+                                System.Text.Json.JsonSerializer.Serialize(
+                                    System.IO.Path.GetFileName(dialog.FileName)) + ", " +
+                                System.Text.Json.JsonSerializer.Serialize(content) + ")");
                         }
-                    ]
-                });
-
-                var file = files.FirstOrDefault();
-                if (file is null)
-                {
-                    completion.SetResult(null);
-                    return;
+                        catch (InvalidOperationException) { }
+                    });
                 }
-
-                await using var stream = await file.OpenReadAsync();
-                using var reader = new StreamReader(stream);
-                var content = await reader.ReadToEndAsync();
-                completion.TrySetResult(new[] { file.Name, content });
             }
-            catch (Exception exception)
+            catch (Exception ex) when (ex is IOException or System.ComponentModel.Win32Exception)
             {
-                try
-                {
-                    System.IO.File.AppendAllText(
-                        System.IO.Path.Combine(System.IO.Path.GetTempPath(), "v5-bridge.log"),
-                        DateTime.Now.ToString("HH:mm:ss") + " OpenFile error: " + exception + "\n");
-                }
-                catch { }
-
-                completion.TrySetResult(null);
             }
-        });
+        })
+        { IsBackground = true };
+        thread.SetApartmentState(System.Threading.ApartmentState.STA);
+        thread.Start();
     }
 
-    private void SaveFileViaPicker(string content)
+    private void SaveFileWinForms(string content)
     {
-        var completion = _saveFileCompletion = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
-        Dispatcher.UIThread.Post(async () =>
+        var thread = new System.Threading.Thread(() =>
         {
             try
             {
-                var file = await StorageProvider.SaveFilePickerAsync(new Avalonia.Platform.Storage.FilePickerSaveOptions
+                using var dialog = new System.Windows.Forms.SaveFileDialog
                 {
                     Title = "Save script",
-                    DefaultExtension = "lua",
-                    FileTypeChoices =
-                    [
-                        new Avalonia.Platform.Storage.FilePickerFileType("Lua script") { Patterns = ["*.lua"] },
-                        new Avalonia.Platform.Storage.FilePickerFileType("Text file") { Patterns = ["*.txt"] }
-                    ]
-                });
-
-                if (file is null)
+                    Filter = "Lua script (*.lua)|*.lua|Text file (*.txt)|*.txt",
+                    DefaultExt = "lua"
+                };
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    completion.SetResult(null);
-                    return;
+                    File.WriteAllText(dialog.FileName, content ?? string.Empty);
                 }
-
-                await using var stream = await file.OpenWriteAsync();
-                stream.SetLength(0);
-                await using var writer = new StreamWriter(stream);
-                await writer.WriteAsync(content ?? string.Empty);
-                completion.TrySetResult(file.Name);
             }
-            catch (Exception exception)
+            catch (Exception ex) when (ex is IOException or System.ComponentModel.Win32Exception)
             {
-                try
-                {
-                    System.IO.File.AppendAllText(
-                        System.IO.Path.Combine(System.IO.Path.GetTempPath(), "v5-bridge.log"),
-                        DateTime.Now.ToString("HH:mm:ss") + " SaveFile error: " + exception + "\n");
-                }
-                catch { }
-
-                completion.TrySetResult(null);
             }
-        });
+        })
+        { IsBackground = true };
+        thread.SetApartmentState(System.Threading.ApartmentState.STA);
+        thread.Start();
     }
 
-    // ───────────────── native drag & edge resize ─────────────────
+    // ───────────────── native drag & edge resize ─────────────────    // ───────────────── native drag & edge resize ─────────────────
 
     [System.Runtime.InteropServices.DllImport("user32.dll")]
     private static extern bool GetCursorPos(out NativePoint p);
