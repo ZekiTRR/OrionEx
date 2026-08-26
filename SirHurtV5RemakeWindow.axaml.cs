@@ -133,7 +133,6 @@ public sealed partial class SirHurtV5RemakeWindow : Window
         _uiServer?.Dispose();
         _filesService.Dispose();
         _http.Dispose();
-        _returnToOrion(_workspace.CloneDetached());
     }
 
     // ─────────────────────────── bridge dispatch ───────────────────────────
@@ -312,7 +311,11 @@ public sealed partial class SirHurtV5RemakeWindow : Window
                 return "ok";
 
             case "Close":
-                Dispatcher.UIThread.Post(Close);
+                Dispatcher.UIThread.Post(() =>
+                {
+                    _returnToOrion(_workspace.CloneDetached());
+                    Close();
+                });
                 return "ok";
 
             case "SetTopMost":
@@ -395,10 +398,12 @@ public sealed partial class SirHurtV5RemakeWindow : Window
                 return "ok";
 
             case "OpenFile":
-                return await OpenFileViaPickerAsync();
+                OpenFileViaPicker();
+                return "ok";
 
             case "SaveFile":
-                return await SaveFileViaPickerAsync(Arg(0));
+                SaveFileViaPicker(Arg(0));
+                return "ok";
 
             case "StartCustomDrag":
                 StartNativeDrag();
@@ -546,9 +551,12 @@ public sealed partial class SirHurtV5RemakeWindow : Window
 
     // ─────────────────────────── file pickers ───────────────────────────
 
-    private Task<string[]?> OpenFileViaPickerAsync()
+    private TaskCompletionSource<string[]?>? _openFileCompletion;
+    private TaskCompletionSource<string?>? _saveFileCompletion;
+
+    private void OpenFileViaPicker()
     {
-        var completion = new TaskCompletionSource<string[]?>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var completion = _openFileCompletion = new TaskCompletionSource<string[]?>(TaskCreationOptions.RunContinuationsAsynchronously);
         Dispatcher.UIThread.Post(async () =>
         {
             try
@@ -576,7 +584,7 @@ public sealed partial class SirHurtV5RemakeWindow : Window
                 await using var stream = await file.OpenReadAsync();
                 using var reader = new StreamReader(stream);
                 var content = await reader.ReadToEndAsync();
-                completion.SetResult(new[] { file.Name, content });
+                completion.TrySetResult(new[] { file.Name, content });
             }
             catch (Exception exception)
             {
@@ -588,16 +596,14 @@ public sealed partial class SirHurtV5RemakeWindow : Window
                 }
                 catch { }
 
-                completion.SetResult(null);
+                completion.TrySetResult(null);
             }
         });
-
-        return completion.Task;
     }
 
-    private Task<string?> SaveFileViaPickerAsync(string content)
+    private void SaveFileViaPicker(string content)
     {
-        var completion = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var completion = _saveFileCompletion = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
         Dispatcher.UIThread.Post(async () =>
         {
             try
@@ -623,7 +629,7 @@ public sealed partial class SirHurtV5RemakeWindow : Window
                 stream.SetLength(0);
                 await using var writer = new StreamWriter(stream);
                 await writer.WriteAsync(content ?? string.Empty);
-                completion.SetResult(file.Name);
+                completion.TrySetResult(file.Name);
             }
             catch (Exception exception)
             {
@@ -635,11 +641,9 @@ public sealed partial class SirHurtV5RemakeWindow : Window
                 }
                 catch { }
 
-                completion.SetResult(null);
+                completion.TrySetResult(null);
             }
         });
-
-        return completion.Task;
     }
 
     // ───────────────── native drag & edge resize ─────────────────
