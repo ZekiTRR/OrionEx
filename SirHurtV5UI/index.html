@@ -43,7 +43,7 @@
                 setTimeout(function () { if (pending[id]) { delete pending[id]; resolve(null); } }, 20000);
             });
         }
-        var methods = ['Execute','GetScripts','ReadScript','ReadScriptRaw','WriteScript','DeleteScript','RenameScript','FetchUrlContent','FetchRScripts','OpenBrowser','Minimize','Maximize','Close','StartDragging','EndCustomDrag','StartCustomDrag','UpdateCustomDrag','SetTopMost','SetUISize','UIReady','GetSavedSettings','SaveSettings','Attach','KillAllRoblox','CopyToClipboard','OpenFolder','OpenRobloxFolder','SetAutoInject','WatchFolder','UnloadToLoader','GetAuthTicket','GetAccountCookie','GetAccountsJSON','AddAccount','DeleteAccount','LaunchAccount','AddBulkCredentials','SubmitCookie','SubmitQuickLogin','AnswerCleanerPrompt','ClearRobloxCookies','ExecuteSirHurtCleaner','GetRobloxCleanerConfig','DeleteRobloxApiBanTraces','GetNetworkAdapters','RandomizeMac','RestoreMac','GetPlaceDetails','GetServerDetails','GetServerRegion','GetServersList','GetVIPServers','SearchPlayerInServers','FetchWeaoStatus','DownloadRobloxVersion','DeleteRobloxVersion','InstallRoblox','IsSirHurtInstalled','DowngradeSirHurt','InstallUiUpdate','AcknowledgeUpdateWelcome','GetUpdateWelcome','SetLoaderEnabled','SetMultiInstance','SetWindowsStartup','SetWindowOpacity','SetWindowRounded','SetBackdropType','SetAcrylicEnabled','OpenFile','SelectFolder'];
+        var methods = ['Execute','GetScripts','ReadScript','ReadScriptRaw','WriteScript','DeleteScript','RenameScript','FetchUrlContent','FetchRScripts','SaveFile','OpenBrowser','Minimize','Maximize','Close','StartDragging','EndCustomDrag','StartCustomDrag','UpdateCustomDrag','SetTopMost','SetUISize','UIReady','GetSavedSettings','SaveSettings','Attach','KillAllRoblox','CopyToClipboard','OpenFolder','OpenRobloxFolder','SetAutoInject','WatchFolder','UnloadToLoader','GetAuthTicket','GetAccountCookie','GetAccountsJSON','AddAccount','DeleteAccount','LaunchAccount','AddBulkCredentials','SubmitCookie','SubmitQuickLogin','AnswerCleanerPrompt','ClearRobloxCookies','ExecuteSirHurtCleaner','GetRobloxCleanerConfig','DeleteRobloxApiBanTraces','GetNetworkAdapters','RandomizeMac','RestoreMac','GetPlaceDetails','GetServerDetails','GetServerRegion','GetServersList','GetVIPServers','SearchPlayerInServers','FetchWeaoStatus','DownloadRobloxVersion','DeleteRobloxVersion','InstallRoblox','IsSirHurtInstalled','DowngradeSirHurt','InstallUiUpdate','AcknowledgeUpdateWelcome','GetUpdateWelcome','SetLoaderEnabled','SetMultiInstance','SetWindowsStartup','SetWindowOpacity','SetWindowRounded','SetBackdropType','SetAcrylicEnabled','OpenFile','SelectFolder'];
         var b = {};
         methods.forEach(function (m) {
             b[m] = function () { return call(m, Array.prototype.slice.call(arguments)); };
@@ -83,7 +83,8 @@
         #settings-autoexe,
         #settings-misc,
         #settings-security,
-        #settings-themes {
+        #settings-themes,
+        #console-box {
             display: none !important;
         }
     </style>

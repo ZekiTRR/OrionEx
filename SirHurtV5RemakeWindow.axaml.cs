@@ -650,10 +650,17 @@ public sealed partial class SirHurtV5RemakeWindow : Window
 
         try
         {
-            var levelJson = System.Text.Json.JsonSerializer.Serialize(level ?? "info");
-            var messageJson = System.Text.Json.JsonSerializer.Serialize(message ?? "");
+            var normalized = string.IsNullOrWhiteSpace(level) ? "info" : level.ToLowerInvariant();
+            var prefix = normalized switch
+            {
+                "warn" or "warning" => "[warn]   ",
+                "error" => "[error]  ",
+                "print" or "output" => "[print]  ",
+                _ => "[info]   "
+            };
+            var text = System.Text.Json.JsonSerializer.Serialize(prefix + (message ?? ""));
             webView.InvokeScript(
-                $"window.addBasicConsoleOutput && window.addBasicConsoleOutput({levelJson}, {messageJson});");
+                $"window.addConsoleLines && window.addConsoleLines([{text}]);");
         }
         catch (InvalidOperationException)
         {
@@ -669,13 +676,24 @@ public sealed partial class SirHurtV5RemakeWindow : Window
 
         try
         {
+            var lines = new List<string>();
             foreach (var entry in _bridge.GetLogSnapshot())
             {
-                var levelJson = System.Text.Json.JsonSerializer.Serialize(entry.Level ?? "info");
-                var messageJson = System.Text.Json.JsonSerializer.Serialize(entry.Message ?? "");
-                webView.InvokeScript(
-                    $"window.addBasicConsoleOutput && window.addBasicConsoleOutput({levelJson}, {messageJson});");
+                var normalized = string.IsNullOrWhiteSpace(entry.Level) ? "info" : entry.Level.ToLowerInvariant();
+                var prefix = normalized switch
+                {
+                    "warn" or "warning" => "[warn]   ",
+                    "error" => "[error]  ",
+                    "print" or "output" => "[print]  ",
+                    _ => "[info]   "
+                };
+                lines.Add(System.Text.Json.JsonSerializer.Serialize(prefix + (entry.Message ?? "")));
             }
+
+            if (lines.Count == 0) return;
+            var array = "[" + string.Join(",", lines) + "]";
+            webView.InvokeScript(
+                $"window.addConsoleLines && window.addConsoleLines({array});");
         }
         catch (InvalidOperationException)
         {
