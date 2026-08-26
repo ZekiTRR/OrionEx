@@ -1,12 +1,11 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
-using Avalonia.Threading;
 using Avalonia.VisualTree;
+using Avalonia.Threading;
 using System.Diagnostics;
 
 namespace OrbitAvalonia;
@@ -14,17 +13,16 @@ namespace OrbitAvalonia;
 public sealed partial class SentinelWindow : Window
 {
     private readonly UnifiedBridgeServer _bridge = UnifiedBridgeServer.Shared;
-    private readonly EditorWorkspaceService _filesService = new();
     private readonly string _scriptsDirectory;
     private readonly EditorWorkspaceState _workspace;
     private readonly Action<EditorWorkspaceState> _returnToOrion;
     private NativeWebView? _webView;
     private MonacoStaticServer? _uiServer;
-    private ListBox? _scriptsList;
     private bool _webViewReady;
     private bool _webViewDisposed;
     private bool _closingForOrion;
     private bool _returnRequested;
+    private StackPanel? _consoleOutput;
 
     public SentinelWindow() : this(
         System.IO.Path.Combine(AppContext.BaseDirectory, "Scripts"),
@@ -44,9 +42,13 @@ public sealed partial class SentinelWindow : Window
 
         AvaloniaXamlLoader.Load(this);
         _webView = this.FindControl<NativeWebView>("EditorWebView");
-        _scriptsList = this.FindControl<ListBox>("ScriptsList");
+        _consoleOutput = this.FindControl<StackPanel>("ConsoleOutput");
 
         Topmost = OrbitPreferences.TopMostEnabled;
+        if (this.FindControl<CheckBox>("OptTopMost") is { } optTop)
+            optTop.IsChecked = Topmost;
+
+        _bridge.LogReceived += Bridge_LogReceived;
         Closed += SentinelWindow_Closed;
         Opened += SentinelWindow_Opened;
         KeyDown += SentinelWindow_KeyDown;
@@ -61,21 +63,14 @@ public sealed partial class SentinelWindow : Window
     private async void SentinelWindow_Opened(object? sender, EventArgs e)
     {
         Opened -= SentinelWindow_Opened;
-        RefreshScriptList();
         RevealEditor();
-    }
-
-    private void RefreshScriptList()
-    {
-        if (_scriptsList is null) return;
-        _scriptsList.ItemsSource = GetScriptFileNames();
     }
 
     private void SentinelWindow_Closed(object? sender, EventArgs e)
     {
         _webViewDisposed = true;
+        _bridge.LogReceived -= Bridge_LogReceived;
         _uiServer?.Dispose();
-        _filesService.Dispose();
 
         if (!_closingForOrion && !_returnRequested)
         {
@@ -111,9 +106,21 @@ public sealed partial class SentinelWindow : Window
         if (WindowState != WindowState.Maximized) BeginMoveDrag(e);
     }
 
-    private void Minimize_Click(object? s, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+    private void EditorMinimize_Click(object? s, RoutedEventArgs e) => WindowState = WindowState.Minimized;
 
-    private void Close_Click(object? s, RoutedEventArgs e) => _ = ReturnToOrionAsync();
+    private void EditorClose_Click(object? s, RoutedEventArgs e) => _ = ReturnToOrionAsync();
+
+    private void OptionsClose_Click(object? s, RoutedEventArgs e)
+    {
+        if (this.FindControl<Border>("OptionsPanel") is { } panel)
+            panel.IsVisible = !panel.IsVisible;
+    }
+
+    private void HubClose_Click(object? s, RoutedEventArgs e)
+    {
+        if (this.FindControl<Border>("HubPanel") is { } panel)
+            panel.IsVisible = !panel.IsVisible;
+    }
 
     // ─────────────────────── editor ───────────────────────
 
@@ -213,6 +220,14 @@ public sealed partial class SentinelWindow : Window
 
     private void ScriptHub_Click(object? s, RoutedEventArgs e)
     {
+        if (this.FindControl<Border>("HubPanel") is { } hub)
+            hub.IsVisible = !hub.IsVisible;
+    }
+
+    private void Settings_Click(object? s, RoutedEventArgs e)
+    {
+        if (this.FindControl<Border>("OptionsPanel") is { } options)
+            options.IsVisible = !options.IsVisible;
     }
 
     private async void KillRoblox_Click(object? s, RoutedEventArgs e)
@@ -228,59 +243,66 @@ public sealed partial class SentinelWindow : Window
         catch { }
     }
 
-    private void Settings_Click(object? s, RoutedEventArgs e)
+    private void HubExecute_Click(object? s, RoutedEventArgs e) => Execute_Click(s, e);
+
+    private void HubItem_Click(object? s, RoutedEventArgs e)
     {
-        if (this.FindControl<Panel>("SettingsOverlay") is { } overlay)
+        if (s is not Button { Tag: string tag }) return;
+        try
         {
-            overlay.IsVisible = !overlay.IsVisible;
+            var path = System.IO.Path.Combine(_scriptsDirectory, tag + ".lua");
+            if (File.Exists(path)) SetEditorContent(File.ReadAllText(path));
         }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { }
     }
 
-    private void SettingsBackdrop_Click(object? s, PointerPressedEventArgs e)
+    private void OptTopMost_Changed(object? s, RoutedEventArgs e)
     {
-        if (this.FindControl<Panel>("SettingsOverlay") is { } overlay)
-        {
-            overlay.IsVisible = false;
-        }
-    }
-
-    private void TglTopMost_Changed(object? s, RoutedEventArgs e)
-    {
-        if (this.FindControl<ToggleButton>("TglTopMost") is { } toggle)
+        if (this.FindControl<CheckBox>("OptTopMost") is { } toggle)
         {
             Topmost = toggle.IsChecked == true;
             OrbitPreferences.SetTopMost(Topmost);
         }
     }
 
-    private async void ScriptsList_DoubleTapped(object? sender, TappedEventArgs e)
+    // ─────────────────────── console ───────────────────────
+
+    private void Bridge_LogReceived(string level, string message)
     {
-        if (_scriptsList?.SelectedItem is not string fileName) return;
-        _scriptsList.SelectedItem = null;
-        try
+        Dispatcher.UIThread.Post(() =>
         {
-            var path = System.IO.Path.Combine(_scriptsDirectory, fileName);
-            var content = await File.ReadAllTextAsync(path);
-            SetEditorContent(content);
-        }
-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { }
+            if (_consoleOutput is null) return;
+            var normalized = string.IsNullOrWhiteSpace(level) ? "info" : level.ToLowerInvariant();
+            var prefix = normalized switch
+            {
+                "warn" or "warning" => "[warn]   ",
+                "error" => "[error]  ",
+                "print" or "output" => "[print]  ",
+                _ => "[info]   "
+            };
+            var color = normalized switch
+            {
+                "warn" or "warning" => "#C8A25A",
+                "error" => "#D06B6B",
+                "print" or "output" => "#9CCB6B",
+                _ => "#B8B8BA"
+            };
+            _consoleOutput.Children.Add(new TextBlock
+            {
+                Text = prefix + message,
+                FontFamily = new FontFamily("Consolas"),
+                FontSize = 11,
+                Foreground = new SolidColorBrush(Color.Parse(color)),
+                TextWrapping = TextWrapping.Wrap
+            });
+            while (_consoleOutput.Children.Count > 500)
+                _consoleOutput.Children.RemoveAt(0);
+        });
     }
 
-    private System.Collections.Generic.List<string> GetScriptFileNames()
-    {
-        var files = new System.Collections.Generic.List<string>();
-        try
-        {
-            Directory.CreateDirectory(_scriptsDirectory);
-            files.AddRange(Directory.EnumerateFiles(_scriptsDirectory)
-                .Where(f => new[] { ".lua", ".luau", ".txt" }
-                    .Contains(Path.GetExtension(f), StringComparer.OrdinalIgnoreCase))
-                .OrderBy(Path.GetFileName, StringComparer.OrdinalIgnoreCase)
-                .Select(Path.GetFileName));
-        }
-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { }
-        return files;
-    }
+    private void ConsoleClear_Click(object? s, RoutedEventArgs e) => _consoleOutput?.Children.Clear();
+
+    // ─────────────────────── keyboard ───────────────────────
 
     private void SentinelWindow_KeyDown(object? sender, KeyEventArgs e)
     {
