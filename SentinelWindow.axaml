@@ -2,19 +2,19 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="OrbitAvalonia.SentinelWindow"
         Title="Sentinel"
-        Width="600" Height="335"
-        MinWidth="560" MinHeight="335"
-        Background="#0C1014"
+        Width="586" Height="306"
+        MinWidth="500" MinHeight="280"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
         WindowDecorations="None"
         WindowStartupLocation="CenterScreen"
-        FontFamily="Segoe UI, Arial"
+        FontFamily="avares://Orion/Assets/Zenith/Fonts#Nunito"
         FontSize="12"
         RenderOptions.TextRenderingMode="Antialias"
-        Icon="avares://Orion/Assets/Orion/Sharp/orion-app.ico">
+        Icon="avares://Orion/Assets/Orion/Sentinel/sentinel.ico">
 
   <Window.Resources>
     <StreamGeometry x:Key="AwPaperclipIcon">M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48</StreamGeometry>
-    <StreamGeometry x:Key="AwGearIcon">M12 15.5A3.5 3.5 0 1 0 12 8.5a3.5 3.5 0 0 0 0 7Z M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z</StreamGeometry>
   </Window.Resources>
 
   <Window.Styles>
@@ -26,6 +26,7 @@
       <Setter Property="BorderThickness" Value="0" />
       <Setter Property="Background" Value="Transparent" />
       <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="CornerRadius" Value="4" />
     </Style>
 
     <Style Selector="Button.sn-close">
@@ -36,40 +37,17 @@
     </Style>
     <Style Selector="Button.sn-close:pointerover">
       <Setter Property="Foreground" Value="#DB1739" />
-    </Style>
-
-    <Style Selector="CheckBox.sn-opt">
-      <Setter Property="Height" Value="24" />
-      <Setter Property="FontSize" Value="12" />
-      <Setter Property="Foreground" Value="#F4F4F4" />
-      <Setter Property="Cursor" Value="Hand" />
-    </Style>
-
-    <Style Selector="Button.sn-kill">
-      <Setter Property="Height" Value="17" />
-      <Setter Property="FontSize" Value="12" />
-      <Setter Property="Foreground" Value="#F4F4F4" />
-      <Setter Property="HorizontalAlignment" Value="Left" />
-    </Style>
-
-    <Style Selector="Button.sn-tab">
-      <Setter Property="Height" Value="23" />
-      <Setter Property="Padding" Value="7,0" />
-      <Setter Property="Background" Value="#202020" />
-      <Setter Property="Foreground" Value="#B7B7B7" />
-      <Setter Property="FontSize" Value="12" />
-    </Style>
-    <Style Selector="Button.sn-tab.active">
-      <Setter Property="Background" Value="#565656" />
-      <Setter Property="Foreground" Value="#F4F4F4" />
+      <Setter Property="Background" Value="#2A0000" />
     </Style>
 
     <Style Selector="Button.sn-footer">
       <Setter Property="FontSize" Value="12" />
       <Setter Property="Foreground" Value="#F4F4F4" />
+      <Setter Property="Padding" Value="8,4" />
     </Style>
     <Style Selector="Button.sn-footer:pointerover">
       <Setter Property="Foreground" Value="#DB1739" />
+      <Setter Property="Background" Value="#2A0000" />
     </Style>
     <Style Selector="Button.sn-footer Path">
       <Setter Property="Stroke" Value="#F4F4F4" />
@@ -80,157 +58,89 @@
     <Style Selector="Button.sn-footer:pointerover Path">
       <Setter Property="Stroke" Value="#DB1739" />
     </Style>
-
-    <Style Selector="Button.sn-hub">
-      <Setter Property="Height" Value="18" />
-      <Setter Property="FontSize" Value="12" />
-      <Setter Property="Foreground" Value="#F4F4F4" />
-      <Setter Property="HorizontalAlignment" Value="Left" />
-    </Style>
-    <Style Selector="Button.sn-hub:pointerover">
-      <Setter Property="Foreground" Value="#DB1739" />
-    </Style>
-
-    <Style Selector="Button.sn-hub-exec">
-      <Setter Property="Height" Value="16" />
-      <Setter Property="FontSize" Value="12" />
-      <Setter Property="Foreground" Value="#F4F4F4" />
-      <Setter Property="HorizontalAlignment" Value="Left" />
-    </Style>
   </Window.Styles>
 
-  <Grid HorizontalAlignment="Center" VerticalAlignment="Top"
-        Margin="6,6,11,10" ColumnDefinitions="Auto,Auto,Auto" ColumnSpacing="9">
+  <!-- The window itself is the reference ".window" card:
+       #202020 behind, 1px #101010 border, 7px radius, drop shadow. -->
+  <Border CornerRadius="7" Background="#202020" BorderBrush="#101010" BorderThickness="1"
+          BoxShadow="0 4 8 0 #8C000000" ClipToBounds="True">
+    <Grid RowDefinitions="33,*,26">
 
-    <!-- ═══ 1. Options Panel (120×215) ═══ -->
-    <Border x:Name="OptionsPanel" IsVisible="False"
-            Background="#191919" BorderBrush="#101010" BorderThickness="1" CornerRadius="7"
-            ClipToBounds="True"
-            Width="120" Height="215">
-      <Grid RowDefinitions="33,*">
-        <Border Grid.Row="0" BorderBrush="#111111" BorderThickness="0,0,0,1">
-          <Button Classes="sn-close" Click="OptionsClose_Click"
-                  HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
-            <TextBlock Text="✕" FontSize="11" />
-          </Button>
-        </Border>
-        <StackPanel Grid.Row="1" Margin="6,3" Spacing="3">
-          <CheckBox Classes="sn-opt" x:Name="OptUnlockFps" Content="Unlock FPS" IsChecked="True" />
-          <CheckBox Classes="sn-opt" x:Name="OptAutoLaunch" Content="Auto Launch" />
-          <CheckBox Classes="sn-opt" x:Name="OptAutoAttach" Content="Auto Attach" IsChecked="True" />
-          <CheckBox Classes="sn-opt" x:Name="OptInternalUi" Content="Internal UI" IsChecked="True" />
-          <CheckBox Classes="sn-opt" x:Name="OptLegacyUi" Content="Legacy UI" IsChecked="True" />
-          <CheckBox Classes="sn-opt" x:Name="OptTopMost" Content="Top Most" IsChecked="True"
-                    IsCheckedChanged="OptTopMost_Changed" />
-          <Button Classes="sn-kill" Click="KillRoblox_Click" Content="Kill Roblox"
-                  HorizontalAlignment="Left" Padding="27,0,0,0" />
-        </StackPanel>
-      </Grid>
-    </Border>
+      <!-- ═══ Title bar (33px, #181818) ═══ -->
+      <Border Grid.Row="0" Background="#181818" BorderBrush="#101010" BorderThickness="0,0,0,1"
+              PointerPressed="TitleBar_PointerPressed">
+        <Grid Margin="8,0" ColumnDefinitions="Auto,*,Auto">
+          <Image Source="avares://Orion/Assets/Orion/Sentinel/sentinel.png"
+                 Width="17" Height="20" VerticalAlignment="Center" />
+          <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Spacing="12">
+            <Button Classes="sn-close" Click="EditorMinimize_Click">
+              <Rectangle Width="10" Height="1" Fill="#DDDDDD" VerticalAlignment="Center" />
+            </Button>
+            <Button Classes="sn-close" Click="EditorClose_Click">
+              <TextBlock Text="✕" FontSize="12" />
+            </Button>
+          </StackPanel>
+        </Grid>
+      </Border>
 
-    <!-- ═══ 2. Editor Window (586×306) ═══ -->
-    <Border Background="#191919" BorderBrush="#101010" BorderThickness="1" CornerRadius="7"
-            ClipToBounds="True"
-            Width="586" Height="306">
-      <Grid RowDefinitions="33,247,26">
-        <!-- Title bar -->
-        <Border Background="Transparent" BorderBrush="#101010" BorderThickness="0,0,0,1"
-                PointerPressed="TitleBar_PointerPressed">
-          <Grid Margin="8,0" ColumnDefinitions="Auto,*,Auto">
-            <Canvas Width="18" Height="22" VerticalAlignment="Center">
-              <Path Canvas.Left="2" Canvas.Top="3" Width="12" Height="7"
-                    Stroke="#DB1739" StrokeThickness="3" StrokeLineCap="Flat"
-                    Data="M0,7 L12,0" />
-              <Path Canvas.Left="2" Canvas.Top="12" Width="12" Height="7"
-                    Stroke="#DB1739" StrokeThickness="3" StrokeLineCap="Flat"
-                    Data="M0,0 L12,7" />
-            </Canvas>
-            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Spacing="12">
-              <Button Classes="sn-close" Click="EditorMinimize_Click">
-                <Rectangle Width="10" Height="1" Fill="#DDDDDD" VerticalAlignment="Center" />
-              </Button>
-              <Button Classes="sn-close" Click="EditorClose_Click">
-                <TextBlock Text="✕" FontSize="11" />
-              </Button>
-            </StackPanel>
-          </Grid>
-        </Border>
+      <!-- ═══ Editor layout (reference .editor-layout: 6px padding, 7px gap) ═══ -->
+      <Grid Grid.Row="1" Margin="6,6,6,0" ColumnDefinitions="*,7,139">
 
-        <!-- Editor layout -->
-        <Grid Grid.Row="1" Margin="6,6,6,0" ColumnDefinitions="427,7,139">
-          <Grid Grid.Column="0" RowDefinitions="23,*" Background="#151515">
-            <Border Grid.Row="0" Background="#141414">
-              <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
-                <StackPanel x:Name="EditorTabStrip" Orientation="Horizontal" VerticalAlignment="Stretch" />
+        <!-- .editor-main: tabbar (23px) over the code surface -->
+        <Grid Grid.Column="0" RowDefinitions="23,*" Background="#181818">
+          <Border Grid.Row="0" Background="#181818">
+            <ScrollViewer x:Name="TabScroll" HorizontalScrollBarVisibility="Hidden"
+                          VerticalScrollBarVisibility="Disabled"
+                          PointerWheelChanged="TabScroll_PointerWheelChanged">
+              <StackPanel x:Name="TabStrip" Orientation="Horizontal" VerticalAlignment="Stretch" />
+            </ScrollViewer>
+          </Border>
+          <Grid Grid.Row="1">
+            <NativeWebView x:Name="EditorWebView" Background="#181818" IsVisible="False" />
+            <Border x:Name="ConsolePanel" Background="#181818" IsVisible="False">
+              <ScrollViewer x:Name="ConsoleScroll" Background="Transparent" Padding="8,6">
+                <StackPanel x:Name="ConsoleOutput" Orientation="Vertical" />
               </ScrollViewer>
             </Border>
-            <Border Grid.Row="1" Background="#151515">
-              <NativeWebView x:Name="EditorWebView" Background="#151515" IsVisible="False" />
-            </Border>
           </Grid>
-          <Border Grid.Column="2" Background="#151515">
-            <Grid RowDefinitions="24,*">
-              <TextBlock Grid.Row="0" Text="Script List" FontSize="11" Foreground="#999999"
-                         HorizontalAlignment="Center" VerticalAlignment="Center" />
-              <ListBox Grid.Row="1" x:Name="ScriptsList" Classes="sn-files" Background="Transparent"
-                       BorderThickness="0" FontSize="11" Foreground="#CCCCCC"
-                       DoubleTapped="ScriptsList_DoubleTapped" Margin="4,0" />
-            </Grid>
-          </Border>
         </Grid>
 
-        <!-- Footer -->
-        <Border Grid.Row="2" Background="Transparent" BorderBrush="#101010" BorderThickness="0,1,0,0">
-          <Grid Margin="12,0,10,1" ColumnDefinitions="Auto,*,Auto">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="15">
-              <Button Classes="sn-footer" Click="Execute_Click" ToolTip.Tip="Execute (F5)">Execute</Button>
-              <Button Classes="sn-footer" Click="Open_Click" ToolTip.Tip="Open (Ctrl+O)">Open</Button>
-              <Button Classes="sn-footer" Click="Save_Click" ToolTip.Tip="Save (Ctrl+S)">Save</Button>
-              <Button Classes="sn-footer" Click="Clear_Click" ToolTip.Tip="Clear">Clear</Button>
-              <Button Classes="sn-footer" Click="Attach_Click" ToolTip.Tip="Attach">
-                <StackPanel Orientation="Horizontal" Spacing="4">
-                  <Path Data="{StaticResource AwPaperclipIcon}" Width="11" Height="11" Stretch="Uniform"
-                        Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="1.5"
-                        StrokeLineCap="Round" StrokeJoin="Round" />
-                  <TextBlock Text="Attach" VerticalAlignment="Center" />
-                </StackPanel>
-              </Button>
-            </StackPanel>
-            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Spacing="17">
-              <Button Classes="sn-footer" Click="ScriptHub_Click">Script Hub</Button>
-              <Button Classes="sn-footer" Click="Settings_Click">Settings</Button>
-            </StackPanel>
+        <!-- .file-pane (139px, full height) -->
+        <Border Grid.Column="2" Background="#181818">
+          <Grid RowDefinitions="24,*">
+            <TextBlock Grid.Row="0" Text="Script List" FontSize="12" Foreground="#B7B7B7"
+                       HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <ListBox Grid.Row="1" x:Name="ScriptsList" Classes="sn-files" Background="Transparent"
+                     BorderThickness="0" FontSize="12" Foreground="#CCCCCC"
+                     DoubleTapped="ScriptsList_DoubleTapped" Margin="4,0" />
           </Grid>
         </Border>
       </Grid>
-    </Border>
 
-    <!-- ═══ 3. Script Hub Window (386×335) ═══ -->
-    <Border x:Name="HubPanel" IsVisible="False"
-            Background="#191919" BorderBrush="#101010" BorderThickness="1" CornerRadius="7"
-            ClipToBounds="True"
-            Width="386" Height="335">
-      <Grid RowDefinitions="33,*">
-        <Border Grid.Row="0" BorderBrush="#111111" BorderThickness="0,0,0,1">
-          <Button Classes="sn-close" Click="HubClose_Click"
-                  HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
-            <TextBlock Text="✕" FontSize="11" />
-          </Button>
-        </Border>
-        <Grid Grid.Row="1" Margin="6,6,6,7" ColumnDefinitions="97,6,*">
-          <StackPanel Grid.Column="0" Background="#151515" Margin="5">
-            <Button Classes="sn-hub" Content="Dark Dex" Click="HubItem_Click" Tag="Dark Dex" />
-            <Button Classes="sn-hub" Content="Remote Spy" Click="HubItem_Click" Tag="Remote Spy" />
-            <Button Classes="sn-hub" Content="Script Dumpe" Click="HubItem_Click" Tag="Script Dumpe" />
+      <!-- ═══ Footer (26px) ═══ -->
+      <Border Grid.Row="2" Background="Transparent" BorderBrush="#101010" BorderThickness="0,1,0,0">
+        <Grid Margin="12,0,10,1" ColumnDefinitions="Auto,*,Auto">
+          <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="15">
+            <Button Classes="sn-footer" Click="Execute_Click" ToolTip.Tip="Execute (F5)">Execute</Button>
+            <Button Classes="sn-footer" Click="Open_Click" ToolTip.Tip="Open (Ctrl+O)">Open</Button>
+            <Button Classes="sn-footer" Click="Save_Click" ToolTip.Tip="Save (Ctrl+S)">Save</Button>
+            <Button Classes="sn-footer" Click="Clear_Click" ToolTip.Tip="Clear">Clear</Button>
+            <Button Classes="sn-footer" Click="Attach_Click" ToolTip.Tip="Attach">
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <Path Data="{StaticResource AwPaperclipIcon}" Width="11" Height="11" Stretch="Uniform"
+                      Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="1.5"
+                      StrokeLineCap="Round" StrokeJoin="Round" />
+                <TextBlock Text="Attach" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
           </StackPanel>
-          <Grid Grid.Column="2" RowDefinitions="201,5,70,5,*">
-            <Border Grid.Row="0" Background="#151515" CornerRadius="3" />
-            <Border Grid.Row="2" Background="#151515" CornerRadius="3" />
-            <Button Grid.Row="4" Classes="sn-hub-exec" Content="Execute" Click="HubExecute_Click" />
-          </Grid>
+          <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Spacing="17">
+            <Button Classes="sn-footer" Click="ScriptHub_Click">Script Hub</Button>
+            <Button Classes="sn-footer" Click="Settings_Click">Settings</Button>
+          </StackPanel>
         </Grid>
-      </Grid>
-    </Border>
+      </Border>
 
-  </Grid>
+    </Grid>
+  </Border>
 </Window>
