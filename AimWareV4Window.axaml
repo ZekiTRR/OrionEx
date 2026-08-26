@@ -1,0 +1,281 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="OrbitAvalonia.AimWareV4Window"
+        Title="aimware V4"
+        Width="800" Height="600"
+        MinWidth="620" MinHeight="450"
+        Background="#171716"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="0"
+        WindowStartupLocation="CenterScreen"
+        FontFamily="Arial, Helvetica"
+        RenderOptions.TextRenderingMode="Antialias"
+        Icon="avares://Orion/Assets/Orion/Sharp/orion-app.ico">
+
+  <Window.Resources>
+    <StreamGeometry x:Key="AwPlayIcon">M8 5.5v13L19 12Z</StreamGeometry>
+    <StreamGeometry x:Key="AwFolderIcon">M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z</StreamGeometry>
+    <StreamGeometry x:Key="AwSaveIcon">M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z M17 21v-8H7v8 M7 3v5h8</StreamGeometry>
+    <StreamGeometry x:Key="AwOpenIcon">M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z M14 2v4a2 2 0 0 0 2 2h4</StreamGeometry>
+    <StreamGeometry x:Key="AwTrashIcon">M3 6h18 M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2 M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6</StreamGeometry>
+    <StreamGeometry x:Key="AwTerminalIcon">M4 17l6-6-6-6 M12 19h8</StreamGeometry>
+    <StreamGeometry x:Key="AwGearIcon">M12 15.5A3.5 3.5 0 1 0 12 8.5a3.5 3.5 0 0 0 0 7Z M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z</StreamGeometry>
+    <StreamGeometry x:Key="AwCrosshairIcon">M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z M12 3v4 M12 17v4 M3 12h4 M17 12h4</StreamGeometry>
+    <StreamGeometry x:Key="AwMonitorIcon">M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5Z M8 21h8 M12 17v4</StreamGeometry>
+    <StreamGeometry x:Key="AwWrenchIcon">M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z</StreamGeometry>
+    <StreamGeometry x:Key="AwPaletteIcon">M12 21a9 9 0 1 1 0-18c4.97 0 9 3.58 9 8 0 2.5-2 4-4 4h-2a2 2 0 0 0-1.5 3.33c.3.37.5.87.5 1.42 0 1.24-1 1.75-2 1.75Z M7.5 11a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z M11 7.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z M15.5 8.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z</StreamGeometry>
+  </Window.Resources>
+
+  <Window.Styles>
+    <Style Selector="Button">
+      <Setter Property="FocusAdorner" Value="{x:Null}" />
+      <Setter Property="MinWidth" Value="0" />
+      <Setter Property="MinHeight" Value="0" />
+      <Setter Property="Padding" Value="0" />
+    </Style>
+
+    <!-- Header nav icon buttons -->
+    <Style Selector="Button.aw-nav">
+      <Setter Property="Width" Value="52" />
+      <Setter Property="Height" Value="52" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Foreground" Value="#E8C4C4" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.15" />
+          <BrushTransition Property="Foreground" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.aw-nav:pointerover">
+      <Setter Property="Background" Value="#C43535" />
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="Button.aw-nav.active">
+      <Setter Property="Background" Value="#D03437" />
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="Button.aw-nav Path">
+      <Setter Property="StrokeThickness" Value="1.8" />
+      <Setter Property="StrokeLineCap" Value="Round" />
+      <Setter Property="StrokeJoin" Value="Round" />
+      <Setter Property="Stroke" Value="{Binding $parent[Button].Foreground}" />
+    </Style>
+
+    <!-- Body tab buttons (MAIN / WEAPON style) -->
+    <Style Selector="Button.aw-bodytab">
+      <Setter Property="Height" Value="28" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Background" Value="#772720" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Foreground" Value="#D0B8B8" />
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.12" />
+          <BrushTransition Property="Foreground" Duration="0:0:0.12" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.aw-bodytab.active">
+      <Setter Property="Background" Value="#BB1F2A" />
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="Button.aw-bodytab:pointerover">
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+
+    <!-- Checkbox -->
+    <Style Selector="CheckBox.aw-check">
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="Foreground" Value="#080808" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="MinHeight" Value="20" />
+      <Setter Property="Padding" Value="0" />
+    </Style>
+
+    <!-- Slider -->
+    <Style Selector="Slider.aw-slider">
+      <Setter Property="MinHeight" Value="18" />
+      <Setter Property="Foreground" Value="#9B1120" />
+    </Style>
+
+    <!-- Footer buttons -->
+    <Style Selector="Button.aw-footer-btn">
+      <Setter Property="Height" Value="19" />
+      <Setter Property="Padding" Value="6,0" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Foreground" Value="#B4B4B4" />
+      <Setter Property="FontSize" Value="10" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Foreground" Duration="0:0:0.12" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.aw-footer-btn:pointerover">
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="Button.aw-footer-btn Path">
+      <Setter Property="Stroke" Value="#B4B4B4" />
+      <Setter Property="StrokeThickness" Value="1.5" />
+      <Setter Property="StrokeLineCap" Value="Round" />
+      <Setter Property="StrokeJoin" Value="Round" />
+    </Style>
+    <Style Selector="Button.aw-footer-btn:pointerover Path">
+      <Setter Property="Stroke" Value="White" />
+    </Style>
+  </Window.Styles>
+
+  <Border BorderBrush="rgba(0,0,0,0.55)" BorderThickness="1" ClipToBounds="True">
+    <Grid RowDefinitions="52,28,28,*,19">
+
+      <!-- ═══════ Header (52px, red textured) ═══════ -->
+      <Border Grid.Row="0">
+        <Border.Background>
+          <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+            <GradientStop Color="#B6232D" Offset="0" />
+            <GradientStop Color="#9B1A1A" Offset="0.5" />
+            <GradientStop Color="#7D322F" Offset="1" />
+          </LinearGradientBrush>
+        </Border.Background>
+        <Grid ColumnDefinitions="Auto,*,Auto">
+          <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
+            <StackPanel>
+              <TextBlock FontSize="18" FontWeight="Bold">
+                <Run Text="aim" Foreground="White" /><Run Text="ware" Foreground="#E8B0B0" />
+              </TextBlock>
+              <TextBlock Text="ONE STEP AHEAD OF THE GAME" FontSize="6"
+                         Foreground="#C8A0A0" Margin="1,-2,0,0" />
+            </StackPanel>
+          </StackPanel>
+          <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,6,0" Spacing="2">
+            <Button Classes="aw-nav" x:Name="NavEditor" Click="NavEditor_Click" ToolTip.Tip="Editor">
+              <Path Data="{StaticResource AwTerminalIcon}" Width="18" Height="18" Stretch="Uniform" />
+            </Button>
+            <Button Classes="aw-nav" x:Name="NavScripts" Click="NavScripts_Click" ToolTip.Tip="Scripts">
+              <Path Data="{StaticResource AwFolderIcon}" Width="18" Height="18" Stretch="Uniform" />
+            </Button>
+            <Button Classes="aw-nav" x:Name="NavConsole" Click="NavConsole_Click" ToolTip.Tip="Console">
+              <Path Data="{StaticResource AwTerminalIcon}" Width="18" Height="18" Stretch="Uniform" />
+            </Button>
+            <Button Classes="aw-nav" x:Name="NavSettings" Click="NavSettings_Click" ToolTip.Tip="Settings">
+              <Path Data="{StaticResource AwGearIcon}" Width="18" Height="18" Stretch="Uniform" />
+            </Button>
+          </StackPanel>
+        </Grid>
+      </Border>
+
+      <!-- ═══════ Sub tab bar (28px, MAIN | WEAPON style) ═══════ -->
+      <Border Grid.Row="1" Background="#9B1A1A">
+        <Grid ColumnDefinitions="*,*">
+          <Button Classes="aw-bodytab active" x:Name="TabMain" Click="TabMain_Click">MAIN</Button>
+          <Button Classes="aw-bodytab" Grid.Column="1" x:Name="TabWeapon" Click="TabWeapon_Click">WEAPON</Button>
+        </Grid>
+      </Border>
+
+      <!-- ═══════ Weapon bar (28px) ═══════ -->
+      <Border Grid.Row="2" Background="#B5222A">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="0">
+          <Button Classes="aw-bodytab" Background="Transparent" Foreground="#D0B8B8" Padding="14,0">Pistol</Button>
+          <Button Classes="aw-bodytab" Background="Transparent" Foreground="#D0B8B8" Padding="14,0">SMG</Button>
+          <Button Classes="aw-bodytab active" Padding="14,0">RIFLE</Button>
+          <Button Classes="aw-bodytab" Background="Transparent" Foreground="#D0B8B8" Padding="14,0">Shotgun</Button>
+          <Button Classes="aw-bodytab" Background="Transparent" Foreground="#D0B8B8" Padding="14,0">Sniper</Button>
+        </StackPanel>
+      </Border>
+
+      <!-- ═══════ Body ═══════ -->
+      <Grid Grid.Row="3" Background="#E2E2E2">
+
+        <!-- ═══ EDITOR PAGE ═══ -->
+        <Grid x:Name="PageEditor" RowDefinitions="*,26" IsVisible="True">
+          <Border Grid.Row="0" Background="#161616" Margin="8,8,8,4">
+            <NativeWebView x:Name="EditorWebView" Background="Transparent" IsVisible="False" />
+          </Border>
+          <!-- Action bar -->
+          <Border Grid.Row="1" Background="#D6D6D6" BorderBrush="#C0C0C0" BorderThickness="0,1,0,0">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0,0,0" Spacing="4">
+              <Button Classes="aw-footer-btn" Click="Execute_Click" ToolTip.Tip="Execute script (F5)">
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                  <Path Data="{StaticResource AwPlayIcon}" Width="10" Height="10" Stretch="Uniform" Fill="#9B1120" StrokeThickness="0" />
+                  <TextBlock Text="Execute" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+              <Button Classes="aw-footer-btn" Click="Open_Click" ToolTip.Tip="Open script (Ctrl+O)">
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                  <Path Data="{StaticResource AwOpenIcon}" Width="11" Height="11" Stretch="Uniform" />
+                  <TextBlock Text="Open File" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+              <Button Classes="aw-footer-btn" Click="Save_Click" ToolTip.Tip="Save script (Ctrl+S)">
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                  <Path Data="{StaticResource AwSaveIcon}" Width="11" Height="11" Stretch="Uniform" />
+                  <TextBlock Text="Save File" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+              <Button Classes="aw-footer-btn" Click="Clear_Click" ToolTip.Tip="Clear editor">
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                  <Path Data="{StaticResource AwTrashIcon}" Width="11" Height="11" Stretch="Uniform" />
+                  <TextBlock Text="Clear" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+            </StackPanel>
+          </Border>
+        </Grid>
+
+        <!-- ═══ SCRIPTS PAGE ═══ -->
+        <Grid x:Name="PageScripts" RowDefinitions="Auto,*" IsVisible="False" Background="#E2E2E2">
+          <Border Grid.Row="0" Background="#EBEBEB" Margin="8,8,8,0" Padding="12,8">
+            <TextBlock x:Name="ScriptsFolderLabel" Text="Scripts" FontSize="12" FontWeight="Bold" Foreground="#080808" />
+          </Border>
+          <ListBox Grid.Row="1" x:Name="ScriptsList" Background="#EBEBEB" BorderThickness="0"
+                   Margin="8,4,8,8" FontSize="12" Foreground="#080808"
+                   DoubleTapped="ScriptsList_DoubleTapped" />
+        </Grid>
+
+        <!-- ═══ CONSOLE PAGE ═══ -->
+        <Grid x:Name="PageConsole" RowDefinitions="Auto,*" IsVisible="False" Background="#161616">
+          <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="10,6,0,4">
+            <TextBlock Text="Console" FontSize="12" FontWeight="Bold" Foreground="#E8E8E8" />
+            <Button Classes="aw-footer-btn" Click="ConsoleClear_Click" Content="Clear" Margin="12,0,0,0"
+                    Foreground="#B4B4B4" FontSize="10" />
+          </StackPanel>
+          <ScrollViewer Grid.Row="1" x:Name="ConsoleScroll" Margin="8,0" VerticalScrollBarVisibility="Auto">
+            <StackPanel x:Name="ConsoleOutput" Spacing="2" />
+          </ScrollViewer>
+        </Grid>
+
+        <!-- ═══ SETTINGS PAGE ═══ -->
+        <StackPanel x:Name="PageSettings" IsVisible="False" Margin="20,16" Spacing="12">
+          <TextBlock Text="Settings" FontSize="14" FontWeight="Bold" Foreground="#080808" />
+          <CheckBox x:Name="TopMostCheck" Classes="aw-check" Content="Top Most"
+                    IsCheckedChanged="TopMost_Changed" />
+          <Button Classes="aw-footer-btn" Content="Return to Orion" Click="Close_Click"
+                  HorizontalAlignment="Left" Background="#D6D6D6" Foreground="#080808" Height="28" Padding="12,0" />
+        </StackPanel>
+      </Grid>
+
+      <!-- ═══════ Footer (19px, dark) ═══════ -->
+      <Border Grid.Row="4" Background="#1D1D1B" Opacity="0.78">
+        <Grid Margin="6,0" ColumnDefinitions="*,Auto">
+          <TextBlock Text="V4 for Roblox" FontSize="10" Foreground="#B4B4B4" VerticalAlignment="Center" />
+          <TextBlock Grid.Column="1" Text="https://aimware.net" FontSize="10" Foreground="#B4B4B4"
+                     VerticalAlignment="Center" />
+        </Grid>
+      </Border>
+    </Grid>
+  </Border>
+</Window>
