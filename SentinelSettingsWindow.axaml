@@ -1,0 +1,94 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="OrbitAvalonia.SentinelSettingsWindow"
+        Title="Sentinel — Settings"
+        Width="122" Height="217"
+        MinWidth="122" MinHeight="217"
+        MaxWidth="122" MaxHeight="217"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        WindowDecorations="None"
+        WindowStartupLocation="Manual"
+        FontFamily="avares://Orion/Assets/Zenith/Fonts#Nunito"
+        FontSize="12"
+        RenderOptions.TextRenderingMode="Antialias"
+        Icon="avares://Orion/Assets/Orion/Sentinel/sentinel.ico">
+
+  <Window.Styles>
+    <Style Selector="Button">
+      <Setter Property="FocusAdorner" Value="{x:Null}" />
+      <Setter Property="MinWidth" Value="0" />
+      <Setter Property="MinHeight" Value="0" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+
+    <Style Selector="Button.sn-close">
+      <Setter Property="Width" Value="14" />
+      <Setter Property="Height" Value="14" />
+      <Setter Property="Foreground" Value="#E8E8E8" />
+      <Setter Property="FontSize" Value="12" />
+    </Style>
+    <Style Selector="Button.sn-close:pointerover">
+      <Setter Property="Foreground" Value="#DB1739" />
+    </Style>
+
+    <Style Selector="Button.sn-opt-btn">
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="Foreground" Value="#F4F4F4" />
+      <Setter Property="HorizontalAlignment" Value="Left" />
+      <Setter Property="Padding" Value="6,0,0,0" />
+      <Setter Property="Height" Value="22" />
+    </Style>
+    <Style Selector="Button.sn-opt-btn:pointerover">
+      <Setter Property="Foreground" Value="#DB1739" />
+    </Style>
+
+    <!-- Reference .option-row: 21x21 rounded checkmark, thin ✕ when checked -->
+    <Style Selector="CheckBox.sn-opt">
+      <Setter Property="Foreground" Value="#F4F4F4" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="Height" Value="24" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Template">
+        <ControlTemplate TargetType="CheckBox">
+          <StackPanel Orientation="Horizontal" Spacing="6" Background="Transparent">
+            <Border Width="21" Height="21" CornerRadius="6" Background="#202020" VerticalAlignment="Center">
+              <Path Data="M0,0 L8,8 M8,0 L0,8" Stroke="#EDEDED" StrokeThickness="1.6"
+                    StrokeLineCap="Round" Width="8" Height="8"
+                    HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="False" Name="Mark" />
+            </Border>
+            <ContentPresenter x:Name="PART_ContentPresenter"
+                              Content="{TemplateBinding Content}"
+                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                              VerticalAlignment="Center" />
+          </StackPanel>
+        </ControlTemplate>
+      </Setter>
+    </Style>
+    <Style Selector="CheckBox.sn-opt:checked /template/ Path#Mark">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+  </Window.Styles>
+
+  <!-- Reference ".option-window" card: 120x215, #202020, 1px #101010, radius 7 -->
+  <Border CornerRadius="7" Background="#202020" BorderBrush="#101010" BorderThickness="1"
+          BoxShadow="0 4 8 0 #8C000000" ClipToBounds="True">
+    <Grid RowDefinitions="33,*">
+      <Border Grid.Row="0" Background="Transparent" BorderBrush="#111111" BorderThickness="0,0,0,1"
+              PointerPressed="TitleBar_PointerPressed">
+        <Button Classes="sn-close" Click="Close_Click" HorizontalAlignment="Right"
+                VerticalAlignment="Top" Margin="0,8,8,0">
+          <TextBlock Text="✕" FontSize="12" />
+        </Button>
+      </Border>
+
+      <StackPanel Grid.Row="1" Margin="6,3" Spacing="3">
+        <CheckBox x:Name="OptTopMost" Classes="sn-opt" Content="Top Most" IsCheckedChanged="Opt_Changed" />
+        <Button Classes="sn-opt-btn" Content="Return to Orion UI" Click="ReturnToOrion_Click" Margin="0,2,0,0" />
+      </StackPanel>
+    </Grid>
+  </Border>
+</Window>
