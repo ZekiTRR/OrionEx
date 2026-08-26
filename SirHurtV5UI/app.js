@@ -2633,7 +2633,6 @@ async function loadHub(page = 1, query = "") {
             if (source === 'scriptblox') {
                 pageData = await fetchScriptBlox(apiPage, query);
             } else {
-                const bridge = window.chrome.webview.hostObjects.bridge;
                 const res = await bridge.FetchRScripts(apiPage, query);
                 try {
                     pageData = JSON.parse(res);

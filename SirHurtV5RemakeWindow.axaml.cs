@@ -54,6 +54,7 @@ public sealed partial class SirHurtV5RemakeWindow : Window
         AvaloniaXamlLoader.Load(this);
         _webView = this.FindControl<NativeWebView>("UiWebView");
 
+        _bridge.LogReceived += BridgeLogReceived;
         Closed += SirHurtV5RemakeWindow_Closed;
         Opened += SirHurtV5RemakeWindow_Opened;
     }
@@ -90,20 +91,7 @@ public sealed partial class SirHurtV5RemakeWindow : Window
                 webView.Source = _uiServer.Address;
                 webView.NavigationCompleted += async (_, _) =>
                 {
-                    try
-                    {
-                        var probe = await webView.InvokeScript(
-                            "(function(){ return typeof window.invokeCSharpAction + '|' + typeof window.chrome; })()");
-                        System.IO.File.AppendAllText(
-                            System.IO.Path.Combine(System.IO.Path.GetTempPath(), "v5-bridge.log"),
-                            DateTime.Now.ToString("HH:mm:ss") + " probe: " + probe + "\n");
-                    }
-                    catch (Exception probeException)
-                    {
-                        System.IO.File.AppendAllText(
-                            System.IO.Path.Combine(System.IO.Path.GetTempPath(), "v5-bridge.log"),
-                            DateTime.Now.ToString("HH:mm:ss") + " probe failed: " + probeException.Message + "\n");
-                    }
+                    PushConsoleSnapshot();
                 };
             }
 
@@ -139,6 +127,7 @@ public sealed partial class SirHurtV5RemakeWindow : Window
             webView.WebMessageReceived -= UiWebView_WebMessageReceived;
         }
 
+        _bridge.LogReceived -= BridgeLogReceived;
         _edgeTimer?.Stop();
         _uiServer?.Dispose();
         _filesService.Dispose();
@@ -151,6 +140,9 @@ public sealed partial class SirHurtV5RemakeWindow : Window
             _returnToOrion(_workspace.CloneDetached());
         }
     }
+
+    private void BridgeLogReceived(string level, string message) =>
+        Dispatcher.UIThread.Post(() => PushConsoleToWebUi(level, message));
 
     // ─────────────────────────── bridge dispatch ───────────────────────────
 
@@ -416,12 +408,10 @@ public sealed partial class SirHurtV5RemakeWindow : Window
                 return "ok";
 
             case "OpenFile":
-                OpenFileWinForms();
-                return "ok";
+                return await OpenFileWithDialogAsync();
 
             case "SaveFile":
-                SaveFileWinForms(Arg(0));
-                return "ok";
+                return await SaveFileWithDialogAsync(Arg(0));
 
             case "StartCustomDrag":
                 StartNativeDrag();
@@ -432,6 +422,7 @@ public sealed partial class SirHurtV5RemakeWindow : Window
             case "Attach":
             case "SetAutoInject":
             case "UnloadToLoader":
+                return "ok";
             case "StartDragging":
                 StartNativeDrag();
                 return "ok";
@@ -569,8 +560,9 @@ public sealed partial class SirHurtV5RemakeWindow : Window
 
     // ─────────────────────────── file pickers ───────────────────────────
 
-    private void OpenFileWinForms()
+    private async Task<object?> OpenFileWithDialogAsync()
     {
+        var completion = new TaskCompletionSource<string[]?>(TaskCreationOptions.RunContinuationsAsynchronously);
         var thread = new System.Threading.Thread(() =>
         {
             try
@@ -583,31 +575,35 @@ public sealed partial class SirHurtV5RemakeWindow : Window
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     var content = File.ReadAllText(dialog.FileName);
-                    Dispatcher.UIThread.Post(() =>
+                    completion.SetResult(new[]
                     {
-                        try
-                        {
-                            _webView?.InvokeScript(
-                                "window.__zenithOpenFile && window.__zenithOpenFile(" +
-                                System.Text.Json.JsonSerializer.Serialize(
-                                    System.IO.Path.GetFileName(dialog.FileName)) + ", " +
-                                System.Text.Json.JsonSerializer.Serialize(content) + ")");
-                        }
-                        catch (InvalidOperationException) { }
+                        System.IO.Path.GetFileName(dialog.FileName),
+                        content
                     });
                 }
+                else
+                {
+                    completion.SetResult(null);
+                }
             }
-            catch (Exception ex) when (ex is IOException or System.ComponentModel.Win32Exception)
+            catch (Exception)
             {
+                completion.SetResult(null);
             }
         })
-        { IsBackground = true };
+        {
+            IsBackground = true
+        };
         thread.SetApartmentState(System.Threading.ApartmentState.STA);
         thread.Start();
+
+        var result = await completion.Task;
+        return result is { Length: 2 } ? result : null;
     }
 
-    private void SaveFileWinForms(string content)
+    private async Task<object?> SaveFileWithDialogAsync(string content)
     {
+        var completion = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
         var thread = new System.Threading.Thread(() =>
         {
             try
@@ -621,18 +617,72 @@ public sealed partial class SirHurtV5RemakeWindow : Window
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     File.WriteAllText(dialog.FileName, content ?? string.Empty);
+                    completion.SetResult(System.IO.Path.GetFileName(dialog.FileName));
+                }
+                else
+                {
+                    completion.SetResult(null);
                 }
             }
-            catch (Exception ex) when (ex is IOException or System.ComponentModel.Win32Exception)
+            catch (Exception)
             {
+                completion.SetResult(null);
             }
         })
-        { IsBackground = true };
+        {
+            IsBackground = true
+        };
         thread.SetApartmentState(System.Threading.ApartmentState.STA);
         thread.Start();
+
+        var result = await completion.Task;
+        return string.IsNullOrEmpty(result) ? null : result;
     }
 
-    // ───────────────── native drag & edge resize ─────────────────    // ───────────────── native drag & edge resize ─────────────────
+    // ───────────────── console push ─────────────────
+
+    private void PushConsoleToWebUi(string level, string message)
+    {
+        if (_webViewDisposed || _webView is not { } webView)
+        {
+            return;
+        }
+
+        try
+        {
+            var levelJson = System.Text.Json.JsonSerializer.Serialize(level ?? "info");
+            var messageJson = System.Text.Json.JsonSerializer.Serialize(message ?? "");
+            webView.InvokeScript(
+                $"window.addBasicConsoleOutput && window.addBasicConsoleOutput({levelJson}, {messageJson});");
+        }
+        catch (InvalidOperationException)
+        {
+        }
+    }
+
+    private void PushConsoleSnapshot()
+    {
+        if (_webViewDisposed || _webView is not { } webView)
+        {
+            return;
+        }
+
+        try
+        {
+            foreach (var entry in _bridge.GetLogSnapshot())
+            {
+                var levelJson = System.Text.Json.JsonSerializer.Serialize(entry.Level ?? "info");
+                var messageJson = System.Text.Json.JsonSerializer.Serialize(entry.Message ?? "");
+                webView.InvokeScript(
+                    $"window.addBasicConsoleOutput && window.addBasicConsoleOutput({levelJson}, {messageJson});");
+            }
+        }
+        catch (InvalidOperationException)
+        {
+        }
+    }
+
+    // ───────────────── native drag & edge resize ─────────────────    // ───────────────── native drag & edge resize ─────────────────    // ───────────────── native drag & edge resize ─────────────────
 
     [System.Runtime.InteropServices.DllImport("user32.dll")]
     private static extern bool GetCursorPos(out NativePoint p);
