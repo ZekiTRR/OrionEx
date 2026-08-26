@@ -1,0 +1,105 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="OrbitAvalonia.SentinelWindow"
+        Title="Sentinel"
+        Width="510" Height="273"
+        MinWidth="400" MinHeight="220"
+        Background="#1E1E1E"
+        TransparencyLevelHint="Transparent"
+        ExtendClientAreaToDecorationsHint="True"
+        WindowStartupLocation="CenterScreen"
+        FontFamily="Microsoft Sans Serif"
+        RenderOptions.TextRenderingMode="Antialias"
+        Icon="avares://Orion/Assets/Orion/Sharp/orion-app.ico">
+
+  <Window.Styles>
+    <Style Selector="Button">
+      <Setter Property="FocusAdorner" Value="{x:Null}" />
+      <Setter Property="MinWidth" Value="0" />
+      <Setter Property="MinHeight" Value="0" />
+      <Setter Property="Padding" Value="0" />
+    </Style>
+
+    <!-- Title bar buttons -->
+    <Style Selector="Button.sn-sys">
+      <Setter Property="Width" Value="21" />
+      <Setter Property="Height" Value="23" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Foreground" Value="#CCCCCC" />
+      <Setter Property="FontSize" Value="9" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="FontFamily" Value="Microsoft Sans Serif" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sn-sys:pointerover">
+      <Setter Property="Background" Value="#8000" />
+    </Style>
+
+    <!-- Action buttons -->
+    <Style Selector="Button.sn-btn">
+      <Setter Property="Width" Value="75" />
+      <Setter Property="Height" Value="23" />
+      <Setter Property="Background" Value="#1E1E1E" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="CornerRadius" Value="10" />
+      <Setter Property="Foreground" Value="#CCCCCC" />
+      <Setter Property="FontSize" Value="8.25" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="FontFamily" Value="Microsoft Sans Serif" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.12" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sn-btn:pointerover">
+      <Setter Property="Background" Value="#800000" />
+    </Style>
+  </Window.Styles>
+
+  <Border CornerRadius="15" ClipToBounds="True" Background="#1E1E1E">
+    <Grid RowDefinitions="27,*">
+
+      <!-- ═══ Title bar ═══ -->
+      <Border Grid.Row="0" Background="#191919" PointerPressed="TitleBar_PointerPressed">
+        <Grid>
+          <TextBlock Text="Sentinel UI (ColinRBLX)" FontSize="9" Foreground="#888888"
+                     VerticalAlignment="Center" Margin="8,0,0,0" />
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,4,0">
+            <Button Classes="sn-sys" Click="Minimize_Click" ToolTip.Tip="Minimize">
+              <TextBlock Text="_" Margin="0,3,0,0" />
+            </Button>
+            <Button Classes="sn-sys" Click="Close_Click" ToolTip.Tip="Close">
+              <TextBlock Text="X" />
+            </Button>
+          </StackPanel>
+        </Grid>
+      </Border>
+
+      <!-- ═══ Script editor ═══ -->
+      <Border Grid.Row="1" Margin="3,4,3,0" CornerRadius="5" ClipToBounds="True" Background="#191919">
+        <NativeWebView x:Name="EditorWebView" Background="#191919" IsVisible="False" />
+      </Border>
+
+      <!-- ═══ Bottom buttons ═══ -->
+      <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Bottom"
+                  HorizontalAlignment="Left" Margin="4,0,0,4" Spacing="0">
+        <Button Classes="sn-btn" Click="Execute_Click" Margin="1,0,3,0" ToolTip.Tip="Execute script (F5)">Execute</Button>
+        <Button Classes="sn-btn" Click="Clear_Click" Margin="0,0,3,0" ToolTip.Tip="Clear editor">Clear</Button>
+        <Button Classes="sn-btn" Click="Open_Click" Margin="0,0,3,0" ToolTip.Tip="Open script (Ctrl+O)">Open</Button>
+        <Button Classes="sn-btn" Click="Save_Click" Margin="0,0,3,0" ToolTip.Tip="Save script (Ctrl+S)">Save</Button>
+        <Button Classes="sn-btn" Click="Attach_Click" Margin="252,0,0,0" ToolTip.Tip="Attach to bridge">Attach</Button>
+      </StackPanel>
+    </Grid>
+  </Border>
+</Window>
