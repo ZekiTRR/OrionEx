@@ -125,14 +125,7 @@
             <Button Classes="sn-footer" Click="Open_Click" ToolTip.Tip="Open (Ctrl+O)">Open</Button>
             <Button Classes="sn-footer" Click="Save_Click" ToolTip.Tip="Save (Ctrl+S)">Save</Button>
             <Button Classes="sn-footer" Click="Clear_Click" ToolTip.Tip="Clear">Clear</Button>
-            <Button Classes="sn-footer" Click="Attach_Click" ToolTip.Tip="Attach">
-              <StackPanel Orientation="Horizontal" Spacing="4">
-                <Path Data="{StaticResource AwPaperclipIcon}" Width="11" Height="11" Stretch="Uniform"
-                      Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="1.5"
-                      StrokeLineCap="Round" StrokeJoin="Round" />
-                <TextBlock Text="Attach" VerticalAlignment="Center" />
-              </StackPanel>
-            </Button>
+            <Button Classes="sn-footer" Click="Attach_Click" ToolTip.Tip="Attach">Attach</Button>
           </StackPanel>
           <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Spacing="17">
             <Button Classes="sn-footer" Click="ScriptHub_Click">Script Hub</Button>

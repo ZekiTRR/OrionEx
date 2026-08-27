@@ -28,6 +28,7 @@ public sealed partial class SirHurtLegacyWindow : Window
     private readonly UnifiedBridgeServer _bridge = UnifiedBridgeServer.Shared;
     private readonly HashSet<string> _selectedClientIdentifiers = new(StringComparer.OrdinalIgnoreCase);
     private readonly HashSet<string> _knownClientIdentifiers = new(StringComparer.OrdinalIgnoreCase);
+    private MonacoStaticServer? _legacyMonacoServer;
     private List<SirHurtLegacyScriptItem> _scripts = [];
 
     private readonly Border _chrome;
@@ -176,6 +177,14 @@ public sealed partial class SirHurtLegacyWindow : Window
         _bridge.ConnectionChanged -= BridgeConnectionChanged;
         _bridge.ClientsChanged -= BridgeClientsChanged;
 
+        // Detach the server reference but do NOT dispose it here. Disposing the
+        // Kestrel-backed MonacoStaticServer synchronously from Window.Closed
+        // deadlocks / throws while Avalonia is tearing down the WebView2 host,
+        // and the resulting exception tears the closure handler apart before
+        // _returnToOrion runs. The server is allowed to live until the Orion
+        // process exits (the same way the shared _orionMonacoServer does).
+        _legacyMonacoServer = null;
+
         if (!_closingForOrion && !_returnRequested)
         {
             _returnRequested = true;
@@ -310,8 +319,14 @@ public sealed partial class SirHurtLegacyWindow : Window
 
         _editorSourceAssigned = true;
 
+        // SirHurt Legacy uses a dedicated Monaco drop under MonacoPreviewLegacy,
+        // so its colour palette and copy can evolve independently of the
+        // shared MonacoPreview folder used by the rest of Orion.
+        var legacyRoot = System.IO.Path.Combine(
+            AppContext.BaseDirectory, "MonacoPreviewLegacy");
+        _legacyMonacoServer = new MonacoStaticServer(legacyRoot);
+        var builder = new UriBuilder(_legacyMonacoServer.Address);
         // White classic surface with dark ink, matching the original utility.
-        var builder = new UriBuilder(_monacoAddress);
         var query = "bg=%23FFFFFF&fg=231C30";
         if (!string.IsNullOrWhiteSpace(builder.Query) && builder.Query != "?")
         {
