@@ -1,5 +1,6 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:OrbitAvalonia"
         x:Class="OrbitAvalonia.OrionWindow"
         Title="Orion"
         Icon="/Assets/Orion/Sharp/orion-app.ico"
@@ -31,15 +32,6 @@
       <GradientStop Color="#181A1B" Offset="0" />
       <GradientStop Color="#08090A" Offset="0.37019" />
     </LinearGradientBrush>
-    <LinearGradientBrush x:Key="OrionPageSurface"
-                         StartPoint="97.1834%,107.8071%"
-                         EndPoint="2.8166%,-7.8071%">
-      <GradientStop Color="#00070809" Offset="0" />
-      <GradientStop Color="#00111314" Offset="1" />
-    </LinearGradientBrush>
-    <SolidColorBrush x:Key="OrionMonacoSurface" Color="#101112" Opacity="0" />
-    <SolidColorBrush x:Key="OrionTabSurface" Color="#0E1011" Opacity="0.58" />
-    <SolidColorBrush x:Key="OrionUtilityGlass" Color="#07080A" Opacity="0.7" />
     <LinearGradientBrush x:Key="OrionEdgeStroke"
                          StartPoint="0%,0%"
                          EndPoint="100%,100%">
@@ -185,18 +177,125 @@
       <Setter Property="Background" Value="Transparent" />
       <Setter Property="BorderThickness" Value="0" />
     </Style>
+    <Style Selector="Button.orion-theme-button">
+      <Setter Property="MinWidth" Value="0" />
+      <Setter Property="MinHeight" Value="0" />
+      <Setter Property="Padding" Value="8,0" />
+      <Setter Property="Background" Value="{DynamicResource OrionControlBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource OrionBorderBrush}" />
+      <Setter Property="BorderThickness" Value="0.667" />
+      <Setter Property="CornerRadius" Value="6.667" />
+      <Setter Property="Foreground" Value="{DynamicResource OrionTextPrimaryBrush}" />
+      <Setter Property="FontSize" Value="7.333" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  CornerRadius="{TemplateBinding CornerRadius}"
+                  ClipToBounds="True">
+            <ContentPresenter Content="{TemplateBinding Content}"
+                              HorizontalContentAlignment="Center"
+                              VerticalContentAlignment="Center" />
+          </Border>
+        </ControlTemplate>
+      </Setter>
+    </Style>
+    <Style Selector="Button.orion-theme-button:pointerover">
+      <Setter Property="Background" Value="{DynamicResource OrionControlHoverBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource OrionBorderStrongBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource OrionTextPrimaryBrush}" />
+    </Style>
+    <Style Selector="TextBox.orion-theme-input">
+      <Setter Property="MinHeight" Value="0" />
+      <Setter Property="Padding" Value="7,0" />
+      <Setter Property="Background" Value="{DynamicResource OrionInputBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource OrionBorderBrush}" />
+      <Setter Property="BorderThickness" Value="0.667" />
+      <Setter Property="CornerRadius" Value="6.667" />
+      <Setter Property="Foreground" Value="{DynamicResource OrionTextPrimaryBrush}" />
+      <Setter Property="CaretBrush" Value="{DynamicResource OrionTextPrimaryBrush}" />
+      <Setter Property="SelectionBrush" Value="{DynamicResource OrionSelectionBrush}" />
+      <Setter Property="FontSize" Value="7.333" />
+    </Style>
+    <Style Selector="Button.orion-theme-card">
+      <Setter Property="MinWidth" Value="0" />
+      <Setter Property="MinHeight" Value="0" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Background" Value="{DynamicResource OrionPanelOverlayBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource OrionBorderBrush}" />
+      <Setter Property="BorderThickness" Value="0.667" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  CornerRadius="{TemplateBinding CornerRadius}"
+                  ClipToBounds="True">
+            <ContentPresenter Content="{TemplateBinding Content}"
+                              HorizontalContentAlignment="Stretch"
+                              VerticalContentAlignment="Stretch" />
+          </Border>
+        </ControlTemplate>
+      </Setter>
+    </Style>
+    <Style Selector="Button.orion-theme-card:pointerover">
+      <Setter Property="Background" Value="{DynamicResource OrionPanelSoftBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource OrionBorderStrongBrush}" />
+    </Style>
   </Window.Styles>
 
   <Border x:Name="RootShell"
-          BorderBrush="{StaticResource OrionEdgeStroke}"
-          BorderThickness="1"
+          BorderBrush="{DynamicResource OrionEdgeStroke}"
+          BorderThickness="0"
           CornerRadius="15"
           ClipToBounds="True"
-          Background="{StaticResource OrionWindowFill}">
+          Background="Transparent">
 
     <Grid x:Name="SurfaceRoot"
-          Margin="-1"
-          Background="{StaticResource OrionWindowFill}">
+          Margin="0"
+          Background="Transparent">
+      <!-- Real system backdrop blur. Digger samples behind this visual rather
+           than blurring Orion's text or controls. The layer is enabled only
+           for Liquid Glass and has a transparent fallback on other renderers. -->
+      <ExperimentalAcrylicBorder x:Name="OrionAcrylicLayer"
+                                 IsVisible="False"
+                                 IsHitTestVisible="False"
+                                 Margin="0.75"
+                                 CornerRadius="0">
+        <ExperimentalAcrylicBorder.Material>
+          <ExperimentalAcrylicMaterial BackgroundSource="Digger"
+                                       TintColor="#0A0D12"
+                                       TintOpacity="0.56"
+                                       MaterialOpacity="0.78"
+                                       PlatformTransparencyCompensationLevel="0.15"
+                                       FallbackColor="#D90A0D12" />
+        </ExperimentalAcrylicBorder.Material>
+      </ExperimentalAcrylicBorder>
+
+      <!-- Material colour is deliberately above the sampled backdrop. This
+           keeps Liquid Glass transparent instead of blurring a dark fill. -->
+      <Border x:Name="OrionMaterialTintLayer"
+              Margin="0.75"
+              Background="{DynamicResource OrionWindowFill}"
+              IsHitTestVisible="False" />
+
+      <!-- GPU-backed caustic/refraction light. It sits beneath every control,
+           keeping labels and Monaco crisp while the material still moves. -->
+      <local:OrionLiquidGlassVisual x:Name="OrionLiquidGlassLayer"
+                                     IsVisible="False"
+                                     IsHitTestVisible="False"
+                                     Margin="0.75" />
+      <!-- Local contrast only: this falloff protects the title controls over
+           bright wallpaper without making the entire material opaque. -->
+      <Border Height="82"
+              VerticalAlignment="Top"
+              Background="{DynamicResource OrionChromeShadeBrush}"
+              IsHitTestVisible="False" />
+
       <!-- The authored 2/3 Figma coordinate plane is enlarged as one unit. This
            preserves every relative measurement while producing the requested
            35% larger 896.4 x 558 editor. -->
@@ -362,7 +461,7 @@
                 Canvas.Top="53.333"
                 Width="648.667"
                 Height="352"
-                Background="{StaticResource OrionPageSurface}"
+                Background="{DynamicResource OrionPageSurface}"
                 BorderBrush="#303235"
                 BorderThickness="0.667"
                 CornerRadius="10"
@@ -372,7 +471,7 @@
                 Canvas.Top="88.667"
                 Width="500"
                 Height="283.333"
-                Background="{StaticResource OrionMonacoSurface}"
+                Background="{DynamicResource OrionMonacoSurface}"
                 BorderBrush="#303235"
                 BorderThickness="0.667" />
 
@@ -527,10 +626,10 @@
                    Text="Ln (num), Col (num)" />
 
         <Border Canvas.Left="507.333" Canvas.Top="53.333" Width="148.667" Height="35.333"
-                Background="{StaticResource OrionUtilityGlass}" BorderBrush="#303235" BorderThickness="0.667"
+                Background="{DynamicResource OrionUtilityGlass}" BorderBrush="#303235" BorderThickness="0.667"
                 CornerRadius="0,10,0,0" />
         <Border Canvas.Left="507.333" Canvas.Top="88.667" Width="148.788" Height="283.493"
-                Background="{StaticResource OrionUtilityGlass}" BorderBrush="#303235" BorderThickness="0.667" />
+                Background="{DynamicResource OrionUtilityGlass}" BorderBrush="#303235" BorderThickness="0.667" />
 
         <Image Canvas.Left="528.28" Canvas.Top="65.347"
                Width="11" Height="11" Stretch="Uniform"
@@ -708,7 +807,7 @@
                 IsVisible="False" IsHitTestVisible="False" Opacity="0">
           <Border Canvas.Left="7.333" Canvas.Top="53.333"
                   Width="648.667" Height="352"
-                  Background="{StaticResource OrionPageSurface}"
+                  Background="{DynamicResource OrionPageSurface}"
                   BorderBrush="#303235" BorderThickness="0.5"
                   CornerRadius="10" ClipToBounds="True" />
 
@@ -1043,23 +1142,149 @@
                 IsVisible="False" IsHitTestVisible="False" Opacity="0">
           <Border Canvas.Left="7.333" Canvas.Top="53.333"
                   Width="648.667" Height="352"
-                  Background="{StaticResource OrionPageSurface}"
-                  BorderBrush="#303235" BorderThickness="0.667"
-                  CornerRadius="10" ClipToBounds="True" />
-          <Border Canvas.Left="168" Canvas.Top="156.667"
-                  Width="328" Height="128"
-                  Background="#9907080A"
-                  BorderBrush="#303235" BorderThickness="0.667"
-                  CornerRadius="10">
-            <StackPanel HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Spacing="8">
-              <TextBlock Text="Themes" FontSize="13.333"
-                         Foreground="White" TextAlignment="Center" />
-              <TextBlock Text="Prototype. Not Available Yet."
-                         FontSize="8.667" Foreground="#66686B"
-                         TextAlignment="Center" />
-            </StackPanel>
+                  Background="{DynamicResource OrionPageSurface}"
+                  BorderBrush="{DynamicResource OrionBorderBrush}" BorderThickness="0.667"
+                  CornerRadius="10" ClipToBounds="True">
+            <Canvas Width="648.667" Height="352">
+              <TextBlock Canvas.Left="24" Canvas.Top="16"
+                         Text="Theme Studio"
+                         FontSize="13.333"
+                         Foreground="{DynamicResource OrionTextPrimaryBrush}" />
+              <TextBlock Canvas.Left="24" Canvas.Top="36.667"
+                         Text="One Orion palette. Choose the material, then make it yours."
+                         FontSize="7.333"
+                         Foreground="{DynamicResource OrionTextSecondaryBrush}" />
+              <Button Canvas.Left="553.333" Canvas.Top="18"
+                      Width="72.667" Height="24"
+                      Classes="orion-theme-button"
+                      Content="New theme"
+                      Click="OrionThemeNew_Click" />
+
+              <Grid Canvas.Left="24" Canvas.Top="58.667"
+                    Width="602" Height="12"
+                    ColumnDefinitions="Auto,*,Auto">
+                <TextBlock Text="MATERIAL PRESETS" FontSize="6.667"
+                           Foreground="{DynamicResource OrionTextSecondaryBrush}" />
+                <TextBlock Grid.Column="2" Text="Same colours · different depth"
+                           FontSize="6.333"
+                           Foreground="{DynamicResource OrionTextSecondaryBrush}" />
+              </Grid>
+              <StackPanel x:Name="OrionThemePresetPanel"
+                          Canvas.Left="24" Canvas.Top="75.333"
+                          Width="602" Height="54"
+                          Orientation="Horizontal" Spacing="10" />
+
+              <Border Canvas.Left="24" Canvas.Top="138"
+                      Width="166" Height="190"
+                      Background="{DynamicResource OrionPanelOverlayBrush}"
+                      BorderBrush="{DynamicResource OrionBorderBrush}"
+                      BorderThickness="0.667" CornerRadius="10"
+                      ClipToBounds="True">
+                <Grid RowDefinitions="31,*,24">
+                  <Grid Margin="9.333,0" ColumnDefinitions="*,Auto">
+                    <TextBlock VerticalAlignment="Center"
+                               Text="CUSTOM" FontSize="6.667"
+                               Foreground="{DynamicResource OrionTextSecondaryBrush}" />
+                    <TextBlock x:Name="OrionThemeLibraryCount"
+                               Grid.Column="1" VerticalAlignment="Center"
+                               FontSize="6.667"
+                               Foreground="{DynamicResource OrionTextSecondaryBrush}" />
+                  </Grid>
+                  <ScrollViewer Grid.Row="1" Margin="5.333,0"
+                                VerticalScrollBarVisibility="Auto"
+                                HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel x:Name="OrionThemeLibraryPanel" Spacing="4" />
+                  </ScrollViewer>
+                  <TextBlock x:Name="OrionThemeLibraryHint"
+                             Grid.Row="2" Margin="9.333,0"
+                             VerticalAlignment="Center"
+                             Text="Duplicate a preset to begin"
+                             FontSize="6"
+                             Foreground="{DynamicResource OrionTextSecondaryBrush}" />
+                </Grid>
+              </Border>
+
+              <Border Canvas.Left="200" Canvas.Top="138"
+                      Width="426" Height="190"
+                      Background="{DynamicResource OrionPanelOverlayBrush}"
+                      BorderBrush="{DynamicResource OrionBorderBrush}"
+                      BorderThickness="0.667" CornerRadius="10"
+                      ClipToBounds="True">
+                <Grid RowDefinitions="35,25,*">
+                  <Grid Margin="10,0" ColumnDefinitions="*,Auto">
+                    <StackPanel VerticalAlignment="Center" Spacing="0.667">
+                      <TextBlock x:Name="OrionThemeStudioName"
+                                 FontSize="9.333"
+                                 Foreground="{DynamicResource OrionTextPrimaryBrush}" />
+                      <TextBlock x:Name="OrionThemeStudioMeta"
+                                 FontSize="6.333"
+                                 Foreground="{DynamicResource OrionTextSecondaryBrush}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal"
+                                VerticalAlignment="Center" Spacing="4">
+                      <Button x:Name="OrionThemeDuplicateButton"
+                              Width="42" Height="19"
+                              Classes="orion-theme-button"
+                              Content="Copy"
+                              Click="OrionThemeDuplicate_Click" />
+                      <Button x:Name="OrionThemeResetButton"
+                              Width="38" Height="19"
+                              Classes="orion-theme-button"
+                              Content="Reset"
+                              Click="OrionThemeReset_Click" />
+                      <Button x:Name="OrionThemeDeleteButton"
+                              Width="40" Height="19"
+                              Classes="orion-theme-button"
+                              Content="Delete"
+                              Click="OrionThemeDelete_Click" />
+                    </StackPanel>
+                  </Grid>
+
+                  <Grid Grid.Row="1" Margin="10,0" ColumnDefinitions="72,72,*">
+                    <Button x:Name="OrionThemePaletteTab"
+                            Width="68" Height="19" HorizontalAlignment="Left"
+                            Classes="orion-theme-button"
+                            Content="Palette"
+                            Click="OrionThemePaletteTab_Click" />
+                    <Button x:Name="OrionThemeMaterialTab" Grid.Column="1"
+                            Width="68" Height="19" HorizontalAlignment="Left"
+                            Classes="orion-theme-button"
+                            Content="Material"
+                            Click="OrionThemeMaterialTab_Click" />
+                    <TextBlock Grid.Column="2" HorizontalAlignment="Right"
+                               VerticalAlignment="Center"
+                               Text="LIVE PREVIEW"
+                               FontSize="6.333"
+                               Foreground="{DynamicResource OrionTextSecondaryBrush}" />
+                  </Grid>
+
+                  <Border x:Name="OrionThemeColourViewport"
+                          Grid.Row="2" Margin="10,4,10,9"
+                          Background="{DynamicResource OrionGlassPanelBrush}"
+                          BorderBrush="{DynamicResource OrionBorderBrush}"
+                          BorderThickness="0.5" CornerRadius="7.333">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled">
+                      <WrapPanel x:Name="OrionThemeColourPanel"
+                                 Margin="6" Orientation="Horizontal"
+                                 ItemWidth="190" ItemHeight="28" />
+                    </ScrollViewer>
+                  </Border>
+                  <Border x:Name="OrionThemeEffectViewport"
+                          Grid.Row="2" Margin="10,4,10,9"
+                          IsVisible="False"
+                          Background="{DynamicResource OrionGlassPanelBrush}"
+                          BorderBrush="{DynamicResource OrionBorderBrush}"
+                          BorderThickness="0.5" CornerRadius="7.333">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled">
+                      <StackPanel x:Name="OrionThemeEffectPanel"
+                                  Margin="8,6" Spacing="4" />
+                    </ScrollViewer>
+                  </Border>
+                </Grid>
+              </Border>
+            </Canvas>
           </Border>
         </Canvas>
 
@@ -1068,7 +1293,7 @@
                 IsVisible="False" IsHitTestVisible="False" Opacity="0">
           <Border Canvas.Left="7.333" Canvas.Top="53.333"
                   Width="648.667" Height="352"
-                  Background="{StaticResource OrionPageSurface}"
+                  Background="{DynamicResource OrionPageSurface}"
                   BorderBrush="#303235" BorderThickness="0.667"
                   CornerRadius="10" ClipToBounds="True" />
           <Border Canvas.Left="168" Canvas.Top="156.667"
@@ -1097,7 +1322,7 @@
                 Opacity="0">
           <Border Canvas.Left="7.333" Canvas.Top="54"
                   Width="648.667" Height="352"
-                  Background="{StaticResource OrionPageSurface}"
+                  Background="{DynamicResource OrionPageSurface}"
                   BorderBrush="#303235" BorderThickness="0.5"
                   CornerRadius="10" ClipToBounds="True" />
 
@@ -1249,7 +1474,7 @@
                 IsVisible="False" IsHitTestVisible="False" Opacity="0">
           <Border Canvas.Left="7.333" Canvas.Top="54"
                   Width="648.667" Height="352"
-                  Background="{StaticResource OrionPageSurface}"
+                  Background="{DynamicResource OrionPageSurface}"
                   BorderBrush="#303235" BorderThickness="0.333"
                   CornerRadius="10" ClipToBounds="True" />
 
@@ -1791,7 +2016,7 @@
       </Grid>
 
       <Border x:Name="EdgeStroke"
-              BorderBrush="{StaticResource OrionEdgeStroke}"
+              BorderBrush="{DynamicResource OrionEdgeStroke}"
               BorderThickness="1"
               CornerRadius="15"
               IsHitTestVisible="False" />

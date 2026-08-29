@@ -76,6 +76,11 @@ public sealed partial class OrionWindow : Window
         InitializeOrionPluginsPage();
         InitializeOrionExplorer();
 
+        // Apply the saved Orion-only palette before any child controls are
+        // generated, preventing a one-frame flash of the default material.
+        LoadOrionThemeStateAndApply();
+        InitializeOrionThemeStudio();
+
         // TEMPORARY hit-test diagnostics
         this.AddHandler(
             Avalonia.Input.InputElement.PointerPressedEvent,
@@ -376,6 +381,7 @@ public sealed partial class OrionWindow : Window
         DisposeOrionPages();
         DisposeOrionEditor();
         DisposeOrionExplorer();
+        DisposeOrionThemeStudio();
         _startupCancellation.Cancel();
         _startupCancellation.Dispose();
         _spinnerTimer.Stop();
