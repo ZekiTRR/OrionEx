@@ -1,0 +1,212 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="OrbitAvalonia.JJSploitGeneralView">
+
+  <UserControl.Resources>
+    <StreamGeometry x:Key="JjPlayIcon">M7 5.5v13L18 12Z</StreamGeometry>
+  </UserControl.Resources>
+
+  <UserControl.Styles>
+    <!-- .generalnavtab (Buttons / Lua / Lua C) — flex 1, bg #171717 -->
+    <Style Selector="TextBlock.jj-navtab">
+      <Setter Property="Padding" Value="5,10" />
+      <Setter Property="Background" Value="#171717" />
+      <Setter Property="Foreground" Value="#bdc3c7" />
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="FontWeight" Value="Normal" />
+      <Setter Property="TextAlignment" Value="Center" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+    <Style Selector="TextBlock.jj-navtab:pointerover">
+      <Setter Property="Background" Value="#232323" />
+    </Style>
+
+    <!-- .quickcommand — exact size from original: width 110, padding 5 10, font 14 -->
+    <Style Selector="Button.jj-qcmd">
+      <Setter Property="Width" Value="110" />
+      <Setter Property="MinHeight" Value="30" />
+      <Setter Property="Padding" Value="5,5" />
+      <Setter Property="Margin" Value="5" />
+      <Setter Property="Background" Value="#171717" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Foreground" Value="#ECECEC" />
+      <Setter Property="FontSize" Value="14" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.jj-qcmd:pointerover">
+      <Setter Property="Background" Value="#262626" />
+    </Style>
+
+    <!-- h2 section headers — centered, font-weight bold, no italic -->
+    <Style Selector="TextBlock.jj-h2">
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="TextAlignment" Value="Center" />
+      <Setter Property="Margin" Value="0,0,0,12" />
+      <Setter Property="Foreground" Value="#ECECEC" />
+    </Style>
+
+    <!-- #specgencoms — inputs/select (bg #171717, padding 8, max-width 180) -->
+    <Style Selector="TextBox.jj-spec-input">
+      <Setter Property="Height" Value="26" />
+      <Setter Property="Padding" Value="8,4" />
+      <Setter Property="Margin" Value="0,0,5,0" />
+      <Setter Property="Background" Value="#171717" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Foreground" Value="#ECECEC" />
+      <Setter Property="CaretBrush" Value="#bdc3c7" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="ComboBox.jj-spec-select">
+      <Setter Property="Height" Value="26" />
+      <Setter Property="Padding" Value="8,2" />
+      <Setter Property="Background" Value="#171717" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Foreground" Value="#ECECEC" />
+      <Setter Property="FontSize" Value="12" />
+    </Style>
+    <Style Selector="Button.jj-spec-btn">
+      <Setter Property="Height" Value="26" />
+      <Setter Property="Padding" Value="10,4" />
+      <Setter Property="Background" Value="#171717" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="BorderBrush" Value="#cccccc" />
+      <Setter Property="Foreground" Value="#ECECEC" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+
+    <!-- .luaButton (Lua tab, module 233 in original) — padding 4 12, bg #171717,
+         color inherited from body (#bdc3c7), border-radius 8. Both Open File
+         and Execute share the same dark style. -->
+    <Style Selector="Button.jj-lua-btn">
+      <Setter Property="Padding" Value="12,4" />
+      <Setter Property="Margin" Value="0,4,4,0" />
+      <Setter Property="Background" Value="#171717" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Foreground" Value="#bdc3c7" />
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="FontWeight" Value="Normal" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.jj-lua-btn:pointerover">
+      <Setter Property="Background" Value="#232323" />
+    </Style>
+  </UserControl.Styles>
+
+  <DockPanel>
+    <!-- #generalnav — display flex, three tabs equal width -->
+    <Border DockPanel.Dock="Top" BorderBrush="#131418" BorderThickness="0,0,0,1">
+      <Grid x:Name="GeneralNav">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <TextBlock x:Name="TabButtons" Classes="jj-navtab" Grid.Column="0" Text="Buttons" PointerPressed="TabButtons_Click" />
+        <TextBlock x:Name="TabLua" Classes="jj-navtab" Grid.Column="1" Text="Lua" PointerPressed="TabLua_Click" />
+      </Grid>
+    </Border>
+
+    <Grid>
+      <!-- Buttons tab — scrollable list of .section blocks separated by <br/> -->
+      <ScrollViewer x:Name="ButtonsTab" IsVisible="False" VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+          <!-- Common — main quick commands -->
+          <Border Padding="12"><StackPanel Spacing="0">
+            <TextBlock Classes="jj-h2" Text="Common" />
+            <WrapPanel HorizontalAlignment="Center">
+              <Button Classes="jj-qcmd" Click="Cmd_Click" Tag="script:general/infinitejump.lua" Content="Infinite Jump" />
+              <Button Classes="jj-qcmd" Click="Cmd_Click" Tag="script:general/fly.lua" Content="Fly" />
+              <Button Classes="jj-qcmd" Click="Cmd_Click" Tag="script:general/god.lua" Content="God mode" />
+              <Button Classes="jj-qcmd" Click="Cmd_Click" Tag="script:general/noclip.lua" Content="Noclip" />
+              <Button Classes="jj-qcmd" Click="Cmd_Click" Tag="script:inline/float.lua" Content="Float" />
+              <Button Classes="jj-qcmd" Click="Cmd_Click" Tag="script:general/chattroll.lua" Content="Chat troll" />
+              <Button Classes="jj-qcmd" Click="Cmd_Click" Tag="script:inline/btools.lua" Content="Btools" />
+            </WrapPanel>
+          </StackPanel></Border>
+
+          <!-- #specgencoms — flex-wrap, 4 widgets: Walk Speed, Jump Power, Magnetize, TpV3 -->
+          <Border Padding="12" x:Name="SpecGenComs"><StackPanel Spacing="0">
+            <WrapPanel HorizontalAlignment="Center">
+              <StackPanel Width="210" Margin="0,0,12,12">
+                <TextBlock Text="Walk Speed" Foreground="Gray" FontSize="13" Margin="0,0,0,5" />
+                <ComboBox x:Name="WalkSpeedCombo" Classes="jj-spec-select" MaxDropDownHeight="240" HorizontalAlignment="Stretch"
+                          SelectionChanged="WalkSpeed_Changed">
+                  <ComboBoxItem Content="16" /><ComboBoxItem Content="18" /><ComboBoxItem Content="20" /><ComboBoxItem Content="22" />
+                  <ComboBoxItem Content="24" /><ComboBoxItem Content="26" /><ComboBoxItem Content="28" /><ComboBoxItem Content="30" />
+                  <ComboBoxItem Content="40" /><ComboBoxItem Content="60" /><ComboBoxItem Content="80" /><ComboBoxItem Content="100" />
+                  <ComboBoxItem Content="120" /><ComboBoxItem Content="140" /><ComboBoxItem Content="160" /><ComboBoxItem Content="200" />
+                  <ComboBoxItem Content="300" /><ComboBoxItem Content="400" /><ComboBoxItem Content="500" />
+                </ComboBox>
+              </StackPanel>
+              <StackPanel Width="210" Margin="0,0,12,12">
+                <TextBlock Text="Jump Power" Foreground="Gray" FontSize="13" Margin="0,0,0,5" />
+                <ComboBox x:Name="JumpPowerCombo" Classes="jj-spec-select" MaxDropDownHeight="240" HorizontalAlignment="Stretch"
+                          SelectionChanged="JumpPower_Changed">
+                  <ComboBoxItem Content="50" /><ComboBoxItem Content="60" /><ComboBoxItem Content="70" /><ComboBoxItem Content="80" />
+                  <ComboBoxItem Content="100" /><ComboBoxItem Content="120" /><ComboBoxItem Content="150" /><ComboBoxItem Content="200" />
+                  <ComboBoxItem Content="250" /><ComboBoxItem Content="300" />
+                </ComboBox>
+              </StackPanel>
+            </WrapPanel>
+            <WrapPanel HorizontalAlignment="Center">
+              <StackPanel Width="210" Margin="0,0,12,12">
+                <TextBlock Text="Magnetize to" Foreground="Gray" FontSize="13" Margin="0,0,0,5" />
+                <TextBox x:Name="MagnetizeInput" Classes="jj-spec-input" Watermark="Exact username" KeyDown="Magnetize_KeyDown" />
+              </StackPanel>
+              <StackPanel Width="210" Margin="0,0,12,12" x:Name="TpV3Com">
+                <TextBlock Text="Teleport to Vector3(X,Y,Z)" Foreground="Gray" FontSize="13" Margin="0,0,0,5" />
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                  <TextBox x:Name="TpX" Classes="jj-spec-input" Width="40" Watermark="X" />
+                  <TextBox x:Name="TpY" Classes="jj-spec-input" Width="40" Watermark="Y" />
+                  <TextBox x:Name="TpZ" Classes="jj-spec-input" Width="40" Watermark="Z" />
+                  <Button Classes="jj-spec-btn" Click="TpVector_Click" Content="Go" />
+                </StackPanel>
+              </StackPanel>
+            </WrapPanel>
+          </StackPanel></Border>
+
+          <!-- (ESP / Aimbot / Client Appearance sections removed) -->
+
+          <!-- Animations -->
+          <Border Padding="12"><StackPanel Spacing="0">
+            <TextBlock Classes="jj-h2" Text="Animations" />
+            <WrapPanel HorizontalAlignment="Center">
+              <Button Classes="jj-qcmd" Click="Cmd_Click" Tag="script:animations/dab.lua" Content="Dab" />
+              <Button Classes="jj-qcmd" Click="Cmd_Click" Tag="script:animations/jumpland.lua" Content="Jump Land" />
+              <Button Classes="jj-qcmd" Click="Cmd_Click" Tag="script:animations/levitate.lua" Content="Levitate" />
+              <Button Classes="jj-qcmd" Click="Cmd_Click" Tag="script:animations/walkthrough.lua" Content="Walkthrough" />
+              <Button Classes="jj-qcmd" Click="Cmd_Click" Tag="script:animations/energizegui.lua" Content="Energize GUI" />
+            </WrapPanel>
+          </StackPanel></Border>
+
+          <!-- Etc -->
+          <Border Padding="12"><StackPanel Spacing="0">
+            <TextBlock Classes="jj-h2" Text="Etc" />
+            <WrapPanel HorizontalAlignment="Center">
+              <Button Classes="jj-qcmd" Click="Cmd_Click" Tag="script:general/tptool.lua" Content="TP Tool" />
+            </WrapPanel>
+          </StackPanel></Border>
+        </StackPanel>
+      </ScrollViewer>
+
+      <!-- Lua executor tab — Monaco editor + Open File + Execute.
+           LuaTab is visible by default (the window opens straight to the
+           editor) so the WebView gets a real size and Monaco can render. -->
+      <Grid x:Name="LuaTab" RowDefinitions="*,Auto" MinHeight="200">
+        <NativeWebView x:Name="LuaWebView" Grid.Row="0" Background="Transparent" />
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,4,4,4" Spacing="0">
+          <Button Classes="jj-lua-btn" Click="LuaOpen_Click" Content="Open File" />
+          <Button Classes="jj-lua-btn" Click="LuaExecute_Click" Content="Execute" />
+        </StackPanel>
+      </Grid>
+    </Grid>
+  </DockPanel>
+</UserControl>

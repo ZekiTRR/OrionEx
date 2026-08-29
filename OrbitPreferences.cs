@@ -224,6 +224,7 @@ internal static class OrbitPreferences
         "ScriptWare" => "ScriptWare",
         "SirHurtLegacy" => "SirHurtLegacy",
         "SirHurtV5Remake" => "SirHurtV5Remake",
+        "JJSploit" => "JJSploit",
         "Sentinel" => "Sentinel",
         _ => OrionInterface
     };

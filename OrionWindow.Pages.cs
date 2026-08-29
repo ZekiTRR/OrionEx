@@ -419,6 +419,13 @@ public sealed partial class OrionWindow
                         workspace,
                         RestoreOrionWorkspace));
                     break;
+                case "JJSploit":
+                    ShowPreservedAvaloniaWindow(new JJSploitWindow(
+                        _orionMonacoServer.Address,
+                        _orionWorkspace.ScriptsDirectory,
+                        workspace,
+                        RestoreOrionWorkspace));
+                    break;
                 case "SirHurtLegacy":
                     ShowPreservedAvaloniaWindow(new SirHurtLegacyWindow(
                         _orionMonacoServer.Address,
@@ -575,6 +582,10 @@ public sealed partial class OrionWindow
                 else if (returningWindow is SentinelWindow sentinel)
                 {
                     sentinel.CloseForOrion();
+                }
+                else if (returningWindow is JJSploitWindow jjsploit)
+                {
+                    jjsploit.CloseForOrion();
                 }
 
                 try { System.IO.File.AppendAllText(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "orion-handoff.log"), $"{DateTime.Now:HH:mm:ss.fff} [Orion] about to ApplyOrionWorkspace\n"); } catch { }

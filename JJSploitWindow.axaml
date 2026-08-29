@@ -1,0 +1,117 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:jj="clr-namespace:OrbitAvalonia"
+        x:Class="OrbitAvalonia.JJSploitWindow"
+        Title="JJSploit"
+        Width="500" Height="300"
+        MinWidth="500" MinHeight="300"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        WindowDecorations="None"
+        ExtendClientAreaToDecorationsHint="True"
+        WindowStartupLocation="CenterScreen"
+        FontFamily="avares://Avalonia.Fonts.Inter/Assets#Inter"
+        Icon="avares://Orion/Assets/Orion/Sharp/orion-app.ico">
+
+  <Window.Styles>
+    <Style Selector="TextBlock">
+      <Setter Property="Foreground" Value="#bdc3c7" />
+      <Setter Property="FontSize" Value="13" />
+    </Style>
+
+    <!-- Top bar (#windowTopBar): background #131418, padding 4 -->
+    <Style Selector="Border.jj-topbar">
+      <Setter Property="Background" Value="#131418" />
+      <Setter Property="Padding" Value="0,4" />
+    </Style>
+
+    <!-- #actions button: rgba(255,255,255,0.1) bg, no border, padding 4 -->
+    <Style Selector="Button.jj-topbar-btn">
+      <Setter Property="Height" Value="22" />
+      <Setter Property="Margin" Value="2,0,0,0" />
+      <Setter Property="Padding" Value="8,0" />
+      <Setter Property="Background" Value="#1F1F1F" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Foreground" Value="#bdc3c7" />
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="FontWeight" Value="Medium" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.jj-topbar-btn:pointerover">
+      <Setter Property="Background" Value="#333333" />
+    </Style>
+    <Style Selector="Button.jj-topbar-btn.topmost-on">
+      <Setter Property="Background" Value="#27AE60" />
+    </Style>
+    <Style Selector="Button.jj-topbar-btn.topmost-on:pointerover">
+      <Setter Property="Foreground" Value="#ECF0F1" />
+    </Style>
+
+    <!-- #exit: 30x30, transparent, hover red+white -->
+    <Style Selector="Button.jj-topbar-exit">
+      <Setter Property="Width" Value="30" />
+      <Setter Property="Height" Value="30" />
+      <Setter Property="Margin" Value="2,0,0,0" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Foreground" Value="#bdc3c7" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.jj-topbar-exit:pointerover">
+      <Setter Property="Background" Value="Red" />
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+
+    <Style Selector="Button.jj-site">
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+
+    <!-- #container: dark #333333 background -->
+    <Style Selector="Border.jj-container">
+      <Setter Property="Background" Value="#333333" />
+    </Style>
+  </Window.Styles>
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <!-- Top bar (#windowTopBar) -->
+    <Border Grid.Row="0" Classes="jj-topbar" PointerPressed="TopBar_PointerPressed">
+      <DockPanel LastChildFill="False">
+        <TextBlock Text="JJSploit v1.0 by " FontSize="14" Foreground="#bdc3c7"
+                   VerticalAlignment="Center" Padding="4,0,0,0" DockPanel.Dock="Left" />
+        <Button Classes="jj-site" Click="TopBar_Site_Click" DockPanel.Dock="Left">
+          <TextBlock x:Name="SiteLinkText" Text="wearedevs.net" FontSize="14" Foreground="#bdc3c7" />
+        </Button>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" Spacing="0">
+          <Button x:Name="FixRobloxBtn" Classes="jj-topbar-btn" Click="TopBar_FixRoblox_Click">
+            <TextBlock Text="Fix Roblox" />
+          </Button>
+          <Button x:Name="TopMostBtn" Classes="jj-topbar-btn" Click="TopBar_TopMost_Click">
+            <TextBlock Text="Top Most" />
+          </Button>
+          <Button x:Name="ExitBtn" Classes="jj-topbar-exit" Click="TopBar_Exit_Click" ToolTip.Tip="Return to Orion">
+            <TextBlock Text="X" />
+          </Button>
+        </StackPanel>
+        <Panel />
+      </DockPanel>
+    </Border>
+
+    <!-- Body: #container with the General view directly (no sidebar) -->
+    <Border Grid.Row="1" Classes="jj-container">
+      <jj:JJSploitGeneralView x:Name="GeneralView" />
+    </Border>
+  </Grid>
+</Window>
