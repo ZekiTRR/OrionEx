@@ -1,0 +1,653 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:OrbitAvalonia.Controls"
+        x:Class="OrbitAvalonia.WaveOldWindow"
+        Title="Wave"
+        Width="800" Height="446"
+        MinWidth="800" MinHeight="446"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        WindowDecorations="None"
+        ExtendClientAreaToDecorationsHint="True"
+        WindowStartupLocation="CenterScreen"
+        FontFamily="avares://Orion/Assets/WaveOld#Izmir"
+        RenderOptions.TextRenderingMode="Antialias"
+        Icon="avares://Orion/Assets/Orion/Sharp/orion-app.ico">
+
+  <Window.Resources>
+    <!-- Original Material Symbols icons from Wave Source (unchanged, 1:1) -->
+    <StreamGeometry x:Key="WaveOldIconEditor">m353-480 59-59q12-12 12-28t-12-28q-12-12-28.5-12T355-595l-87 87q-6 6-8.5 13t-2.5 15q0 8 2.5 15t8.5 13l87 87q12 12 28.5 12t28.5-12q12-12 12-28t-12-28l-59-59Zm254 0-59 59q-12 12-12 28t12 28q12 12 28.5 12t28.5-12l87-87q6-6 8.5-13t2.5-15q0-8-2.5-15t-8.5-13l-87-87q-6-6-13.5-9t-15-3q-7.5 0-15 3t-13.5 9q-12 12-12 28t12 28l59 59ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Z</StreamGeometry>
+    <StreamGeometry x:Key="WaveOldIconCloud">M600-40q-33 0-56.5-23.5T520-120q0-23 11-41t29-29v-221q-18-11-29-28.5T520-480q0-33 23.5-56.5T600-560q33 0 56.5 23.5T680-480q0 23-11 40.5T640-411v115l160-53v-62q-18-11-29-28.5T760-480q0-33 23.5-56.5T840-560q33 0 56.5 23.5T920-480q0 23-11 40.5T880-411v61q0 26-15 47t-40 29l-185 62v22q18 11 29 29t11 41q0 33-23.5 56.5T600-40ZM160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h207q16 0 30.5 6t25.5 17l57 57h360q17 0 28.5 11.5T880-680q0 17-11.5 28.5T840-640H600q-66 0-113 47t-47 113q0 31 10.5 58t29.5 48v148q-13 14-21.5 30.5T445-160H160Z</StreamGeometry>
+    <StreamGeometry x:Key="WaveOldIconSettings">M421-80q-14 0-25-9t-13-23l-15-94q-19-7-40-19t-37-25l-86 40q-14 6-28 1.5T155-226L97-330q-8-13-4.5-27t15.5-23l80-59q-2-9-2.5-20.5T185-480q0-9 .5-20.5T188-521l-80-59q-12-9-15.5-23t4.5-27l58-104q8-13 22-17.5t28 1.5l86 40q16-13 37-25t40-18l15-95q2-14 13-23t25-9h118q14 0 25 9t13 23l15 94q19 7 40.5 18.5T669-710l86-40q14-6 27.5-1.5T804-734l59 104q8 13 4.5 27.5T852-580l-80 57q2 10 2.5 21.5t.5 21.5q0 10-.5 21t-2.5 21l80 58q12 8 15.5 22.5T863-330l-58 104q-8 13-22 17.5t-28-1.5l-86-40q-16 13-36.5 25.5T592-206l-15 94q-2 14-13 23t-25 9H421Zm59-270q54 0 92-38t38-92q0-54-38-92t-92-38q-54 0-92 38t-38 92q0 54 38 92t92 38Z</StreamGeometry>
+
+    <!-- Window control icons (unchanged) -->
+    <StreamGeometry x:Key="WaveOldIconMinimize">M280-120q-17 0-28.5-11.5T240-160q0-17 11.5-28.5T280-200h400q17 0 28.5 11.5T720-160q0 17-11.5 28.5T680-120H280Z</StreamGeometry>
+    <StreamGeometry x:Key="WaveOldIconMaximize">M200-200h80q17 0 28.5 11.5T320-160q0 17-11.5 28.5T280-120H160q-17 0-28.5-11.5T120-160v-120q0-17 11.5-28.5T160-320q17 0 28.5 11.5T200-280v80Zm560 0v-80q0-17 11.5-28.5T800-320q17 0 28.5 11.5T840-280v120q0 17-11.5 28.5T800-120H680q-17 0-28.5-11.5T640-160q0-17 11.5-28.5T680-200h80ZM200-760v80q0 17-11.5 28.5T160-640q-17 0-28.5-11.5T120-680v-120q0-17 11.5-28.5T160-840h120q17 0 28.5 11.5T320-800q0 17-11.5 28.5T280-760h-80Zm560 0h-80q-17 0-28.5-11.5T640-800q0-17 11.5-28.5T680-840h120q17 0 28.5 11.5T840-800v120q0 17-11.5 28.5T800-640q-17 0-28.5-11.5T760-680v-80Z</StreamGeometry>
+    <StreamGeometry x:Key="WaveOldIconClose">M480-424 284-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536-480l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480-424Z</StreamGeometry>
+
+    <!-- Editor toolbar icons (unchanged) -->
+    <StreamGeometry x:Key="WaveOldIconOpen">M240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h287q16 0 30.5 6t25.5 17l194 194q11 11 17 25.5t6 30.5v447q0 33-23.5 56.5T720-80H240Zm280-560q0 17 11.5 28.5T560-600h160L520-800v160Zm-80 280v80q0 17 11.5 28.5T480-240q17 0 28.5-11.5T520-280v-80h80q17 0 28.5-11.5T640-400q0-17-11.5-28.5T600-440h-80v-80q0-17-11.5-28.5T480-560q-17 0-28.5 11.5T440-520v80h-80q-17 0-28.5 11.5T320-400q0 17 11.5 28.5T360-360h80Z</StreamGeometry>
+    <StreamGeometry x:Key="WaveOldIconSave">M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h447q16 0 30.5 6t25.5 17l114 114q11 11 17 25.5t6 30.5v447q0 33-23.5 56.5T760-120H200Zm280-120q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35ZM280-560h280q17 0 28.5-11.5T600-600v-80q0-17-11.5-28.5T560-720H280q-17 0-28.5 11.5T240-680v80q0 17 11.5 28.5T280-560Z</StreamGeometry>
+    <StreamGeometry x:Key="WaveOldIconClear">M200-200q-33 0-56.5-23.5T120-280v-360q-17 0-28.5-11.5T80-680q0-17 11.5-28.5T120-720h120v-20q0-17 11.5-28.5T280-780h80q17 0 28.5 11.5T400-740v20h120q17 0 28.5 11.5T560-680q0 17-11.5 28.5T520-640v360q0 33-23.5 56.5T440-200H200Zm440-40q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320h80q17 0 28.5 11.5T760-280q0 17-11.5 28.5T720-240h-80Zm0-160q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480h160q17 0 28.5 11.5T840-440q0 17-11.5 28.5T800-400H640Zm0-160q-17 0-28.5-11.5T600-600q0-17 11.5-28.5T640-640h200q17 0 28.5 11.5T880-600q0 17-11.5 28.5T840-560H640Z</StreamGeometry>
+    <StreamGeometry x:Key="WaveOldIconExecute">M176-183q-20 8-38-3.5T120-220v-180l320-80-320-80v-180q0-22 18-33.5t38-3.5l616 260q25 11 25 37t-25 37L176-183Z</StreamGeometry>
+
+    <!-- Settings section icons (unchanged) -->
+    <StreamGeometry x:Key="WaveOldIconExecutor">M560-600q-17 0-28.5-11.5T520-640v-160q0-17 11.5-28.5T560-840h240q17 0 28.5 11.5T840-800v160q0 17-11.5 28.5T800-600H560ZM160-440q-17 0-28.5-11.5T120-480v-320q0-17 11.5-28.5T160-840h240q17 0 28.5 11.5T440-800v320q0 17-11.5 28.5T400-440H160Zm400 320q-17 0-28.5-11.5T520-160v-320q0-17 11.5-28.5T560-520h240q17 0 28.5 11.5T840-480v320q0 17-11.5 28.5T800-120H560Zm-400 0q-17 0-28.5-11.5T120-160v-160q0-17 11.5-28.5T160-360h240q17 0 28.5 11.5T440-320v160q0 17-11.5 28.5T400-120H160Z</StreamGeometry>
+    <StreamGeometry x:Key="WaveOldIconEditorSection">m353-480 59-59q12-12 12-28t-12-28q-12-12-28.5-12T355-595l-87 87q-6 6-8.5 13t-2.5 15q0 8 2.5 15t8.5 13l87 87q12 12 28.5 12t28.5-12q12-12 12-28t-12-28l-59-59Zm254 0-59 59q-12 12-12 28t12 28q12 12 28.5 12t28.5-12l87-87q6-6 8.5-13t2.5-15q0-8-2.5-15t-8.5-13l-87-87q-6-6-13.5-9t-15-3q-7.5 0-15 3t-13.5 9q-12 12-12 28t12 28l59 59ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Z</StreamGeometry>
+    <StreamGeometry x:Key="WaveOldIconAi">M360-160H200q-33 0-56.5-23.5T120-240v-560q0-33 23.5-56.5T200-880h560q33 0 56.5 23.5T840-800v560q0 33-23.5 56.5T760-160H600l-92 92q-6 6-13 8.5T480-57q-8 0-15-2.5T452-68l-92-92Zm120-320q58 0 99-41t41-99q0-58-41-99t-99-41q-58 0-99 41t-41 99q0 58 41 99t99 41ZM200-240h560v-46q-54-53-125.5-83.5T480-400q-83 0-154.5 30.5T200-286v46Z</StreamGeometry>
+    <StreamGeometry x:Key="WaveOldIconPlus">M12 5v14 M5 12h14</StreamGeometry>
+
+    <!-- Chevron icons for ScriptCloud pagination (unchanged) -->
+    <StreamGeometry x:Key="WaveOldIconChevronLeft">F1 M102,102z M0,0z M62.1621,28.3553C61.7712,27.9636 61.3068,27.6528 60.7956,27.4407 60.2844,27.2287 59.7363,27.1195 59.1829,27.1195 58.6294,27.1195 58.0814,27.2287 57.5702,27.4407 57.059,27.6528 56.5946,27.9636 56.2037,28.3553L36.8071,47.7519C36.4154,48.1429 36.1046,48.6072 35.8925,49.1184 35.6804,49.6297 35.5713,50.1777 35.5713,50.7311 35.5713,51.2846 35.6804,51.8326 35.8925,52.3438 36.1046,52.855 36.4154,53.3194 36.8071,53.7103L56.2037,73.1069C56.5949,73.4981 57.0594,73.8085 57.5706,74.0202 58.0817,74.232 58.6296,74.3409 59.1829,74.3409 59.7362,74.3409 60.2841,74.232 60.7952,74.0202 61.3064,73.8085 61.7709,73.4981 62.1621,73.1069 62.5533,72.7157 62.8637,72.2512 63.0754,71.74 63.2872,71.2289 63.3961,70.681 63.3961,70.1277 63.3961,69.5744 63.2872,69.0265 63.0754,68.5154 62.8637,68.0042 62.5533,67.5397 62.1621,67.1485L45.7659,50.71 62.1621,34.3138C63.8102,32.6657,63.7679,29.9612,62.1621,28.3553z</StreamGeometry>
+    <StreamGeometry x:Key="WaveOldIconChevronRight">F1 M102,102z M0,0z M39.6777,28.3553C39.286,28.7463 38.9752,29.2107 38.7631,29.7219 38.551,30.2331 38.4419,30.7811 38.4419,31.3346 38.4419,31.888 38.551,32.436 38.7631,32.9472 38.9752,33.4584 39.286,33.9228 39.6777,34.3138L56.0739,50.71 39.6777,67.1062C39.2865,67.4975 38.9761,67.9619 38.7644,68.4731 38.5527,68.9843 38.4437,69.5322 38.4437,70.0854 38.4437,70.6387 38.5527,71.1866 38.7644,71.6978 38.9761,72.209 39.2865,72.6734 39.6777,73.0647 40.069,73.4559 40.5334,73.7662 41.0446,73.978 41.5558,74.1897 42.1036,74.2987 42.6569,74.2987 43.2102,74.2987 43.7581,74.1897 44.2693,73.978 44.7804,73.7662 45.2449,73.4559 45.6361,73.0647L65.0327,53.6681C65.4245,53.2771 65.7353,52.8128 65.9473,52.3016 66.1594,51.7903 66.2685,51.2423 66.2685,50.6889 66.2685,50.1354 66.1594,49.5874 65.9473,49.0762 65.7353,48.565 65.4245,48.1006 65.0327,47.7097L45.6361,28.3131C44.0303,26.7073,41.3258,26.7073,39.6777,28.3553z</StreamGeometry>
+    <StreamGeometry x:Key="WaveOldIconRefresh">M440-280q-17 0-28.5 11.5T400-240q0 17 11.5 28.5T440-200q34 0 56.5-22.5T520-280v-40q0-66-47-113t-113-47q-26 0-50.5 9.5T260-440l-36-36q-11-11-28-11t-28 11q-11 11-11 28t11 28l104 104q12 12 28 12t28-12l104-104q11-11 11-28t-11-28q-11-11-28-11t-28 11l-36 36q17-17 38.5-25.5T440-400q34 0 56.5 22.5T520-320v40ZM720-80l104-104q12-12 12-28t-12-28L720-344q-11-11-28-11t-28 11q-11 11-11 28t11 28l36 36q-17-17-38.5-25.5T620-280q-66 0-113 47t-47 113v40q0 17 11.5 28.5T500-40q17 0 28.5-11.5T540-80q0-17-11.5-28.5T500-120q-34 0-56.5-22.5T420-200v-40q0-34 22.5-56.5T500-320q26 0 50.5 9.5T600-280l-36 36q-11 11-11 28t11 28q11 11 28 11t28-11l104-104q12-12 12-28t-12-28Z</StreamGeometry>
+  </Window.Resources>
+
+  <Window.Styles>
+    <Style Selector="Window">
+      <Setter Property="FontFamily" Value="avares://Orion/Assets/WaveOld#Izmir" />
+    </Style>
+    <Style Selector="TextBlock">
+      <Setter Property="FontFamily" Value="avares://Orion/Assets/WaveOld#Izmir" />
+    </Style>
+    <Style Selector="ToggleButton">
+      <Setter Property="FocusAdorner" Value="{x:Null}" />
+    </Style>
+    <Style Selector="TextBox">
+      <Setter Property="FocusAdorner" Value="{x:Null}" />
+    </Style>
+    <Style Selector="Button">
+      <Setter Property="FocusAdorner" Value="{x:Null}" />
+    </Style>
+
+    <!-- Window control buttons -->
+    <Style Selector="Button.WaveOld-win">
+      <Setter Property="Width" Value="50" />
+      <Setter Property="Height" Value="50" />
+      <Setter Property="Padding" Value="18" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.WaveOld-win Path">
+      <Setter Property="Fill" Value="#B2B2B2" />
+      <Setter Property="Stretch" Value="Uniform" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Fill" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.WaveOld-win:pointerover">
+      <Setter Property="Background" Value="#1F1F22" />
+    </Style>
+    <Style Selector="Button.WaveOld-win:pointerover Path">
+      <Setter Property="Fill" Value="#FFFFFF" />
+    </Style>
+
+    <!-- Rail toggle buttons (left side icon column) -->
+    <Style Selector="ToggleButton.WaveOld-rail">
+      <Setter Property="Width" Value="55" />
+      <Setter Property="Height" Value="54" />
+      <Setter Property="Padding" Value="15" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Foreground" Value="#B2B2B2" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Foreground" Duration="0:0:0.2" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="ToggleButton.WaveOld-rail Path">
+      <Setter Property="Fill" Value="{Binding $parent[ToggleButton].Foreground}" />
+      <Setter Property="Stretch" Value="Uniform" />
+      <Setter Property="Opacity" Value="0.7" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.2" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="ToggleButton.WaveOld-rail Image">
+      <Setter Property="Stretch" Value="Uniform" />
+      <Setter Property="Opacity" Value="0.7" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.2" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="ToggleButton.WaveOld-rail:pointerover">
+      <Setter Property="Foreground" Value="#FFFFFF" />
+    </Style>
+    <Style Selector="ToggleButton.WaveOld-rail:pointerover Path">
+      <Setter Property="Opacity" Value="1" />
+    </Style>
+    <Style Selector="ToggleButton.WaveOld-rail:pointerover Image">
+      <Setter Property="Opacity" Value="1" />
+    </Style>
+    <Style Selector="ToggleButton.WaveOld-rail:checked">
+      <Setter Property="Foreground" Value="#FFFFFF" />
+    </Style>
+    <Style Selector="ToggleButton.WaveOld-rail:checked Path">
+      <Setter Property="Opacity" Value="1" />
+    </Style>
+    <Style Selector="ToggleButton.WaveOld-rail:checked Image">
+      <Setter Property="Opacity" Value="1" />
+    </Style>
+
+    <!-- Editor toolbar (bottom right) icon buttons -->
+    <Style Selector="Button.WaveOld-tool">
+      <Setter Property="Width" Value="40" />
+      <Setter Property="Height" Value="40" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Padding" Value="11" />
+      <Setter Property="Foreground" Value="#B2B2B2" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Foreground" Duration="0:0:0.2" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.WaveOld-tool Path">
+      <Setter Property="Fill" Value="{Binding $parent[Button].Foreground}" />
+      <Setter Property="Stretch" Value="Uniform" />
+      <Setter Property="Opacity" Value="0.7" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.2" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.WaveOld-tool Image">
+      <Setter Property="Stretch" Value="Uniform" />
+      <Setter Property="Opacity" Value="0.7" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.2" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.WaveOld-tool:pointerover">
+      <Setter Property="Foreground" Value="#FFFFFF" />
+    </Style>
+    <Style Selector="Button.WaveOld-tool:pointerover Path">
+      <Setter Property="Opacity" Value="1" />
+    </Style>
+    <Style Selector="Button.WaveOld-tool:pointerover Image">
+      <Setter Property="Opacity" Value="1" />
+    </Style>
+
+    <!-- Side panel toggle (blue strip) -->
+    <Style Selector="Border.WaveOld-sidebutton">
+      <Setter Property="Width" Value="5" />
+      <Setter Property="Height" Value="34" />
+      <Setter Property="Background" Value="#267DE5" />
+      <Setter Property="CornerRadius" Value="2.5" />
+      <Setter Property="HorizontalAlignment" Value="Left" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="Margin" Value="5,0,0,0" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+
+    <!-- Script Cloud search input -->
+    <Style Selector="TextBox.WaveOld-search">
+      <Setter Property="Height" Value="34" />
+      <Setter Property="Background" Value="#1D1D1E" />
+      <Setter Property="BorderBrush" Value="#FF2C2C2D" />
+      <Setter Property="BorderThickness" Value="1.5" />
+      <Setter Property="CornerRadius" Value="5" />
+      <Setter Property="Foreground" Value="#FFC8C8C8" />
+      <Setter Property="CaretBrush" Value="#C8C8C8" />
+      <Setter Property="FontFamily" Value="avares://Orion/Assets/WaveOld#Izmir" />
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="Padding" Value="10,5,10,0" />
+    </Style>
+    <Style Selector="TextBox.WaveOld-search /template/ Border#PART_BorderElement">
+      <Setter Property="Background" Value="#1D1D1E" />
+      <Setter Property="BorderBrush" Value="#FF2C2C2D" />
+      <Setter Property="CornerRadius" Value="5" />
+    </Style>
+
+    <!-- Script Cloud pagination buttons -->
+    <Style Selector="Button.WaveOld-page">
+      <Setter Property="Width" Value="34" />
+      <Setter Property="Height" Value="34" />
+      <Setter Property="Background" Value="#1D1D1E" />
+      <Setter Property="BorderBrush" Value="#FF2C2C2D" />
+      <Setter Property="BorderThickness" Value="1.5" />
+      <Setter Property="CornerRadius" Value="5" />
+      <Setter Property="Padding" Value="8,8,8,8" />
+      <Setter Property="Foreground" Value="#C8C8C8" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.25" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.WaveOld-page Path">
+      <Setter Property="Fill" Value="{Binding $parent[Button].Foreground}" />
+      <Setter Property="Stretch" Value="Uniform" />
+    </Style>
+    <Style Selector="Button.WaveOld-page:pointerover">
+      <Setter Property="Background" Value="#27272A" />
+    </Style>
+
+    <!-- Page counter pill -->
+    <Style Selector="Border.WaveOld-counter">
+      <Setter Property="Height" Value="34" />
+      <Setter Property="Background" Value="#1D1D1E" />
+      <Setter Property="BorderBrush" Value="#FF2C2C2D" />
+      <Setter Property="BorderThickness" Value="1.5" />
+      <Setter Property="CornerRadius" Value="5" />
+      <Setter Property="Margin" Value="5,0" />
+    </Style>
+
+    <!-- Script card (Wave Source style) -->
+    <Style Selector="Border.WaveOld-scriptcard">
+      <Setter Property="Width" Value="206.333" />
+      <Setter Property="Height" Value="131.5" />
+      <Setter Property="Background" Value="#1D1D1E" />
+      <Setter Property="BorderBrush" Value="#FF2C2C2D" />
+      <Setter Property="BorderThickness" Value="1.5" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="Margin" Value="0,0,25,25" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="ClipToBounds" Value="True" />
+    </Style>
+
+    <!-- Settings section header (icon + title) -->
+    <Style Selector="TextBlock.WaveOld-section-title">
+      <Setter Property="Foreground" Value="#FFC8C8C8" />
+      <Setter Property="FontSize" Value="16" />
+      <Setter Property="FontFamily" Value="Segoe UI, Inter, sans-serif" />
+      <Setter Property="Margin" Value="35,3,0,0" />
+    </Style>
+    <Style Selector="Path.WaveOld-section-icon">
+      <Setter Property="Width" Value="24" />
+      <Setter Property="Height" Value="24" />
+      <Setter Property="Fill" Value="#FFB2B2B2" />
+      <Setter Property="Stretch" Value="Fill" />
+    </Style>
+
+    <!-- Settings settings card (CheckBox / Slider) -->
+    <Style Selector="Border.WaveOld-setting">
+      <Setter Property="Background" Value="#1D1D1E" />
+      <Setter Property="BorderBrush" Value="#FF2C2C2D" />
+      <Setter Property="BorderThickness" Value="1.5" />
+      <Setter Property="CornerRadius" Value="4" />
+      <Setter Property="Padding" Value="15,10" />
+      <Setter Property="Margin" Value="0,0,0,10" />
+    </Style>
+    <Style Selector="Border.WaveOld-settinghit">
+      <Setter Property="Width" Value="34" />
+      <Setter Property="Height" Value="34" />
+      <Setter Property="Background" Value="#0F0F10" />
+      <Setter Property="BorderBrush" Value="#FF2C2C2D" />
+      <Setter Property="BorderThickness" Value="1.5" />
+      <Setter Property="CornerRadius" Value="4" />
+      <Setter Property="HorizontalAlignment" Value="Right" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+    <Style Selector="TextBlock.WaveOld-settingtitle">
+      <Setter Property="Foreground" Value="#FFDCDCDC" />
+      <Setter Property="FontFamily" Value="Segoe UI, Inter, sans-serif" />
+      <Setter Property="FontSize" Value="16" />
+    </Style>
+    <Style Selector="TextBlock.WaveOld-settingdesc">
+      <Setter Property="Foreground" Value="#FFB2B2B2" />
+      <Setter Property="FontFamily" Value="Segoe UI, Inter, sans-serif" />
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <Style Selector="TextBlock.WaveOld-check">
+      <Setter Property="Foreground" Value="#FFFFFF" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="FontSize" Value="18" />
+      <Setter Property="HorizontalAlignment" Value="Center" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="Opacity" Value="0" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.25" />
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <!-- Script Hub provider selector buttons -->
+    <Style Selector="Button.WaveOld-provider">
+      <Setter Property="Height" Value="28" />
+      <Setter Property="Padding" Value="10,0" />
+      <Setter Property="Background" Value="#1D1D1E" />
+      <Setter Property="BorderBrush" Value="#2C2C2D" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="Foreground" Value="#8CA0BA" />
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="FontFamily" Value="avares://Orion/Assets/WaveOld#Izmir" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.14" />
+          <BrushTransition Property="Foreground" Duration="0:0:0.14" />
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.14" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.WaveOld-provider.active">
+      <Setter Property="Background" Value="#267DE5" />
+      <Setter Property="Foreground" Value="#FFFFFF" />
+      <Setter Property="BorderBrush" Value="#267DE5" />
+    </Style>
+    <Style Selector="Button.WaveOld-provider:pointerover">
+      <Setter Property="Background" Value="#2A3F66" />
+    </Style>
+    <Style Selector="Button.WaveOld-provider.active:pointerover">
+      <Setter Property="Background" Value="#3686F0" />
+    </Style>
+  </Window.Styles>
+
+  <Border x:Name="WaveOldChrome"
+          Background="#FF0F0F10"
+          BorderBrush="#FF1D1D1E"
+          BorderThickness="1"
+          CornerRadius="8"
+          Margin="4,0,4,0">
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="55" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+
+      <!-- ══════════ Left rail (icons + selection bar) ══════════ -->
+      <Grid Grid.Row="0" Grid.RowSpan="2" Width="55" HorizontalAlignment="Left">
+        <Image Source="avares://Orion/Assets/WaveOld/wave-28x28.png"
+               Width="28" Height="28"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Top"
+               Margin="0,15,0,0"
+               RenderOptions.BitmapInterpolationMode="HighQuality" />
+
+        <StackPanel Margin="0,51,0,0" HorizontalAlignment="Stretch">
+          <ToggleButton x:Name="EditorToggleButton" Classes="WaveOld-rail" IsChecked="True" Click="EditorToggleButton_Click">
+            <Path Data="{StaticResource WaveOldIconEditor}" />
+          </ToggleButton>
+          <ToggleButton x:Name="ScriptCloudToggleButton" Classes="WaveOld-rail" Click="ScriptCloudToggleButton_Click" Padding="15">
+            <Path Data="{StaticResource WaveOldIconCloud}" Stretch="Uniform" />
+          </ToggleButton>
+          <ToggleButton x:Name="SettingsToggleButton" Classes="WaveOld-rail" Click="SettingsToggleButton_Click">
+            <Path Data="{StaticResource WaveOldIconSettings}" />
+          </ToggleButton>
+        </StackPanel>
+      </Grid>
+
+      <!-- ══════════ Title bar ══════════ -->
+      <Grid Grid.Row="0" Margin="55,0,0,0" Background="Transparent" PointerPressed="TitleBar_PointerPressed">
+        <Image Source="avares://Orion/Assets/WaveOld/wave-text.png"
+               Height="14"
+               HorizontalAlignment="Left"
+               VerticalAlignment="Bottom"
+               Margin="15,0,0,16"
+               RenderOptions.BitmapInterpolationMode="HighQuality" />
+
+        <!-- Window control buttons -->
+        <Button Classes="WaveOld-win" Click="ExitButton_Click"
+                HorizontalAlignment="Right" VerticalAlignment="Top"
+                ToolTip.Tip="Close">
+          <Path Data="{StaticResource WaveOldIconClose}" Stretch="Uniform" Width="14" Height="14" />
+        </Button>
+        <Button Classes="WaveOld-win" Click="MaximizeButton_Click"
+                HorizontalAlignment="Right" VerticalAlignment="Top"
+                Margin="0,0,50,0" BorderThickness="0"
+                ToolTip.Tip="Maximize">
+          <Path Data="{StaticResource WaveOldIconMaximize}" Stretch="Uniform" Width="14" Height="14" />
+        </Button>
+        <Button Classes="WaveOld-win" Click="MinimizeButton_Click"
+                HorizontalAlignment="Right" VerticalAlignment="Top"
+                Margin="0,0,100,0" BorderThickness="0"
+                ToolTip.Tip="Minimize">
+          <Path Data="{StaticResource WaveOldIconMinimize}" Stretch="Uniform" Width="14" Height="2" />
+        </Button>
+      </Grid>
+
+      <!-- ══════════ Main content area ══════════ -->
+      <Grid Grid.Row="1" Margin="55,0,0,0">
+        <Border BorderBrush="#FF1D1D1E" BorderThickness="1,1,0,0" CornerRadius="6,0,0,0">
+          <Grid ClipToBounds="True">
+
+            <!-- ── Editor page ── -->
+            <Grid x:Name="EditorPage" IsVisible="True">
+              <Grid>
+                <!-- Explorer sidebar (collapsed by default, replaces AI panel) -->
+                <Border x:Name="SidePanel" Width="0" HorizontalAlignment="Left" ClipToBounds="True">
+                  <Border Background="#101B30" BorderBrush="#1E2E4C" BorderThickness="0,0,1,0">
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                      <StackPanel x:Name="ExplorerTree" Margin="10,10,10,10" Spacing="4" />
+                    </ScrollViewer>
+                  </Border>
+                </Border>
+
+                <!-- Editor panel (always visible) -->
+                <Border x:Name="EditorPanel" Background="#FF0F0F10" CornerRadius="5,0,0,0" ClipToBounds="True">
+                  <Grid>
+                    <!-- Background.png covers the whole editor area behind everything -->
+                    <Image Source="avares://Orion/Assets/WaveOld/background.png"
+                           Stretch="UniformToFill"
+                           Opacity="0.35"
+                           IsHitTestVisible="False"
+                           Grid.RowSpan="3" />
+
+                    <Grid.RowDefinitions>
+                      <RowDefinition Height="36" />
+                      <RowDefinition Height="*" />
+                      <RowDefinition Height="40" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Tab strip -->
+                    <Border Grid.Row="0" Background="#FF0F0F10" BorderBrush="#FF1D1D1E" BorderThickness="0,0,0,1">
+                      <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+                        <StackPanel x:Name="TabStrip" Orientation="Horizontal" Margin="6,4,0,0" Spacing="4" VerticalAlignment="Center" />
+                      </ScrollViewer>
+                    </Border>
+
+                    <!-- Monaco editor -->
+                    <Border Grid.Row="1" Margin="0">
+                      <NativeWebView x:Name="EditorWebView" Background="Transparent" IsVisible="False" />
+                    </Border>
+
+                    <!-- Editor bottom toolbar -->
+                    <Border Grid.Row="2" Background="#FF0F0F10" BorderBrush="#FF1D1D1E" BorderThickness="0,1,0,0">
+                      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="2" VerticalAlignment="Center" Margin="0,0,4,0">
+                        <Button Classes="WaveOld-tool" x:Name="OpenFileButton" Click="OpenFileButton_Click" ToolTip.Tip="Open file" Padding="11">
+                          <Path Data="{StaticResource WaveOldIconOpen}" Stretch="Uniform" />
+                        </Button>
+                        <Button Classes="WaveOld-tool" x:Name="SaveFileButton" Click="SaveFileButton_Click" ToolTip.Tip="Save file" Padding="11">
+                          <Path Data="{StaticResource WaveOldIconSave}" Stretch="Uniform" />
+                        </Button>
+                        <Button Classes="WaveOld-tool" x:Name="ClearButton" Click="ClearButton_Click" ToolTip.Tip="Clear" Padding="11">
+                          <Path Data="{StaticResource WaveOldIconClear}" Stretch="Uniform" Margin="0,2,0,0" />
+                        </Button>
+                        <Button Classes="WaveOld-tool" x:Name="ExecuteButton" Click="ExecuteButton_Click" ToolTip.Tip="Execute (Ctrl+Enter)" Padding="11">
+                          <Path Data="{StaticResource WaveOldIconExecute}" Stretch="Uniform" />
+                        </Button>
+                      </StackPanel>
+                    </Border>
+
+                    <!-- Side panel toggle (blue strip) -->
+                    <Border x:Name="SidePanelButton" Classes="WaveOld-sidebutton" PointerPressed="SidePanelButton_PointerPressed" />
+                  </Grid>
+                </Border>
+              </Grid>
+            </Grid>
+
+            <!-- ── ScriptCloud page ── -->
+            <Grid x:Name="ScriptCloudPage" IsVisible="False">
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+              </Grid.RowDefinitions>
+
+              <!-- Search bar -->
+              <Grid Grid.Row="0" Margin="14,12,14,6">
+                <TextBox x:Name="HubSearch" Classes="WaveOld-search"
+                         Watermark="Search scripts..." TextChanged="HubSearch_TextChanged" />
+              </Grid>
+
+              <!-- Provider selector -->
+              <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="14,0,14,8" Spacing="6">
+                <Button x:Name="HubProviderScriptBlox" Classes="WaveOld-provider active" Click="HubProvider_Click" Tag="ScriptBlox">
+                  <TextBlock Text="ScriptBlox" />
+                </Button>
+                <Button x:Name="HubProviderRscripts" Classes="WaveOld-provider" Click="HubProvider_Click" Tag="Rscripts">
+                  <TextBlock Text="Rscripts" />
+                </Button>
+                <Button x:Name="HubProviderRobloxScripts" Classes="WaveOld-provider" Click="HubProvider_Click" Tag="RobloxScripts">
+                  <TextBlock Text="Roblox" />
+                </Button>
+                <Button x:Name="HubProviderHaxHell" Classes="WaveOld-provider" Click="HubProvider_Click" Tag="HaxHell">
+                  <TextBlock Text="HaxHell" />
+                </Button>
+                <Button x:Name="HubRefresh" Classes="WaveOld-page" Click="HubRefresh_Click"
+                        ToolTip.Tip="Refresh" Margin="6,0,0,0">
+                  <Path Data="{StaticResource WaveOldIconRefresh}" Width="16" Height="16" Stretch="Uniform" />
+                </Button>
+              </StackPanel>
+
+              <!-- List of script cards -->
+              <ListBox Grid.Row="2" x:Name="HubList" Classes="WaveOld-list"
+                       Background="Transparent" DoubleTapped="HubList_DoubleTapped"
+                       Margin="14,0,6,0">
+                <ListBox.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" />
+                  </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.Styles>
+                  <Style Selector="ListBoxItem">
+                    <Setter Property="Padding" Value="0" />
+                    <Setter Property="Margin" Value="0,0,10,10" />
+                    <Setter Property="Background" Value="Transparent" />
+                  </Style>
+                </ListBox.Styles>
+              </ListBox>
+
+              <!-- Empty state / loading -->
+              <TextBlock Grid.Row="2" x:Name="HubEmpty" Text="Loading…"
+                         Foreground="#5A5A5A" FontSize="12" FontStyle="Italic"
+                         HorizontalAlignment="Center" VerticalAlignment="Center"
+                         IsVisible="True" />
+            </Grid>
+
+            <!-- ── Settings page ── -->
+            <Grid x:Name="SettingsPage" IsVisible="False">
+              <Border Height="50" BorderBrush="#FF1D1D1E" BorderThickness="0,0,0,1" VerticalAlignment="Top">
+                <StackPanel Orientation="Horizontal">
+                  <Button x:Name="SettingsExecutorToggleButton" Click="SettingsExecutorToggleButton_Click"
+                          Height="50" Width="50" Background="Transparent" BorderThickness="0" Padding="13" Foreground="#C8C8C8" Cursor="Hand">
+                    <Path Data="{StaticResource WaveOldIconExecutor}" Fill="{Binding $parent[Button].Foreground}" Stretch="Uniform" />
+                  </Button>
+                  <Button x:Name="SettingsEditorToggleButton" Click="SettingsEditorToggleButton_Click"
+                          Height="50" Width="50" Background="Transparent" BorderThickness="0" Padding="13" Foreground="#C8C8C8" Cursor="Hand">
+                    <Path Data="{StaticResource WaveOldIconEditorSection}" Fill="{Binding $parent[Button].Foreground}" Stretch="Uniform" />
+                  </Button>
+                  <Button x:Name="SettingsAiToggleButton" Click="SettingsAiToggleButton_Click"
+                          Height="50" Width="50" Background="Transparent" BorderThickness="0" Padding="13" Foreground="#C8C8C8" Cursor="Hand" IsVisible="False">
+                    <Path Data="{StaticResource WaveOldIconAi}" Fill="{Binding $parent[Button].Foreground}" Stretch="Uniform" />
+                  </Button>
+                </StackPanel>
+              </Border>
+
+              <ScrollViewer Margin="0,50,0,0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                  <!-- Executor section -->
+                  <Grid x:Name="SettingsExecutorSection" Margin="25,25,25,0">
+                    <Path Classes="WaveOld-section-icon" Data="{StaticResource WaveOldIconExecutor}"
+                          HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <TextBlock Classes="WaveOld-section-title" Text="Executor" />
+                    <StackPanel Margin="0,40,0,0">
+                      <Border Classes="WaveOld-setting">
+                        <Grid ColumnDefinitions="*,Auto">
+                          <StackPanel VerticalAlignment="Center" Spacing="3">
+                            <TextBlock Classes="WaveOld-settingtitle" Text="Top Most" />
+                            <TextBlock Classes="WaveOld-settingdesc" Text="Keeps the application on top of other windows, even when it is not in focus." />
+                          </StackPanel>
+                          <Border Classes="WaveOld-settinghit" x:Name="TopMostHit" Grid.Column="1" PointerPressed="TopMostHit_PointerPressed">
+                            <TextBlock Classes="WaveOld-check" Text="✓" />
+                          </Border>
+                        </Grid>
+                      </Border>
+                    </StackPanel>
+                  </Grid>
+
+                  <!-- Editor section -->
+                  <Grid x:Name="SettingsEditorSection" Margin="25,25,25,0">
+                    <Path Classes="WaveOld-section-icon" Data="{StaticResource WaveOldIconEditorSection}"
+                          HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <TextBlock Classes="WaveOld-section-title" Text="Editor" />
+                    <StackPanel Margin="0,40,0,0">
+                      <Border Classes="WaveOld-setting">
+                        <Grid ColumnDefinitions="*,Auto">
+                          <StackPanel VerticalAlignment="Center" Spacing="3">
+                            <TextBlock Classes="WaveOld-settingtitle" Text="Font Size" />
+                            <TextBlock Classes="WaveOld-settingdesc" Text="Adjusts the font size of the editor." />
+                          </StackPanel>
+                          <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                            <Slider x:Name="FontSizeSlider" Width="160" Minimum="8" Maximum="32" Value="14" TickFrequency="1" ValueChanged="FontSizeSlider_ValueChanged" />
+                            <TextBlock x:Name="FontSizeValue" Text="14" Foreground="#C8C8C8" FontSize="13" Width="32" TextAlignment="Right" VerticalAlignment="Center" />
+                          </StackPanel>
+                        </Grid>
+                      </Border>
+                      <Border Classes="WaveOld-setting">
+                        <Grid ColumnDefinitions="*,Auto">
+                          <StackPanel VerticalAlignment="Center" Spacing="3">
+                            <TextBlock Classes="WaveOld-settingtitle" Text="Minimap" />
+                            <TextBlock Classes="WaveOld-settingdesc" Text="Displays a condensed view of your entire script in a sidebar on the right of the editor." />
+                          </StackPanel>
+                          <Border Classes="WaveOld-settinghit" x:Name="MinimapHit" Grid.Column="1" PointerPressed="MinimapHit_PointerPressed">
+                            <TextBlock Classes="WaveOld-check" Text="✓" />
+                          </Border>
+                        </Grid>
+                      </Border>
+                    </StackPanel>
+                  </Grid>
+
+                  <!-- AI section (Collapsed by default, like Wave Source) -->
+                  <Grid x:Name="SettingsAiSection" Margin="25,25,25,0" IsVisible="False">
+                    <Path Classes="WaveOld-section-icon" Data="{StaticResource WaveOldIconAi}"
+                          HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <TextBlock Classes="WaveOld-section-title" Text="Artificial Intelligence" />
+                    <StackPanel Margin="0,40,0,0">
+                      <Border Classes="WaveOld-setting">
+                        <Grid ColumnDefinitions="*,Auto">
+                          <StackPanel VerticalAlignment="Center" Spacing="3">
+                            <TextBlock Classes="WaveOld-settingtitle" Text="Send Current Document" />
+                            <TextBlock Classes="WaveOld-settingdesc" Text="Transmits your current document along with your AI prompt to improve code generation." />
+                          </StackPanel>
+                        </Grid>
+                      </Border>
+                    </StackPanel>
+                  </Grid>
+                </StackPanel>
+              </ScrollViewer>
+            </Grid>
+
+          </Grid>
+        </Border>
+      </Grid>
+
+      <!-- ══════════ Toast Container (top-level overlay) ══════════ -->
+      <controls:WaveOldToastContainer x:Name="ToastContainer" Grid.Row="0" Grid.RowSpan="2" ZIndex="200" />
+    </Grid>
+  </Border>
+</Window>

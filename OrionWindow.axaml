@@ -1619,6 +1619,20 @@
                       </Border>
                     </Grid>
                   </Button>
+                  <Button Classes="orion-ui-card" Tag="WaveOld"
+                          Click="OrionUiChoice_Click" Margin="0,0,7,8">
+                    <Grid>
+                      <Image Source="avares://Orion/Assets/Orion/UiSelection/wave-old.png"
+                             Stretch="UniformToFill" Opacity="0.26"
+                             RenderOptions.BitmapInterpolationMode="HighQuality" />
+                      <Border Height="12.363" VerticalAlignment="Bottom"
+                              Background="#C708090A" BorderBrush="#66696C"
+                              BorderThickness="0.333" CornerRadius="0,0,10,10">
+                        <TextBlock Text="Wave Old" FontSize="6" Foreground="White"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                      </Border>
+                    </Grid>
+                  </Button>
                   <Button Classes="orion-ui-card" Tag="SirHurt"
                           Click="OrionUiChoice_Click" Margin="0,0,7,8">
                     <Grid>

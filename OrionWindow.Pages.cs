@@ -391,6 +391,13 @@ public sealed partial class OrionWindow
                         workspace,
                         RestoreOrionWorkspace));
                     break;
+                case "WaveOld":
+                    ShowPreservedAvaloniaWindow(new WaveOldWindow(
+                        _orionMonacoServer.Address,
+                        _orionWorkspace.ScriptsDirectory,
+                        workspace,
+                        RestoreOrionWorkspace));
+                    break;
                 case "SirHurt":
                     ShowPreservedAvaloniaWindow(new SirHurtWindow(
                         _orionMonacoServer.Address,
@@ -566,6 +573,10 @@ public sealed partial class OrionWindow
                 else if (returningWindow is WaveWindow wave)
                 {
                     wave.CloseForOrion();
+                }
+                else if (returningWindow is WaveOldWindow waveOld)
+                {
+                    waveOld.CloseForOrion();
                 }
                 else if (returningWindow is SirHurtWindow sirHurt)
                 {

@@ -220,6 +220,7 @@ internal static class OrbitPreferences
         "AWP" => "AWP",
         "ZenithV2" => "ZenithV2",
         "Wave" => "Wave",
+        "WaveOld" => "WaveOld",
         "SirHurt" => "SirHurt",
         "ScriptWare" => "ScriptWare",
         "SirHurtLegacy" => "SirHurtLegacy",
