@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Orbit Monaco Preview (Light)</title>
+    <title>Orbit Monaco Preview</title>
     <style>
       @font-face {
         font-family: "Zenith Nunito";
@@ -40,7 +40,7 @@
         position: absolute;
         inset: 16px;
         z-index: 2;
-        color: #6a737d;
+        color: #8e908c;
         font: 12px/18px Consolas, monospace;
         pointer-events: none;
       }
@@ -68,11 +68,27 @@
         background: transparent !important;
       }
 
+      body.orion-surface {
+        background-image: linear-gradient(
+          122.2466557642525deg,
+          #ffffff 0%,
+          #f5f5f5 37.019%
+        ) !important;
+        background-size: 896.4px 558px !important;
+        background-position: -10.8px -120.6px !important;
+        background-repeat: no-repeat !important;
+      }
+
+      body.orion-surface #preview-scale,
+      body.orion-surface #editor {
+        background: transparent !important;
+      }
+
       .suggest-widget {
-        border: 1px solid #d0d7de !important;
+        border: 1px solid #d5d5d5 !important;
         border-radius: 6px !important;
         overflow: hidden !important;
-        box-shadow: 0 8px 24px #8c95a033 !important;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08) !important;
       }
 
       .suggest-widget .monaco-list,
@@ -81,16 +97,16 @@
       }
 
       .suggest-widget .monaco-list-row.focused {
-        background: #f3f4f6 !important;
+        background: #e5e5e5 !important;
       }
 
       .suggest-widget .monaco-list-row:hover:not(.focused) {
-        background: #f6f8fa !important;
+        background: #f0f0f0 !important;
       }
 
       .suggest-widget .details-label,
       .suggest-widget .monaco-highlighted-label .highlight {
-        color: #005fb8 !important;
+        color: #4271ae !important;
       }
 
       .suggest-widget.orion-empty-suggest,
@@ -107,11 +123,11 @@
         z-index: 5;
         display: flex;
         justify-content: center;
-        color: rgba(100, 100, 100, 0.7);
+        color: rgba(77, 77, 76, 0.6);
         font-family: "Zenith Nunito", sans-serif;
         font-size: 12px;
         font-style: italic;
-        font-weight: 500;
+        font-weight: 400;
         line-height: 16px;
         pointer-events: none;
         white-space: nowrap;
@@ -125,7 +141,7 @@
         margin: 0;
         padding: 0;
         border: 0;
-        color: rgba(0, 95, 184, 0.8);
+        color: rgba(77, 77, 76, 0.75);
         background: transparent;
         font: inherit;
         text-decoration-line: underline;
@@ -137,7 +153,7 @@
       }
 
       #zenith-editor-help:hover {
-        color: #005fb8;
+        color: rgba(77, 77, 76, 1);
       }
     </style>
   </head>
@@ -170,18 +186,43 @@
             onerror="document.getElementById('loading-status').textContent = 'Unable to load Monaco loader.'"></script>
     <script>
       const previewParameters = new URLSearchParams(window.location.search);
+      const requestedTheme = previewParameters.get("theme");
+      const isXenoTheme = requestedTheme === "xeno";
+      const isBlueTheme = requestedTheme === "blue";
+      const isDarkTheme = requestedTheme === "dark";
+      const isTomorrowLight = !isXenoTheme && !isBlueTheme && !isDarkTheme;
+
       const isTransparent = previewParameters.get("transparent") === "1";
+      const isOrionSurface = previewParameters.get("surface") === "orion";
+      const isAwpSurface = previewParameters.get("shell") === "awp";
+      const isZenithSurface = previewParameters.get("shell") === "zenith";
       const requestedRadius = Math.max(0, Math.min(32, Number(previewParameters.get("radius") || 0)));
+      const requestedForeground = previewParameters.get("fg");
       const requestedBackground = previewParameters.get("bg");
-      
-      const shellBackground = isTransparent
+
+      const defaultLightBg = "#ffffff";
+      const defaultDarkBg = "#101216";
+      const xenoBackground = "#050505";
+
+      const shellBackground = (isTransparent || isOrionSurface)
         ? "#00000000"
         : (/^#[0-9a-f]{6}$/i.test(requestedBackground || "")
           ? requestedBackground
-          : "#FFFFFF");
+          : (isTomorrowLight ? defaultLightBg : (isXenoTheme ? xenoBackground : defaultDarkBg)));
 
-      document.documentElement.style.setProperty("--editor-bg", isTransparent ? "transparent" : shellBackground);
-      document.body.classList.toggle("orion-transparent", isTransparent);
+      const editorLineHighlight = isOrionSurface
+        ? "#00000008"
+        : isTransparent
+        ? "#00000000"
+        : (isTomorrowLight ? "#F5F5F5" : "#1A1D23");
+
+      document.documentElement.style.setProperty(
+        "--editor-bg",
+        isAwpSurface
+          ? "#FAFAFA"
+          : ((isTransparent || isOrionSurface) ? "transparent" : shellBackground));
+      document.body.classList.toggle("orion-transparent", isTransparent || isOrionSurface);
+      document.body.classList.toggle("orion-surface", isOrionSurface);
       document.documentElement.style.setProperty("--editor-radius", `${requestedRadius}px`);
       document.documentElement.classList.toggle("rounded-editor", requestedRadius > 0);
 
@@ -192,7 +233,21 @@
 
       require(["vs/editor/editor.main"], async function () {
         const fixedBackground = shellBackground;
-        const themeName = isTransparent ? "light-transparent" : "light-vivid";
+        const themeName = isTomorrowLight
+          ? "tomorrow-light"
+          : (isZenithSurface
+            ? "zenith-transparent"
+            : ((isTransparent || isOrionSurface)
+              ? "orion-transparent"
+              : (isBlueTheme ? "synapse-blue-default" : (isXenoTheme ? "xeno-fixed" : "orbit-fixed"))));
+
+        const defaultTokenRule = {
+          token: "",
+          foreground: /^[0-9a-f]{6}$/i.test(requestedForeground || "") ? requestedForeground : (isTomorrowLight ? "4D4D4C" : "D4D4D4")
+        };
+        if (!isTransparent && !isOrionSurface) {
+          defaultTokenRule.background = fixedBackground.slice(1);
+        }
 
         const Kind = monaco.languages.CompletionItemKind;
         const SnippetRule = monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet;
@@ -236,7 +291,7 @@
         ];
         const moduleNames = [
           "math", "string", "table", "task", "coroutine", "utf8", "bit32",
-          "game", "workspace", "script", "Enum", "shared", "_G", "getgc", "getgenv", "getrenv"
+          "game", "workspace", "script", "Enum", "shared", "_G"
         ];
 
         const completionItems = [
@@ -308,75 +363,226 @@
           }
         });
 
-        // Высококонтрастная и яркая светлая тема
-        let editorThemeDefinition = {
+        // Tomorrow Light (светлая версия палитры Tomorrow Night Eighties)
+        const tomorrowLightThemeDefinition = {
           base: "vs",
           inherit: false,
           rules: [
-            { token: "", foreground: "24292F" },
-            { token: "comment", foreground: "6A737D", fontStyle: "italic" },
-            { token: "keyword", foreground: "A626A4", fontStyle: "bold" },
-            { token: "keyword.control", foreground: "A626A4", fontStyle: "bold" },
-            { token: "keyword.operator", foreground: "0184BC" },
-            { token: "operator", foreground: "0184BC" },
-            { token: "string", foreground: "1E7E34" },
-            { token: "string.escape", foreground: "D9480F" },
-            { token: "number", foreground: "D9480F" },
-            { token: "constant", foreground: "D9480F" },
-            { token: "regexp", foreground: "E45649" },
-            { token: "type", foreground: "986801" },
-            { token: "struct", foreground: "986801" },
-            { token: "class", foreground: "986801" },
-            { token: "interface", foreground: "986801" },
-            { token: "enum", foreground: "986801" },
-            { token: "namespace", foreground: "986801" },
-            { token: "function", foreground: "005FB8" },
-            { token: "method", foreground: "005FB8" },
-            { token: "entity.name.function", foreground: "005FB8" },
-            { token: "variable", foreground: "24292F" },
-            { token: "variable.predefined", foreground: "005FB8" },
-            { token: "variable.parameter", foreground: "24292F" },
-            { token: "tag", foreground: "A626A4" },
-            { token: "attribute.name", foreground: "986801" },
-            { token: "attribute.value", foreground: "1E7E34" },
-            { token: "delimiter", foreground: "24292F" }
+            defaultTokenRule,
+            { token: "comment", foreground: "8E908C", fontStyle: "italic" },
+            { token: "keyword", foreground: "8959A8" },
+            { token: "keyword.control", foreground: "8959A8" },
+            { token: "keyword.local", foreground: "8959A8", fontStyle: "bold" },
+            { token: "keyword.operator", foreground: "3E999F" },
+            { token: "operator", foreground: "3E999F" },
+            { token: "string", foreground: "718C00" },
+            { token: "string.escape", foreground: "F5871F" },
+            { token: "number", foreground: "F5871F" },
+            { token: "regexp", foreground: "C82829" },
+            { token: "type", foreground: "EAB700" },
+            { token: "struct", foreground: "EAB700" },
+            { token: "class", foreground: "EAB700" },
+            { token: "interface", foreground: "EAB700" },
+            { token: "enum", foreground: "EAB700" },
+            { token: "type.parameter", foreground: "EAB700" },
+            { token: "function", foreground: "4271AE" },
+            { token: "method", foreground: "4271AE" },
+            { token: "entity.name.function", foreground: "4271AE" },
+            { token: "variable", foreground: "4D4D4C" },
+            { token: "variable.parameter", foreground: "4D4D4C" },
+            { token: "variable.property", foreground: "3E999F" },
+            { token: "variable.predefined", foreground: "4271AE" },
+            { token: "constant", foreground: "F5871F" },
+            { token: "tag", foreground: "C82829" },
+            { token: "attribute.name", foreground: "F5871F" },
+            { token: "attribute.value", foreground: "718C00" },
+            { token: "delimiter", foreground: "4D4D4C" },
+            { token: "delimiter.bracket", foreground: "8E908C" }
           ],
           colors: {
             "editor.background": fixedBackground,
-            "editor.foreground": "#24292F",
-            "editorCursor.foreground": "#005FB8",
-            "editorLineNumber.foreground": "#8C95A0",
-            "editorLineNumber.activeForeground": "#1F2328",
-            "editor.lineHighlightBackground": "#F6F8FA",
-            "editor.selectionBackground": "#B4D5FE",
-            "editor.inactiveSelectionBackground": "#E1DFDD",
-            "editor.selectionHighlightBackground": "#B4D5FE80",
-            "editor.findMatchBackground": "#FFD33D88",
-            "editor.findMatchHighlightBackground": "#FFEAA788",
-            "editor.hoverHighlightBackground": "#F0F2F5",
-            "editor.wordHighlightBackground": "#D0D7DE80",
-            "editor.wordHighlightStrongBackground": "#D0D7DEA0",
-            "editorWhitespace.foreground": "#D0D7DE",
-            "editorIndentGuide.background": "#E1E4E8",
-            "editorIndentGuide.activeBackground": "#959DA5",
+            "editor.foreground": /^[0-9a-f]{6}$/i.test(requestedForeground || "") ? "#" + requestedForeground : "#4D4D4C",
+            "editorCursor.foreground": /^[0-9a-f]{6}$/i.test(requestedForeground || "") ? "#" + requestedForeground : "#4D4D4C",
+            "editorLineNumber.foreground": /^[0-9a-f]{6}$/i.test(requestedForeground || "") ? "#8A8A8A" : "#BCBCBC",
+            "editorLineNumber.activeForeground": /^[0-9a-f]{6}$/i.test(requestedForeground || "") ? "#202020" : "#4D4D4C",
+            "editor.lineHighlightBackground": editorLineHighlight,
+            "editor.selectionBackground": "#D6D6D680",
+            "editor.inactiveSelectionBackground": "#E5E5E580",
+            "editor.selectionHighlightBackground": "#D6D6D640",
+            "editor.findMatchBackground": "#FFE57F80",
+            "editor.findMatchHighlightBackground": "#FFE57F40",
+            "editor.hoverHighlightBackground": "#E5E5E560",
+            "editor.wordHighlightBackground": "#0000000D",
+            "editor.wordHighlightStrongBackground": "#0000001A",
+            "editorWhitespace.foreground": "#D6D6D6",
+            "editorIndentGuide.background": "#E8E8E8",
+            "editorIndentGuide.activeBackground": "#BCBCBC",
             "editorGutter.background": fixedBackground,
             "editorPane.background": fixedBackground,
             "minimap.background": fixedBackground,
+            "editorWidget.background": "#FAFAFA",
+            "editorWidget.border": "#D5D5D5",
+            "editorSuggestWidget.background": "#FAFAFA",
+            "editorSuggestWidget.border": "#D5D5D5",
+            "editorSuggestWidget.foreground": "#4D4D4C",
+            "editorSuggestWidget.selectedBackground": "#E5E5E5",
+            "editorSuggestWidget.highlightForeground": "#4271AE",
+            "editorHoverWidget.background": "#FAFAFA",
+            "editorHoverWidget.border": "#D5D5D5",
             "scrollbar.shadow": "#00000000",
-            "scrollbarSlider.background": "#8C95A033",
-            "scrollbarSlider.hoverBackground": "#8C95A066",
-            "scrollbarSlider.activeBackground": "#8C95A099"
+            "scrollbarSlider.background": "#8E908C33",
+            "scrollbarSlider.hoverBackground": "#8E908C55",
+            "scrollbarSlider.activeBackground": "#8E908C88",
+            "editorBracketHighlight.foreground1": "#4271AE",
+            "editorBracketHighlight.foreground2": "#8959A8",
+            "editorBracketHighlight.foreground3": "#3E999F",
+            "editorBracketPairGuide.background1": "#4271AE33",
+            "editorBracketPairGuide.activeBackground1": "#4271AE88"
           }
         };
+
+        let editorThemeDefinition = tomorrowLightThemeDefinition;
+
+        if (!isTomorrowLight) {
+          editorThemeDefinition = {
+            base: "vs-dark",
+            inherit: false,
+            rules: [
+              defaultTokenRule,
+              { token: "comment", foreground: "6A9955", fontStyle: "italic" },
+              { token: "keyword", foreground: "569CD6" },
+              { token: "keyword.control", foreground: "C586C0" },
+              { token: "string", foreground: "CE9178" },
+              { token: "string.escape", foreground: "D7BA7D" },
+              { token: "number", foreground: "B5CEA8" },
+              { token: "regexp", foreground: "D16969" },
+              { token: "operator", foreground: "D4D4D4" },
+              { token: "namespace", foreground: "4EC9B0" },
+              { token: "type", foreground: "4EC9B0" },
+              { token: "struct", foreground: "4EC9B0" },
+              { token: "class", foreground: "4EC9B0" },
+              { token: "interface", foreground: "4EC9B0" },
+              { token: "enum", foreground: "4EC9B0" },
+              { token: "type.parameter", foreground: "4EC9B0" },
+              { token: "function", foreground: "DCDCAA" },
+              { token: "method", foreground: "DCDCAA" },
+              { token: "variable", foreground: "9CDCFE" },
+              { token: "variable.predefined", foreground: "4FC1FF" },
+              { token: "constant", foreground: "4FC1FF" },
+              { token: "tag", foreground: "569CD6" },
+              { token: "attribute.name", foreground: "9CDCFE" },
+              { token: "attribute.value", foreground: "CE9178" }
+            ],
+            colors: {
+              "editor.background": fixedBackground,
+              "editor.foreground": /^[0-9a-f]{6}$/i.test(requestedForeground || "") ? "#" + requestedForeground : "#D4D4D4",
+              "editorCursor.foreground": /^[0-9a-f]{6}$/i.test(requestedForeground || "") ? "#" + requestedForeground : "#AEAFAD",
+              "editorLineNumber.foreground": /^[0-9a-f]{6}$/i.test(requestedForeground || "") ? "#8A8A8A" : "#858585",
+              "editorLineNumber.activeForeground": /^[0-9a-f]{6}$/i.test(requestedForeground || "") ? "#202020" : "#C6C6C6",
+              "editor.lineHighlightBackground": editorLineHighlight,
+              "editor.selectionBackground": "#264F78",
+              "editor.inactiveSelectionBackground": "#3A3D41",
+              "editor.selectionHighlightBackground": "#ADD6FF26",
+              "editor.findMatchBackground": "#515C6A",
+              "editor.findMatchHighlightBackground": "#EA5C0055",
+              "editor.hoverHighlightBackground": "#264F7833",
+              "editor.wordHighlightBackground": "#575757B8",
+              "editor.wordHighlightStrongBackground": "#004972B8",
+              "editorWhitespace.foreground": /^[0-9a-f]{6}$/i.test(requestedForeground || "") ? "#B0B0B0" : "#404040",
+              "editorIndentGuide.background": /^[0-9a-f]{6}$/i.test(requestedForeground || "") ? "#D0D0D0" : "#404040",
+              "editorIndentGuide.activeBackground": /^[0-9a-f]{6}$/i.test(requestedForeground || "") ? "#A8A8A8" : "#707070",
+              "editorGutter.background": fixedBackground,
+              "editorPane.background": fixedBackground,
+              "minimap.background": fixedBackground,
+              "scrollbar.shadow": "#00000000",
+              "scrollbarSlider.background": "#79797966",
+              "scrollbarSlider.hoverBackground": "#646464B3",
+              "scrollbarSlider.activeBackground": "#BFBFBF66"
+            }
+          };
+
+          if (isZenithSurface) {
+            editorThemeDefinition = {
+              base: "vs-dark",
+              inherit: true,
+              rules: [
+                { token: "", foreground: "D4D4D4" },
+                { token: "variable.language.self", foreground: "A9A0A0" },
+                { token: "variable.parameter", foreground: "A9A0A0" },
+                { token: "variable", foreground: "A9A0A0" },
+                { token: "variable.property", foreground: "9CDCFE" },
+                { token: "keyword", foreground: "4CC2F7" },
+                { token: "keyword.local", foreground: "C678DD", fontStyle: "bold" },
+                { token: "keyword.operator", foreground: "4CC2F7" },
+                { token: "operator", foreground: "D4D4D4" },
+                { token: "function", foreground: "DCDCAA" },
+                { token: "entity.name.function", foreground: "DCDCAA" },
+                { token: "global", foreground: "39A2FF", fontStyle: "bold" },
+                { token: "comment", foreground: "ABB2BF", fontStyle: "bold" },
+                { token: "delimiter", foreground: "9A9A9A" },
+                { token: "delimiter.bracket", foreground: "808080" },
+                { token: "string", foreground: "63F499" },
+                { token: "string.escape", foreground: "63F499" },
+                { token: "number", foreground: "E5C07B" },
+                { token: "constant", foreground: "39A2FF" },
+                { token: "support.function", foreground: "39A2FF" },
+                { token: "support.type", foreground: "39A2FF" }
+              ],
+              colors: {
+                "editor.background": "#00000000",
+                "editor.foreground": "#D4D4D4",
+                "editor.selectionBackground": "#3A3D41",
+                "editor.inactiveSelectionBackground": "#3A3D4188",
+                "editor.lineHighlightBackground": "#14141411",
+                "editorLineNumber.foreground": "#FFFFFF",
+                "editorLineNumber.activeForeground": "#FFFFFF",
+                "editorCursor.foreground": "#D4D4D4",
+                "editorGutter.background": "#00000000",
+                "editorPane.background": "#00000000",
+                "minimap.background": "#00000000",
+                "editorWidget.background": "#111111",
+                "editorWidget.border": "#3A3B3C",
+                "editorSuggestWidget.background": "#111111",
+                "editorSuggestWidget.border": "#3A3B3C",
+                "editorSuggestWidget.foreground": "#FFFFFF",
+                "editorSuggestWidget.selectedBackground": "#3A3D41",
+                "editorSuggestWidget.highlightForeground": "#39A2FF",
+                "editorHoverWidget.background": "#111111",
+                "editorHoverWidget.border": "#3A3B3C",
+                "scrollbar.shadow": "#00000000",
+                "scrollbarSlider.background": "#3A3A3A",
+                "scrollbarSlider.hoverBackground": "#4A4A4A",
+                "scrollbarSlider.activeBackground": "#5A5A5A",
+                "editorBracketHighlight.foreground1": "#808080",
+                "editorBracketHighlight.foreground2": "#808080",
+                "editorBracketHighlight.foreground3": "#808080",
+                "editorBracketPairGuide.background1": "#80808040",
+                "editorBracketPairGuide.activeBackground1": "#808080"
+              }
+            };
+          } else if (isBlueTheme) {
+            try {
+              const response = await fetch("./tomorrow-night-eighties.theme.json", { cache: "force-cache" });
+              if (!response.ok) throw new Error("HTTP " + response.status);
+              editorThemeDefinition = await response.json();
+            } catch (error) {
+              console.warn("Unable to load Synapse Blue's default Monaco theme; using the local fallback.", error);
+            }
+          }
+        }
 
         monaco.editor.defineTheme(themeName, editorThemeDefinition);
 
         const editor = monaco.editor.create(document.getElementById("editor"), {
           value: [
-            "local a = 100",
-            "for _, obj in getgc(false) do",
-            "    warn(\"Test\")",
-            "end"
+            "-- Monaco preview (Tomorrow Light)",
+            "local message = \"Hello from Tomorrow Light!\"",
+            "",
+            "function runScript()",
+            "    print(message)",
+            "end",
+            "",
+            "runScript()"
           ].join("\n"),
           language: "lua",
           theme: themeName,
@@ -389,8 +595,8 @@
           codeLens: false,
           inlayHints: { enabled: "off" },
           minimap: { enabled: false },
-          fontSize: 14,
-          lineHeight: 20,
+          fontSize: 13,
+          lineHeight: 18,
           suggestFontSize: 13,
           suggestLineHeight: 18,
           quickSuggestions: false,
@@ -423,7 +629,7 @@
           links: true,
           renderWhitespace: "none",
           glyphMargin: true,
-          lineNumbersMinChars: 2,
+          lineNumbersMinChars: 1,
           lineDecorationsWidth: 0,
           stickyScroll: { enabled: false },
           renderLineHighlight: "all",
@@ -432,7 +638,7 @@
           padding: { top: 0, bottom: 2 },
           fixedOverflowWidgets: true,
           scrollbar: { useShadows: false },
-          bracketPairColorization: { enabled: false },
+          bracketPairColorization: { enabled: true },
           colorDecorators: false,
           experimentalWhitespaceRendering: "svg",
           stopRenderingLineAfter: 5000,
@@ -447,7 +653,75 @@
           },
           occurrencesHighlight: "off",
           selectionHighlight: false,
-          contextmenu: true
+          contextmenu: true,
+          ...(isZenithSurface ? {
+            fontFamily: "'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace",
+            fontSize: 14,
+            lineHeight: 20,
+            fontLigatures: false,
+            wordWrap: "on",
+            lineNumbers: "on",
+            lineNumbersMinChars: 5,
+            lineDecorationsWidth: 10,
+            glyphMargin: false,
+            folding: true,
+            foldingHighlight: true,
+            showFoldingControls: "always",
+            dragAndDrop: true,
+            links: true,
+            minimap: { enabled: false },
+            quickSuggestions: { other: true, comments: false, strings: false },
+            wordBasedSuggestions: "currentDocument",
+            suggestOnTriggerCharacters: true,
+            tabCompletion: "on",
+            inlineSuggest: { enabled: false },
+            suggestFontSize: 14,
+            suggestLineHeight: 20,
+            suggest: {
+              snippetsPreventQuickSuggestions: false,
+              showIcons: true,
+              filterGraceful: false,
+              selectionMode: "never",
+              showKeywords: true,
+              showFunctions: true,
+              showMethods: true,
+              showFields: true,
+              showVariables: true,
+              showClasses: true,
+              showEnums: true,
+              preview: false,
+              showStatusBar: false
+            },
+            parameterHints: { enabled: false },
+            hover: { enabled: false },
+            cursorBlinking: "blink",
+            cursorSmoothCaretAnimation: "off",
+            renderWhitespace: "none",
+            renderLineHighlight: "line",
+            occurrencesHighlight: "singleFile",
+            selectionHighlight: true,
+            stopRenderingLineAfter: 1000,
+            formatOnType: true,
+            bracketPairColorization: {
+              enabled: true,
+              independentColorPoolPerBracketType: false
+            },
+            guides: {
+              bracketPairs: true,
+              bracketPairsHorizontal: "active",
+              highlightActiveBracketPair: true
+            },
+            scrollbar: {
+              vertical: "auto",
+              horizontal: "auto",
+              useShadows: false,
+              verticalHasArrows: false,
+              horizontalHasArrows: false,
+              verticalScrollbarSize: 10,
+              horizontalScrollbarSize: 10
+            },
+            padding: { top: 0, bottom: 0 }
+          } : {})
         });
 
         editor.addCommand(
@@ -522,8 +796,12 @@
         const updateZenithEditorHint = () => {
           const model = editor.getModel();
           const value = model ? model.getValue().trim() : "";
-          zenithEditorHint.hidden = true;
+          zenithEditorHint.hidden = !isZenithSurface ||
+            (value !== "" && value !== "-- Loading... --");
         };
+        document.getElementById("zenith-editor-help").addEventListener("click", () => {
+          sendToHost({ type: "zenithHelpRequested" });
+        });
 
         window.orbitRequestExecute = () => {
           const model = editor.getModel();
@@ -553,6 +831,7 @@
           if (language) {
             monaco.editor.setModelLanguage(model, language);
           }
+          updateZenithEditorHint();
           editor.setPosition({ lineNumber: 1, column: 1 });
           editor.revealPosition({ lineNumber: 1, column: 1 });
           applyingHostContent = false;
@@ -589,6 +868,7 @@
 
         editor.onDidChangeCursorPosition(publishCursorPosition);
         editor.onDidChangeModelContent((event) => {
+          updateZenithEditorHint();
           if (applyingHostContent) return;
           sendToHost({
             type: "contentChangedDelta",
@@ -601,6 +881,7 @@
         });
 
         document.getElementById("loading-status").remove();
+        updateZenithEditorHint();
         document.body.dataset.ready = "true";
         editor.focus();
         publishCursorPosition();
