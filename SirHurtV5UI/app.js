@@ -4399,6 +4399,315 @@ function setupMonaco() {
                     });
                 }
 
+                // 7. Roblox Services (game:GetService("..."))
+                const robloxServices = [
+                    { name: 'Players', doc: 'Player management service.' },
+                    { name: 'ReplicatedStorage', doc: 'Shared container accessible from server and clients.' },
+                    { name: 'ServerScriptService', doc: 'Container for server-side scripts.' },
+                    { name: 'ServerStorage', doc: 'Container for server-only assets.' },
+                    { name: 'StarterPlayer', doc: 'Template applied to each player.' },
+                    { name: 'StarterPlayerScripts', doc: 'Local scripts cloned into PlayerScripts.' },
+                    { name: 'StarterGui', doc: 'Template GUI cloned into PlayerGui.' },
+                    { name: 'StarterPack', doc: 'Tools cloned into Backpack.' },
+                    { name: 'Lighting', doc: 'Lighting and atmosphere control.' },
+                    { name: 'Workspace', doc: 'Container for the 3D world.' },
+                    { name: 'HttpService', doc: 'HTTP requests and JSON encode/decode.' },
+                    { name: 'RunService', doc: 'Frame/timestep/heartbeat callbacks.' },
+                    { name: 'UserInputService', doc: 'Mouse, keyboard, touch, gamepad input.' },
+                    { name: 'TweenService', doc: 'Interpolate numeric properties over time.' },
+                    { name: 'DebrisService', doc: 'Schedule delayed cleanup of instances.' },
+                    { name: 'CollectionService', doc: 'Tag-based instance grouping.' },
+                    { name: 'MarketplaceService', doc: 'Game passes, dev products, assets.' },
+                    { name: 'MemoryStoreService', doc: 'Ephemeral cross-server key/value store.' },
+                    { name: 'DataStoreService', doc: 'Persistent key/value storage.' },
+                    { name: 'PolicyService', doc: 'Read policy info (FE/DCC).' },
+                    { name: 'SoundService', doc: 'Global sound playback and routing.' },
+                    { name: 'PhysicsService', doc: 'Collision groups.' },
+                    { name: 'PathfindingService', doc: 'Compute paths between two points.' },
+                    { name: 'Chat', doc: 'In-game chat system.' },
+                    { name: 'LocalizationService', doc: 'Locale of the current player.' },
+                    { name: 'LogService', doc: 'Server/client log streaming.' },
+                    { name: 'ContentProvider', doc: 'Asset preloading and caching.' },
+                    { name: 'TeleportService', doc: 'Inter-place teleports.' },
+                    { name: 'AssetService', doc: 'Asset moderation info.' },
+                    { name: 'BadgeService', doc: 'Award badges to players.' },
+                    { name: 'HapticService', doc: 'Gamepad rumble.' }
+                ];
+
+                robloxServices.forEach(s => {
+                    suggestions.push({
+                        label: s.name,
+                        kind: monaco.languages.CompletionItemKind.Module,
+                        insertText: s.name,
+                        detail: 'Roblox service',
+                        documentation: s.doc
+                    });
+                });
+
+                // 8. Roblox Instance methods (after game: / part: etc.)
+                const robloxMethods = [
+                    { name: 'GetService', insert: 'GetService("${1:ClassName}")', doc: 'Fetch a service by class name.' },
+                    { name: 'WaitForChild', insert: 'WaitForChild("${1:name}"${2:, 5})', doc: 'Yield until the named child exists.' },
+                    { name: 'FindFirstChild', insert: 'FindFirstChild("${1:name}"${2:, false})', doc: 'Find a child by name.' },
+                    { name: 'FindFirstChildOfClass', insert: 'FindFirstChildOfClass("${1:ClassName}")', doc: 'Find first descendant of class.' },
+                    { name: 'FindFirstChildWhichIsA', insert: 'FindFirstChildWhichIsA("${1:ClassName}")', doc: 'Find first descendant matching IsA.' },
+                    { name: 'FindFirstAncestor', insert: 'FindFirstAncestor("${1:name}")', doc: 'Find first ancestor by name.' },
+                    { name: 'FindFirstAncestorOfClass', insert: 'FindFirstAncestorOfClass("${1:ClassName}")', doc: 'Find first ancestor of class.' },
+                    { name: 'GetChildren', insert: 'GetChildren()', doc: 'Return a table of all children.' },
+                    { name: 'GetDescendants', insert: 'GetDescendants()', doc: 'Return a table of all descendants.' },
+                    { name: 'IsA', insert: 'IsA("${1:ClassName}")', doc: 'True if instance is of className (or descendant).' },
+                    { name: 'Clone', insert: 'Clone()', doc: 'Shallow-clone this instance.' },
+                    { name: 'Destroy', insert: 'Destroy()', doc: 'Remove this instance from the tree.' },
+                    { name: 'ClearAllChildren', insert: 'ClearAllChildren()', doc: 'Destroy every direct child.' },
+                    { name: 'GetPropertyChangedSignal', insert: 'GetPropertyChangedSignal("${1:prop}")', doc: 'Signal that fires when a property changes.' },
+                    { name: 'GetAttributes', insert: 'GetAttributes()', doc: 'Return all attributes as a dictionary.' },
+                    { name: 'GetAttribute', insert: 'GetAttribute("${1:name}")', doc: 'Read an attribute.' },
+                    { name: 'SetAttribute', insert: 'SetAttribute("${1:name}", ${2:value})', doc: 'Write an attribute.' },
+                    { name: 'WaitForAttribute', insert: 'WaitForAttribute("${1:name}"${2:, 5})', doc: 'Yield until an attribute is set.' },
+                    { name: 'GetAttributeChangedSignal', insert: 'GetAttributeChangedSignal("${1:name}")', doc: 'Signal that fires when an attribute changes.' },
+                    { name: 'Connect', insert: 'Connect(function(${1:...})\n\t${2:-- end})', doc: 'Subscribe a callback to a signal.' },
+                    { name: 'Once', insert: 'Once(function(${1:...})\n\t${2:-- end})', doc: 'Subscribe a callback that fires once.' },
+                    { name: 'Wait', insert: 'Wait()', doc: 'Yield until the signal fires.' },
+                    { name: 'Disconnect', insert: 'Disconnect()', doc: 'Detach this connection.' },
+                    { name: 'IsConnected', insert: 'IsConnected()', doc: 'True if the connection is still active.' },
+                    { name: 'ConnectParallel', insert: 'ConnectParallel(function(${1:...})\n\t${2:-- end})', doc: 'Connect with parallel resume semantics.' },
+                    { name: 'FireServer', insert: 'FireServer(${1:...})', doc: 'Fire a RemoteEvent to the server.' },
+                    { name: 'FireClient', insert: 'FireClient(${1:player}, ${2:...})', doc: 'Fire a RemoteEvent to a specific client.' },
+                    { name: 'FireAllClients', insert: 'FireAllClients(${1:...})', doc: 'Fire a RemoteEvent to every client.' },
+                    { name: 'Fire', insert: 'Fire(${1:...})', doc: 'Fire a BindableEvent or RBXScriptSignal.' },
+                    { name: 'InvokeServer', insert: 'InvokeServer(${1:...})', doc: 'Invoke a RemoteFunction on the server (yields).' },
+                    { name: 'InvokeClient', insert: 'InvokeClient(${1:player}, ${2:...})', doc: 'Invoke a RemoteFunction on a specific client.' },
+                    { name: 'BindToRenderStep', insert: 'BindToRenderStep("${1:name}", ${2:priority}, function(${3:dt})\n\t${4:-- end})', doc: 'Run func every render frame.' },
+                    { name: 'UnbindFromRenderStep', insert: 'UnbindFromRenderStep("${1:name}")', doc: 'Remove a previously-bound render-step callback.' },
+                    { name: 'JSONDecode', insert: 'JSONDecode(${1:str})', doc: 'Parse a JSON string into a Lua table.' },
+                    { name: 'JSONEncode', insert: 'JSONEncode(${1:value})', doc: 'Serialize a Lua table to a JSON string.' },
+                    { name: 'GenerateGUID', insert: 'GenerateGUID(${1:false}, ${2:false})', doc: 'Generate a unique identifier string.' },
+                    { name: 'HttpGet', insert: 'HttpGet(${1:url}${2:, false})', doc: 'Perform an HTTP GET.' },
+                    { name: 'HttpGetAsync', insert: 'HttpGetAsync(${1:url}${2:, false})', doc: 'Asynchronous HTTP GET.' },
+                    { name: 'HttpPost', insert: 'HttpPost(${1:url}, ${2:body}${3:, Enum.HttpContentType.ApplicationJson, false})', doc: 'HTTP POST with body.' },
+                    { name: 'GetAsync', insert: 'GetAsync("${1:key}")', doc: 'Read a DataStore value.' },
+                    { name: 'SetAsync', insert: 'SetAsync("${1:key}", ${2:value})', doc: 'Write a DataStore value.' },
+                    { name: 'UpdateAsync', insert: 'UpdateAsync("${1:key}", function(${2:old}) return ${3:new} end)', doc: 'Read-modify-write a DataStore value.' },
+                    { name: 'IncrementAsync', insert: 'IncrementAsync("${1:key}", ${2:1})', doc: 'Atomically increment a numeric DataStore value.' },
+                    { name: 'Create', insert: 'Create(${1:instance})', doc: 'Create a Tween for an instance.' },
+                    { name: 'TweenProperty', insert: 'TweenProperty(${1:instance}, ${2:info}, {${3:-- properties}})', doc: 'Construct a Tween that interpolates properties.' },
+                    { name: 'Play', insert: 'Play()', doc: 'Start playing a Tween / Sound.' },
+                    { name: 'Pause', insert: 'Pause()', doc: 'Pause a Tween / Sound.' },
+                    { name: 'Cancel', insert: 'Cancel()', doc: 'Cancel a Tween and snap properties back to start.' },
+                    { name: 'Stop', insert: 'Stop()', doc: 'Stop a Sound.' },
+                    { name: 'Resume', insert: 'Resume()', doc: 'Resume a paused Tween / Sound.' },
+                    { name: 'Emit', insert: 'Emit(${1:1})', doc: 'Emit a particle burst.' },
+                    { name: 'Teleport', insert: 'Teleport(${1:placeId}${2:, player, teleportData})', doc: 'Teleport the given player to a place.' },
+                    { name: 'TeleportAsync', insert: 'TeleportAsync(${1:placeId}, ${2:players}${3:, teleportData})', doc: 'Async teleport; returns TeleportResult.' },
+                    { name: 'GetLocalPlayer', insert: 'GetLocalPlayer()', doc: 'Return the local Player on the client.' },
+                    { name: 'GetPlayers', insert: 'GetPlayers()', doc: 'Return all players currently in the server.' },
+                    { name: 'GetPlayerByUserId', insert: 'GetPlayerByUserId(${1:userId})', doc: 'Find a Player by userId.' },
+                    { name: 'GetMouse', insert: 'GetMouse()', doc: 'Return the player\'s legacy Mouse.' },
+                    { name: 'GetUserId', insert: 'GetUserId()', doc: 'Return the player\'s UserId.' },
+                    { name: 'GetUserName', insert: 'GetUserName()', doc: 'Return the player\'s username.' },
+                    { name: 'GetRankInGroup', insert: 'GetRankInGroup(${1:groupId})', doc: 'Return the player\'s rank in a group.' },
+                    { name: 'IsInGroup', insert: 'IsInGroup(${1:groupId})', doc: 'True if the player belongs to a group.' },
+                    { name: 'GetRoleInGroup', insert: 'GetRoleInGroup(${1:groupId})', doc: 'Return the player\'s role name in a group.' },
+                    { name: 'Ray', insert: 'Ray(${1:origin}, ${2:direction}${3:, RaycastParams.new()})', doc: 'Cast a ray and return the first hit.' },
+                    { name: 'Raycast', insert: 'Raycast(${1:origin}, ${2:direction}${3:, RaycastParams.new()})', doc: 'Cast a ray using workspace raycast rules.' },
+                    { name: 'GetPartBoundsInBox', insert: 'GetPartBoundsInBox(${1:cframe}, ${2:size}${3:, OverlapParams.new()})', doc: 'Parts overlapping the box.' },
+                    { name: 'GetPartBoundsInRadius', insert: 'GetPartBoundsInRadius(${1:cframe}, ${2:radius}${3:, OverlapParams.new()})', doc: 'Parts overlapping the radius.' },
+                    { name: 'BindAction', insert: 'BindAction("${1:name}", Enum.KeyCode.${2:E}, Enum.UserInputType.${3:Keyboard}, function(${4:actionName}, inputState, inputObject) Enum.ContextActionResult.Sink end)', doc: 'Bind an action handler to input.' },
+                    { name: 'UnbindAction', insert: 'UnbindAction("${1:name}")', doc: 'Remove a previously bound action.' },
+                    { name: 'IsKeyDown', insert: 'IsKeyDown(Enum.KeyCode.${1:E})', doc: 'True if the key is currently held down.' },
+                    { name: 'IsMouseButtonPressed', insert: 'IsMouseButtonPressed(Enum.UserInputType.${1:MouseButton1})', doc: 'True if the mouse button is pressed.' },
+                    { name: 'IsClient', insert: 'IsClient()', doc: 'True when called on a LocalScript.' },
+                    { name: 'IsServer', insert: 'IsServer()', doc: 'True when called on a server-side script.' },
+                    { name: 'BindToClose', insert: 'BindToClose(function() ${1:-- shutdown end})', doc: 'Schedule a callback when the server shuts down.' },
+                    { name: 'LoadAsset', insert: 'LoadAsset(${1:assetId})', doc: 'Load an asset and return its model.' },
+                    { name: 'LoadAsync', insert: 'LoadAsync(${1:asset})', doc: 'Preload assets via ContentProvider.' },
+                    { name: 'PreloadAsync', insert: 'PreloadAsync({${1:assets}})', doc: 'Preload a list of assets.' },
+                    { name: 'SetCore', insert: 'SetCore("${1:name}", ${2:value})', doc: 'Set a Roblox core GUI element.' },
+                    { name: 'GetCore', insert: 'GetCore("${1:name}")', doc: 'Read a Roblox core GUI element.' },
+                    { name: 'SetCoreGuiEnabled', insert: 'SetCoreGuiEnabled(Enum.CoreGuiType.${1:All}, ${2:true})', doc: 'Enable/disable a core GUI type.' }
+                ];
+
+                robloxMethods.forEach(m => {
+                    suggestions.push({
+                        label: m.name,
+                        kind: monaco.languages.CompletionItemKind.Method,
+                        insertText: m.insert,
+                        insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                        detail: 'Roblox method',
+                        documentation: m.doc
+                    });
+                });
+
+                // 9. Roblox properties
+                const robloxProperties = [
+                    { name: 'Parent', doc: 'The instance\'s parent (or nil).' },
+                    { name: 'Name', doc: 'The instance\'s name.' },
+                    { name: 'ClassName', doc: 'The class of this instance.' },
+                    { name: 'Archivable', doc: 'Whether this instance is saved when the place is saved.' },
+                    { name: 'Attributes', doc: 'Dictionary of attributes.' },
+                    { name: 'Value', doc: 'Value held by a ValueBase (e.g. BoolValue, IntValue).' },
+                    { name: 'Position', doc: 'World-space position (Vector3).' },
+                    { name: 'Size', doc: 'Size of the part (Vector3).' },
+                    { name: 'CFrame', doc: 'World CFrame of the part.' },
+                    { name: 'Color', doc: 'BasePart.Color (Color3).' },
+                    { name: 'Transparency', doc: 'BasePart.Transparency (0-1).' },
+                    { name: 'Anchored', doc: 'Whether physics affects this part.' },
+                    { name: 'CanCollide', doc: 'Whether the part collides with other parts.' },
+                    { name: 'CanTouch', doc: 'Whether the part can fire Touched events.' },
+                    { name: 'Material', doc: 'BasePart.Material (Enum).' },
+                    { name: 'BrickColor', doc: 'BasePart.BrickColor.' },
+                    { name: 'Velocity', doc: 'Linear velocity of the part.' },
+                    { name: 'RotVelocity', doc: 'Angular velocity of the part.' }
+                ];
+
+                robloxProperties.forEach(p => {
+                    suggestions.push({
+                        label: p.name,
+                        kind: monaco.languages.CompletionItemKind.Property,
+                        insertText: p.name,
+                        detail: 'Roblox property',
+                        documentation: p.doc
+                    });
+                });
+
+                // 10. sUNC executor library — categorised by https://docs.sunc.io/
+                // Each item carries a `scope` (e.g. "sUNC" or "debug") used by
+                // the completion filter to scope `sUNC.hookfunction` correctly.
+                const uncClosures = [
+                    { name: 'checkcaller', insert: 'checkcaller()', detail: 'sUNC closure', doc: 'True if the calling script is the executor.', scope: 'sUNC' },
+                    { name: 'iscclosure', insert: 'iscclosure(${1:func})', detail: 'sUNC closure', doc: 'True if func is a C-closure.', scope: 'sUNC' },
+                    { name: 'islclosure', insert: 'islclosure(${1:func})', detail: 'sUNC closure', doc: 'True if func is a Lua closure.', scope: 'sUNC' },
+                    { name: 'isexecutorclosure', insert: 'isexecutorclosure(${1:func})', detail: 'sUNC closure', doc: 'True if func came from the executor.', scope: 'sUNC' },
+                    { name: 'clonefunction', insert: 'clonefunction(${1:func})', detail: 'sUNC closure', doc: 'Clone func into a fresh C-closure.', scope: 'sUNC' },
+                    { name: 'newcclosure', insert: 'newcclosure(${1:func})', detail: 'sUNC closure', doc: 'Wrap func as a new C-closure.', scope: 'sUNC' },
+                    { name: 'hookfunction', insert: 'hookfunction(${1:func}, ${2:hook})', detail: 'sUNC closure', doc: 'Replace func with hook; returns the original.', scope: 'sUNC' },
+                    { name: 'restorefunction', insert: 'restorefunction(${1:func})', detail: 'sUNC closure', doc: 'Restore func to its original implementation.', scope: 'sUNC' },
+                    { name: 'hookmetamethod', insert: 'hookmetamethod(${1:obj}, "${2:__namecall}", ${3:hook})', detail: 'sUNC closure', doc: 'Replace a metamethod on obj.', scope: 'sUNC' },
+                    { name: 'getfunctionhash', insert: 'getfunctionhash(${1:func})', detail: 'sUNC closure', doc: 'Return the bytecode hash of func.', scope: 'sUNC' },
+                    { name: 'loadstring', insert: 'loadstring(${1:source})', detail: 'sUNC closure', doc: 'Compile source; returns a function or nil + error.', scope: 'sUNC' }
+                ];
+
+                const uncDebug = [
+                    { name: 'debug.getconstant', insert: 'debug.getconstant(${1:func}, ${2:idx})', detail: 'sUNC debug', doc: 'Return the constant at index idx of func.', scope: 'debug' },
+                    { name: 'debug.getconstants', insert: 'debug.getconstants(${1:func})', detail: 'sUNC debug', doc: 'Return all constants of func as a table.', scope: 'debug' },
+                    { name: 'debug.setconstant', insert: 'debug.setconstant(${1:func}, ${2:idx}, ${3:value})', detail: 'sUNC debug', doc: 'Replace constant at idx of func.', scope: 'debug' },
+                    { name: 'debug.getproto', insert: 'debug.getproto(${1:func}, ${2:idx})', detail: 'sUNC debug', doc: 'Return the proto-function at idx of func.', scope: 'debug' },
+                    { name: 'debug.getprotos', insert: 'debug.getprotos(${1:func})', detail: 'sUNC debug', doc: 'Return all protos of func as a table.', scope: 'debug' },
+                    { name: 'debug.getstack', insert: 'debug.getstack(${1:func}, ${2:idx})', detail: 'sUNC debug', doc: 'Return a value from func\'s debug stack.', scope: 'debug' },
+                    { name: 'debug.setstack', insert: 'debug.setstack(${1:func}, ${2:idx}, ${3:value})', detail: 'sUNC debug', doc: 'Set a value in func\'s debug stack.', scope: 'debug' },
+                    { name: 'debug.getupvalue', insert: 'debug.getupvalue(${1:func}, ${2:idx})', detail: 'sUNC debug', doc: 'Return the upvalue at idx of func.', scope: 'debug' },
+                    { name: 'debug.getupvalues', insert: 'debug.getupvalues(${1:func})', detail: 'sUNC debug', doc: 'Return all upvalues of func as a table.', scope: 'debug' },
+                    { name: 'debug.setupvalue', insert: 'debug.setupvalue(${1:func}, ${2:idx}, ${3:value})', detail: 'sUNC debug', doc: 'Replace upvalue at idx of func.', scope: 'debug' }
+                ];
+
+                const uncDrawing = [
+                    { name: 'cleardrawcache', insert: 'cleardrawcache()', detail: 'sUNC drawing', doc: 'Destroy all Drawing objects created by this script.', scope: 'sUNC' },
+                    { name: 'isrenderobj', insert: 'isrenderobj(${1:obj})', detail: 'sUNC drawing', doc: 'True if obj is a Drawing render object.', scope: 'sUNC' },
+                    { name: 'getrenderproperty', insert: 'getrenderproperty(${1:obj}, "${2:prop}")', detail: 'sUNC drawing', doc: 'Read a render property of a Drawing object.', scope: 'sUNC' },
+                    { name: 'setrenderproperty', insert: 'setrenderproperty(${1:obj}, "${2:prop}", ${3:value})', detail: 'sUNC drawing', doc: 'Write a render property of a Drawing object.', scope: 'sUNC' }
+                ];
+
+                const uncEncoding = [
+                    { name: 'base64encode', insert: 'base64encode(${1:str})', detail: 'sUNC encoding', doc: 'Encode str as Base64.', scope: 'sUNC' },
+                    { name: 'base64decode', insert: 'base64decode(${1:str})', detail: 'sUNC encoding', doc: 'Decode a Base64 string.', scope: 'sUNC' },
+                    { name: 'lz4compress', insert: 'lz4compress(${1:data})', detail: 'sUNC encoding', doc: 'LZ4-compress data.', scope: 'sUNC' },
+                    { name: 'lz4decompress', insert: 'lz4decompress(${1:data})', detail: 'sUNC encoding', doc: 'LZ4-decompress data.', scope: 'sUNC' }
+                ];
+
+                const uncEnv = [
+                    { name: 'getgc', insert: 'getgc(${1:false})', detail: 'sUNC environment', doc: 'Return all objects tracked by Lua\'s GC.', scope: 'sUNC' },
+                    { name: 'getgenv', insert: 'getgenv()', detail: 'sUNC environment', doc: 'Return the executor\'s global environment.', scope: 'sUNC' },
+                    { name: 'getreg', insert: 'getreg()', detail: 'sUNC environment', doc: 'Return the Lua registry table.', scope: 'sUNC' },
+                    { name: 'getrenv', insert: 'getrenv()', detail: 'sUNC environment', doc: 'Return the Roblox environment.', scope: 'sUNC' }
+                ];
+
+                const uncFs = [
+                    { name: 'readfile', insert: 'readfile("${1:path}")', detail: 'sUNC filesystem', doc: 'Read the contents of path.', scope: 'sUNC' },
+                    { name: 'writefile', insert: 'writefile("${1:path}", ${2:content})', detail: 'sUNC filesystem', doc: 'Write content to path (overwrites).', scope: 'sUNC' },
+                    { name: 'appendfile', insert: 'appendfile("${1:path}", ${2:content})', detail: 'sUNC filesystem', doc: 'Append content to path.', scope: 'sUNC' },
+                    { name: 'loadfile', insert: 'loadfile("${1:path}")', detail: 'sUNC filesystem', doc: 'Compile a file and return its chunk.', scope: 'sUNC' },
+                    { name: 'delfile', insert: 'delfile("${1:path}")', detail: 'sUNC filesystem', doc: 'Delete a file at path.', scope: 'sUNC' },
+                    { name: 'delfolder', insert: 'delfolder("${1:path}")', detail: 'sUNC filesystem', doc: 'Delete a folder at path.', scope: 'sUNC' },
+                    { name: 'makefolder', insert: 'makefolder("${1:path}")', detail: 'sUNC filesystem', doc: 'Create the folder at path.', scope: 'sUNC' },
+                    { name: 'isfolder', insert: 'isfolder("${1:path}")', detail: 'sUNC filesystem', doc: 'True if path is a folder.', scope: 'sUNC' },
+                    { name: 'isfile', insert: 'isfile("${1:path}")', detail: 'sUNC filesystem', doc: 'True if path is a file.', scope: 'sUNC' },
+                    { name: 'listfiles', insert: 'listfiles("${1:path}")', detail: 'sUNC filesystem', doc: 'Return a table of file names under path.', scope: 'sUNC' },
+                    { name: 'getcustomasset', insert: 'getcustomasset("${1:path}")', detail: 'sUNC filesystem', doc: 'Return an rbxasset:// string for path.', scope: 'sUNC' }
+                ];
+
+                const uncInstances = [
+                    { name: 'cloneref', insert: 'cloneref(${1:obj})', detail: 'sUNC instance', doc: 'Return a fresh Lua-side reference to obj.', scope: 'sUNC' },
+                    { name: 'compareinstances', insert: 'compareinstances(${1:a}, ${2:b})', detail: 'sUNC instance', doc: 'True if a and b refer to the same Roblox Instance.', scope: 'sUNC' },
+                    { name: 'gethui', insert: 'gethui()', detail: 'sUNC instance', doc: 'Return the executor\'s hidden GUI container.', scope: 'sUNC' },
+                    { name: 'getinstances', insert: 'getinstances()', detail: 'sUNC instance', doc: 'Return all Instances currently in memory.', scope: 'sUNC' },
+                    { name: 'getnilinstances', insert: 'getnilinstances()', detail: 'sUNC instance', doc: 'Return Instances whose Lua reference is nil.', scope: 'sUNC' },
+                    { name: 'getcallbackvalue', insert: 'getcallbackvalue(${1:signal})', detail: 'sUNC instance', doc: 'Return the function backing a Roblox signal.', scope: 'sUNC' },
+                    { name: 'fireclickdetector', insert: 'fireclickdetector(${1:detector}, ${2:0}${3:, ...})', detail: 'sUNC instance', doc: 'Programmatically fire a ClickDetector.', scope: 'sUNC' },
+                    { name: 'fireproximityprompt', insert: 'fireproximityprompt(${1:prompt}${2:, ...})', detail: 'sUNC instance', doc: 'Programmatically trigger a ProximityPrompt.', scope: 'sUNC' },
+                    { name: 'firetouchinterest', insert: 'firetouchinterest(${1:part}, ${2:true}, ${3:false})', detail: 'sUNC instance', doc: 'Simulate a Touched event on part.', scope: 'sUNC' }
+                ];
+
+                const uncMeta = [
+                    { name: 'getnamecallmethod', insert: 'getnamecallmethod()', detail: 'sUNC metatable', doc: 'Return the current namecall method inside a hooked __namecall.', scope: 'sUNC' },
+                    { name: 'getrawmetatable', insert: 'getrawmetatable(${1:obj})', detail: 'sUNC metatable', doc: 'Return the raw metatable of obj.', scope: 'sUNC' },
+                    { name: 'setrawmetatable', insert: 'setrawmetatable(${1:obj}, ${2:mt})', detail: 'sUNC metatable', doc: 'Replace the raw metatable of obj.', scope: 'sUNC' },
+                    { name: 'isreadonly', insert: 'isreadonly(${1:obj})', detail: 'sUNC metatable', doc: 'True if the table is locked from writes.', scope: 'sUNC' },
+                    { name: 'setreadonly', insert: 'setreadonly(${1:obj}, ${2:false})', detail: 'sUNC metatable', doc: 'Toggle a table\'s write lock.', scope: 'sUNC' }
+                ];
+
+                const uncMisc = [
+                    { name: 'identifyexecutor', insert: 'identifyexecutor()', detail: 'sUNC misc', doc: 'Return info about the current executor.', scope: 'sUNC' },
+                    { name: 'request', insert: 'request(${1:options})', detail: 'sUNC misc', doc: 'Generic HTTP request with options table.', scope: 'sUNC' }
+                ];
+
+                const uncReflection = [
+                    { name: 'gethiddenproperty', insert: 'gethiddenproperty(${1:obj}, "${2:prop}")', detail: 'sUNC reflection', doc: 'Read a hidden (non-scriptable) property.', scope: 'sUNC' },
+                    { name: 'sethiddenproperty', insert: 'sethiddenproperty(${1:obj}, "${2:prop}", ${3:value})', detail: 'sUNC reflection', doc: 'Write a hidden property.', scope: 'sUNC' },
+                    { name: 'isscriptable', insert: 'isscriptable(${1:obj}, "${2:prop}")', detail: 'sUNC reflection', doc: 'True if the property is currently scriptable.', scope: 'sUNC' },
+                    { name: 'setscriptable', insert: 'setscriptable(${1:obj}, "${2:prop}", ${3:true})', detail: 'sUNC reflection', doc: 'Toggle a property\'s scriptable flag.', scope: 'sUNC' },
+                    { name: 'getthreadidentity', insert: 'getthreadidentity()', detail: 'sUNC reflection', doc: 'Return the current thread Identity level.', scope: 'sUNC' },
+                    { name: 'setthreadidentity', insert: 'setthreadidentity(${1:level})', detail: 'sUNC reflection', doc: 'Change the current thread Identity (use with care).', scope: 'sUNC' }
+                ];
+
+                const uncScripts = [
+                    { name: 'getcallingscript', insert: 'getcallingscript()', detail: 'sUNC script', doc: 'Return the script that called the current function.', scope: 'sUNC' },
+                    { name: 'getscripts', insert: 'getscripts()', detail: 'sUNC script', doc: 'Return all Scripts and LocalScripts currently running.', scope: 'sUNC' },
+                    { name: 'getloadedmodules', insert: 'getloadedmodules()', detail: 'sUNC script', doc: 'Return all ModuleScripts currently loaded.', scope: 'sUNC' },
+                    { name: 'getrunningscripts', insert: 'getrunningscripts()', detail: 'sUNC script', doc: 'Return running Script/LocalScript instances.', scope: 'sUNC' },
+                    { name: 'getscriptclosure', insert: 'getscriptclosure(${1:script})', detail: 'sUNC script', doc: 'Return the Lua closure that backs script.', scope: 'sUNC' },
+                    { name: 'getscriptbytecode', insert: 'getscriptbytecode(${1:script})', detail: 'sUNC script', doc: 'Return the bytecode of script.', scope: 'sUNC' },
+                    { name: 'getscriptfromthread', insert: 'getscriptfromthread(${1:thread})', detail: 'sUNC script', doc: 'Return the script associated with a Lua thread.', scope: 'sUNC' },
+                    { name: 'getscripthash', insert: 'getscripthash(${1:script})', detail: 'sUNC script', doc: 'Return the bytecode hash of script.', scope: 'sUNC' },
+                    { name: 'getsenv', insert: 'getsenv(${1:script})', detail: 'sUNC script', doc: 'Return the script\'s environment table.', scope: 'sUNC' }
+                ];
+
+                const uncSignals = [
+                    { name: 'firesignal', insert: 'firesignal(${1:signal}${2:, ...})', detail: 'sUNC signal', doc: 'Programmatically fire any signal with arguments.', scope: 'sUNC' },
+                    { name: 'getconnections', insert: 'getconnections(${1:signal})', detail: 'sUNC signal', doc: 'Return all connections to a signal.', scope: 'sUNC' },
+                    { name: 'replicatesignal', insert: 'replicatesignal(${1:signal}${2:, ...})', detail: 'sUNC signal', doc: 'Replicate a RemoteEvent/Function signal across the server boundary.', scope: 'sUNC' }
+                ];
+
+                const uncCategories = [
+                    uncClosures, uncDebug, uncDrawing, uncEncoding, uncEnv,
+                    uncFs, uncInstances, uncMeta, uncMisc, uncReflection,
+                    uncScripts, uncSignals
+                ];
+
+                uncCategories.forEach(category => {
+                    category.forEach(fn => {
+                        const filterText = fn.scope ? fn.scope + '.' + fn.name : fn.name;
+                        suggestions.push({
+                            label: fn.name,
+                            filterText: filterText,
+                            kind: monaco.languages.CompletionItemKind.Function,
+                            insertText: fn.insert,
+                            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                            detail: fn.detail,
+                            documentation: fn.doc
+                        });
+                    });
+                });
+
                 if (settings.editorInsertSpaces) {
                     suggestions.forEach(s => {
                         s.command = {
@@ -4407,7 +4716,105 @@ function setupMonaco() {
                         };
                     });
                 }
-                return { suggestions };
+
+                // Filter suggestions by what the user has actually typed. The
+                // query can end with `:` or `.` (e.g. "game:" or "Vector3.")
+                // — split it into head and tail so that `game:` surfaces every
+                // Roblox method, `game:Get` surfaces methods starting with
+                // Get, and `sUNC.hook` surfaces that exact sUNC entry.
+                const lineText = model.getLineContent(position.lineNumber);
+                const beforeCursor = lineText.slice(0, position.column - 1);
+                const queryMatch = /[\w.:]*$/.exec(beforeCursor);
+                const query = queryMatch ? queryMatch[0] : '';
+                const lowerQuery = query.toLowerCase();
+
+                const colonIdx = lowerQuery.lastIndexOf(':');
+                const dotIdx = lowerQuery.lastIndexOf('.');
+                const splitIdx = Math.max(colonIdx, dotIdx);
+                const hasScope = splitIdx >= 0;
+                const head = hasScope ? lowerQuery.slice(0, splitIdx) : lowerQuery;
+                const tail = hasScope ? lowerQuery.slice(splitIdx + 1) : '';
+
+                // Pre-compute helper predicates for ranking.
+                const KindKind = monaco.languages.CompletionItemKind;
+                const isRobloxMethod = (item) => item.detail === 'Roblox method' || item.detail === 'Roblox property' || item.detail === 'Roblox type constructor';
+                const isRobloxService = (item) => item.detail === 'Roblox service';
+                const isSUNCFn = (item) => typeof item.detail === 'string' && item.detail.startsWith('sUNC');
+                const isKeyword = (item) => item.kind === KindKind.Keyword;
+                const isPlainLua = (item) => item.detail === 'global function' || item.detail === 'Lua / Luau function';
+                const isLuaGlobal = (item) => item.detail === 'Lua / Luau global';
+                const lastTrigger = hasScope ? lowerQuery.charAt(splitIdx) : '';
+                const sUNCScopes = new Set(['sunc', 'debug']);
+                const luaLibScopes = new Set(['math', 'string', 'table', 'task', 'coroutine', 'utf8', 'bit32', 'buffer']);
+                const headIsUNC = sUNCScopes.has(head);
+                const headIsLuaLib = luaLibScopes.has(head);
+
+                const rank = (item) => {
+                    const ft = (item.filterText || item.label || '').toLowerCase();
+                    if (!ft) return 99;
+                    const cHead = ft.includes('.') ? ft.slice(0, ft.lastIndexOf('.')) : '';
+                    if (hasScope && cHead === head) return 0;            // exact scope match
+                    if (!hasScope) {
+                        if (cHead === '') return 2;
+                        if (ft.startsWith(lowerQuery)) return 2;
+                        if (ft.includes(lowerQuery)) return 3;
+                        return 99;
+                    }
+                    if (isKeyword(item)) return 6;                       // keywords never after `.`/`:`.
+                    if (headIsUNC) {
+                        if (cHead === '' && isSUNCFn(item)) return 1;
+                        if (cHead === '' && (isRobloxMethod(item) || isRobloxService(item) || isPlainLua(item) || isLuaGlobal(item))) return 5;
+                        return 4;
+                    }
+                    if (headIsLuaLib) {
+                        if (cHead === '' && isPlainLua(item)) return 1;
+                        if (cHead === '' && (isRobloxMethod(item) || isRobloxService(item) || isSUNCFn(item))) return 5;
+                        return 4;
+                    }
+                    if (cHead === '' && isRobloxMethod(item)) {
+                        return lastTrigger === ':' ? 1 : 2;
+                    }
+                    if (cHead === '' && isRobloxService(item)) {
+                        return lastTrigger === ':' ? 4 : 3;
+                    }
+                    if (cHead === '' && isSUNCFn(item)) {
+                        return lastTrigger === ':' ? 5 : 2;
+                    }
+                    return 4;
+                };
+
+                const filtered = suggestions.filter(item => {
+                    if (!lowerQuery) return item.kind === KindKind.Keyword;
+                    const ft = (item.filterText || item.label || '').toLowerCase();
+                    if (!ft) return true;
+                    const cHead = ft.includes('.') ? ft.slice(0, ft.lastIndexOf('.')) : '';
+                    const cTail = ft.includes('.') ? ft.slice(ft.lastIndexOf('.') + 1) : ft;
+
+                    let headMatches;
+                    if (hasScope) {
+                        headMatches = cHead === head || cHead === '';
+                    } else {
+                        headMatches = true;
+                    }
+                    if (!headMatches) return false;
+                    if (isKeyword(item)) return !hasScope;
+
+                    if (tail === '' && !hasScope) {
+                        return ft.startsWith(lowerQuery) || ft.includes(lowerQuery);
+                    }
+                    if (tail === '' && hasScope) {
+                        return true;
+                    }
+                    return cTail.startsWith(tail) || cTail.includes(tail);
+                });
+
+                filtered.sort((a, b) => {
+                    const ra = rank(a), rb = rank(b);
+                    if (ra !== rb) return ra - rb;
+                    return (a.sortText || '').localeCompare(b.sortText || '');
+                });
+
+                return { suggestions: filtered.slice(0, 80) };
             }
         });
 

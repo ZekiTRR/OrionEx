@@ -14,9 +14,15 @@
       }
 
       :root {
-        color-scheme: light;
-        --editor-bg: #ffffff;
+        color-scheme: dark;
+        --editor-bg: transparent;
         --editor-radius: 0px;
+        --orion-window-start: #181a1b;
+        --orion-window-end: #08090a;
+        --orion-widget: #181b1d;
+        --orion-widget-selection: #292d32;
+        --orion-widget-hover: #22262a;
+        --orion-widget-border: #303235;
         background: var(--editor-bg);
       }
 
@@ -40,7 +46,7 @@
         position: absolute;
         inset: 16px;
         z-index: 2;
-        color: #8e908c;
+        color: #858585;
         font: 12px/18px Consolas, monospace;
         pointer-events: none;
       }
@@ -69,10 +75,14 @@
       }
 
       body.orion-surface {
+        /* This is the exact Orion window gradient, positioned as though the
+           browser occupied the entire 896.4 x 558 shell. Monaco itself still
+           contributes no editor background; this only continues the native
+           surface through WebView2's Windows airspace. */
         background-image: linear-gradient(
           122.2466557642525deg,
-          #ffffff 0%,
-          #f5f5f5 37.019%
+          var(--orion-window-start) 0%,
+          var(--orion-window-end) 37.019%
         ) !important;
         background-size: 896.4px 558px !important;
         background-position: -10.8px -120.6px !important;
@@ -85,30 +95,33 @@
       }
 
       .suggest-widget {
-        border: 1px solid #d5d5d5 !important;
+        border: 1px solid var(--orion-widget-border) !important;
         border-radius: 6px !important;
         overflow: hidden !important;
-        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08) !important;
+        box-shadow: 0 10px 28px #00000066 !important;
       }
 
       .suggest-widget .monaco-list,
       .suggest-widget .monaco-list-rows {
-        background: #ffffff !important;
+        background: var(--orion-widget) !important;
       }
 
       .suggest-widget .monaco-list-row.focused {
-        background: #e5e5e5 !important;
+        background: var(--orion-widget-selection) !important;
       }
 
       .suggest-widget .monaco-list-row:hover:not(.focused) {
-        background: #f0f0f0 !important;
+        background: var(--orion-widget-hover) !important;
       }
 
       .suggest-widget .details-label,
       .suggest-widget .monaco-highlighted-label .highlight {
-        color: #4271ae !important;
+        color: #dcdcaa !important;
       }
 
+      /* Monaco otherwise leaves a framed completion surface on screen when
+         a typed prefix resolves to no items. Empty result/preview chrome is
+         intentionally absent in every Orion shell. */
       .suggest-widget.orion-empty-suggest,
       .suggest-details-container.orion-empty-preview,
       .suggest-details.orion-empty-preview {
@@ -123,7 +136,7 @@
         z-index: 5;
         display: flex;
         justify-content: center;
-        color: rgba(77, 77, 76, 0.6);
+        color: rgba(154, 154, 154, 0.5);
         font-family: "Zenith Nunito", sans-serif;
         font-size: 12px;
         font-style: italic;
@@ -141,7 +154,7 @@
         margin: 0;
         padding: 0;
         border: 0;
-        color: rgba(77, 77, 76, 0.75);
+        color: rgba(154, 154, 154, 0.6);
         background: transparent;
         font: inherit;
         text-decoration-line: underline;
@@ -153,7 +166,7 @@
       }
 
       #zenith-editor-help:hover {
-        color: rgba(77, 77, 76, 1);
+        color: rgba(154, 154, 154, 0.9);
       }
     </style>
   </head>
@@ -186,40 +199,35 @@
             onerror="document.getElementById('loading-status').textContent = 'Unable to load Monaco loader.'"></script>
     <script>
       const previewParameters = new URLSearchParams(window.location.search);
-      const requestedTheme = previewParameters.get("theme");
-      const isXenoTheme = requestedTheme === "xeno";
-      const isBlueTheme = requestedTheme === "blue";
-      const isDarkTheme = requestedTheme === "dark";
-      const isTomorrowLight = !isXenoTheme && !isBlueTheme && !isDarkTheme;
-
+      const isXenoTheme = previewParameters.get("theme") === "xeno";
+      const isBlueTheme = previewParameters.get("theme") === "blue";
       const isTransparent = previewParameters.get("transparent") === "1";
       const isOrionSurface = previewParameters.get("surface") === "orion";
       const isAwpSurface = previewParameters.get("shell") === "awp";
       const isZenithSurface = previewParameters.get("shell") === "zenith";
       const requestedRadius = Math.max(0, Math.min(32, Number(previewParameters.get("radius") || 0)));
-      const requestedForeground = previewParameters.get("fg");
-      const requestedBackground = previewParameters.get("bg");
-
-      const defaultLightBg = "#ffffff";
-      const defaultDarkBg = "#101216";
       const xenoBackground = "#050505";
-
+      const requestedBackground = previewParameters.get("bg");
       const shellBackground = (isTransparent || isOrionSurface)
         ? "#00000000"
         : (/^#[0-9a-f]{6}$/i.test(requestedBackground || "")
           ? requestedBackground
-          : (isTomorrowLight ? defaultLightBg : (isXenoTheme ? xenoBackground : defaultDarkBg)));
-
+          : (isXenoTheme ? xenoBackground : "#101216"));
+      // Synapse V3's default shell-custom theme derives the active-line tint
+      // from the editor canvas (the source uses RGB + 18), rather than a
+      // fixed VS Code highlight colour.
+      const addChannel = (channel) => Math.min(255, parseInt(channel, 16) + 18).toString(16).padStart(2, "0");
       const editorLineHighlight = isOrionSurface
-        ? "#00000008"
+        ? "#080A0C99"
         : isTransparent
         ? "#00000000"
-        : (isTomorrowLight ? "#F5F5F5" : "#1A1D23");
-
+        : shellBackground.replace(/^#/, "").length === 6
+        ? "#" + addChannel(shellBackground.slice(1, 3)) + addChannel(shellBackground.slice(3, 5)) + addChannel(shellBackground.slice(5, 7))
+        : "#121212";
       document.documentElement.style.setProperty(
         "--editor-bg",
         isAwpSurface
-          ? "#FAFAFA"
+          ? "#191818"
           : ((isTransparent || isOrionSurface) ? "transparent" : shellBackground));
       document.body.classList.toggle("orion-transparent", isTransparent || isOrionSurface);
       document.body.classList.toggle("orion-surface", isOrionSurface);
@@ -233,18 +241,12 @@
 
       require(["vs/editor/editor.main"], async function () {
         const fixedBackground = shellBackground;
-        const themeName = isTomorrowLight
-          ? "tomorrow-light"
-          : (isZenithSurface
-            ? "zenith-transparent"
-            : ((isTransparent || isOrionSurface)
-              ? "orion-transparent"
-              : (isBlueTheme ? "synapse-blue-default" : (isXenoTheme ? "xeno-fixed" : "orbit-fixed"))));
-
-        const defaultTokenRule = {
-          token: "",
-          foreground: /^[0-9a-f]{6}$/i.test(requestedForeground || "") ? requestedForeground : (isTomorrowLight ? "4D4D4C" : "D4D4D4")
-        };
+        const themeName = isZenithSurface
+          ? "zenith-transparent"
+          : ((isTransparent || isOrionSurface)
+            ? "orion-transparent"
+            : (isBlueTheme ? "synapse-blue-default" : (isXenoTheme ? "xeno-fixed" : "orbit-fixed")));
+        const defaultTokenRule = { token: "", foreground: "D4D4D4" };
         if (!isTransparent && !isOrionSurface) {
           defaultTokenRule.background = fixedBackground.slice(1);
         }
@@ -257,41 +259,358 @@
           "return", "then", "true", "until", "while"
         ];
         const functionDefs = [
-          ["print(value)", "print(${1:value})", "Print a value to the output."],
-          ["warn(message)", "warn(${1:message})", "Print a warning message."],
-          ["error(message)", "error(${1:message})", "Raise a Lua error."],
-          ["assert(value, message)", "assert(${1:value}, ${2:message})", "Assert that a value is truthy."],
-          ["pairs(table)", "pairs(${1:table})", "Iterate over all table keys."],
-          ["ipairs(table)", "ipairs(${1:table})", "Iterate over sequential table values."],
-          ["pcall(function, ...)", "pcall(${1:functionName}${2:, ...})", "Call a function in protected mode."],
-          ["xpcall(function, handler)", "xpcall(${1:functionName}, ${2:errorHandler})", "Call a function with an error handler."],
-          ["require(module)", "require(${1:module})", "Load a module."],
-          ["tonumber(value)", "tonumber(${1:value})", "Convert a value to a number."],
-          ["tostring(value)", "tostring(${1:value})", "Convert a value to a string."],
-          ["type(value)", "type(${1:value})", "Return the Lua type of a value."],
-          ["typeof(value)", "typeof(${1:value})", "Return the Luau type of a value."],
-          ["select(index, ...)", "select(${1:index}, ${2:...})", "Select values from a variadic argument list."],
-          ["next(table, index)", "next(${1:table}${2:, index})", "Return the next table key and value."],
-          ["task.spawn(function)", "task.spawn(${1:functionName})", "Run a function immediately on a new task."],
-          ["task.defer(function)", "task.defer(${1:functionName})", "Defer a function until the end of the current cycle."],
-          ["task.delay(seconds, function)", "task.delay(${1:seconds}, ${2:functionName})", "Run a function after a delay."],
-          ["task.wait(seconds)", "task.wait(${1:seconds})", "Yield for an optional duration."],
-          ["math.clamp(value, min, max)", "math.clamp(${1:value}, ${2:min}, ${3:max})", "Clamp a number to a range."],
-          ["math.round(value)", "math.round(${1:value})", "Round a number to the nearest integer."],
-          ["math.abs(value)", "math.abs(${1:value})", "Return the absolute value."],
-          ["string.format(format, ...)", "string.format(${1:format}${2:, ...})", "Format a string."],
-          ["string.find(value, pattern)", "string.find(${1:value}, ${2:pattern})", "Find a pattern in a string."],
-          ["string.gsub(value, pattern, replacement)", "string.gsub(${1:value}, ${2:pattern}, ${3:replacement})", "Replace matches in a string."],
-          ["table.insert(table, value)", "table.insert(${1:table}, ${2:value})", "Insert a value into a table."],
-          ["table.remove(table, index)", "table.remove(${1:table}${2:, index})", "Remove a value from a table."],
-          ["table.find(table, value)", "table.find(${1:table}, ${2:value})", "Find a value in a table."],
-          ["table.clone(table)", "table.clone(${1:table})", "Create a shallow copy of a table."],
-          ["coroutine.create(function)", "coroutine.create(${1:functionName})", "Create a coroutine."],
-          ["coroutine.resume(thread)", "coroutine.resume(${1:thread})", "Resume a coroutine."]
+          ["print(value)", "print(${1:value})", "Print a value to the output.", ""],
+          ["warn(message)", "warn(${1:message})", "Print a warning message.", ""],
+          ["error(message)", "error(${1:message})", "Raise a Lua error.", ""],
+          ["assert(value, message)", "assert(${1:value}, ${2:message})", "Assert that a value is truthy.", ""],
+          ["pairs(table)", "pairs(${1:table})", "Iterate over all table keys.", ""],
+          ["ipairs(table)", "ipairs(${1:table})", "Iterate over sequential table values.", ""],
+          ["pcall(function, ...)", "pcall(${1:functionName}${2:, ...})", "Call a function in protected mode.", ""],
+          ["xpcall(function, handler)", "xpcall(${1:functionName}, ${2:errorHandler})", "Call a function with an error handler.", ""],
+          ["require(module)", "require(${1:module})", "Load a module.", ""],
+          ["tonumber(value)", "tonumber(${1:value})", "Convert a value to a number.", ""],
+          ["tostring(value)", "tostring(${1:value})", "Convert a value to a string.", ""],
+          ["type(value)", "type(${1:value})", "Return the Lua type of a value.", ""],
+          ["typeof(value)", "typeof(${1:value})", "Return the Luau type of a value.", ""],
+          ["select(index, ...)", "select(${1:index}, ${2:...})", "Select values from a variadic argument list.", ""],
+          ["next(table, index)", "next(${1:table}${2:, index})", "Return the next table key and value.", ""],
+          ["task.spawn(function)", "task.spawn(${1:functionName})", "Run a function immediately on a new task.", "task"],
+          ["task.defer(function)", "task.defer(${1:functionName})", "Defer a function until the end of the current cycle.", "task"],
+          ["task.delay(seconds, function)", "task.delay(${1:seconds}, ${2:functionName})", "Run a function after a delay.", "task"],
+          ["task.wait(seconds)", "task.wait(${1:seconds})", "Yield for an optional duration.", "task"],
+          ["math.clamp(value, min, max)", "math.clamp(${1:value}, ${2:min}, ${3:max})", "Clamp a number to a range.", "math"],
+          ["math.round(value)", "math.round(${1:value})", "Round a number to the nearest integer.", "math"],
+          ["math.abs(value)", "math.abs(${1:value})", "Return the absolute value.", "math"],
+          ["string.format(format, ...)", "string.format(${1:format}${2:, ...})", "Format a string.", "string"],
+          ["string.find(value, pattern)", "string.find(${1:value}, ${2:pattern})", "Find a pattern in a string.", "string"],
+          ["string.gsub(value, pattern, replacement)", "string.gsub(${1:value}, ${2:pattern}, ${3:replacement})", "Replace matches in a string.", "string"],
+          ["table.insert(table, value)", "table.insert(${1:table}, ${2:value})", "Insert a value into a table.", "table"],
+          ["table.remove(table, index)", "table.remove(${1:table}${2:, index})", "Remove a value from a table.", "table"],
+          ["table.find(table, value)", "table.find(${1:table}, ${2:value})", "Find a value in a table.", "table"],
+          ["table.clone(table)", "table.clone(${1:table})", "Create a shallow copy of a table.", "table"],
+          ["coroutine.create(function)", "coroutine.create(${1:functionName})", "Create a coroutine.", "coroutine"],
+          ["coroutine.resume(thread)", "coroutine.resume(${1:thread})", "Resume a coroutine.", "coroutine"]
         ];
         const moduleNames = [
           "math", "string", "table", "task", "coroutine", "utf8", "bit32",
           "game", "workspace", "script", "Enum", "shared", "_G"
+        ];
+
+        // Roblox services — used with game:GetService("ServiceName")
+        const serviceDefs = [
+          ["Players", "Players", "Player management service (game:GetService(\"Players\"))."],
+          ["ReplicatedStorage", "ReplicatedStorage", "Shared container accessible from server and clients."],
+          ["ServerScriptService", "ServerScriptService", "Container for server-side scripts."],
+          ["ServerStorage", "ServerStorage", "Container for server-only assets."],
+          ["StarterPlayer", "StarterPlayer", "Template applied to each player's Player object."],
+          ["StarterPlayerScripts", "StarterPlayerScripts", "Local scripts cloned into PlayerScripts."],
+          ["StarterGui", "StarterGui", "Template GUI cloned into each player's PlayerGui."],
+          ["StarterPack", "StarterPack", "Tools cloned into each player's Backpack."],
+          ["Lighting", "Lighting", "Lighting and atmosphere control."],
+          ["Workspace", "Workspace", "Container for the 3D world."],
+          ["HttpService", "HttpService", "HTTP requests and JSON encode/decode."],
+          ["RunService", "RunService", "Frame/timestep/heartbeat callbacks."],
+          ["UserInputService", "UserInputService", "Mouse, keyboard, touch, and gamepad input."],
+          ["TweenService", "TweenService", "Interpolate numeric properties over time."],
+          ["DebrisService", "DebrisService", "Schedule delayed cleanup of instances."],
+          ["CollectionService", "CollectionService", "Tag-based instance grouping."],
+          ["MarketplaceService", "MarketplaceService", "Game passes, developer products, assets."],
+          ["MemoryStoreService", "MemoryStoreService", "Ephemeral cross-server key/value store."],
+          ["DataStoreService", "DataStoreService", "Persistent key/value storage."],
+          ["PolicyService", "PolicyService", "Read policy info (FE/DCC)."],
+          ["SoundService", "SoundService", "Global sound playback and routing."],
+          ["PhysicsService", "PhysicsService", "Collision groups."],
+          ["PathfindingService", "PathfindingService", "Compute paths between two points."],
+          ["Chat", "Chat", "In-game chat system."],
+          ["LocalizationService", "LocalizationService", "Locale of the current player."],
+          ["TestService", "TestService", "TestEZ and test framework."],
+          ["LogService", "LogService", "Server/client log streaming."],
+          ["ContentProvider", "ContentProvider", "Asset preloading and caching."],
+          ["InsertService", "InsertService", "Insert assets by id."],
+          ["TeleportService", "TeleportService", "Inter-place and reserved-server teleports."],
+          ["AssetService", "AssetService", "Asset moderation info."],
+          ["BadgeService", "BadgeService", "Award badges to players."],
+          ["NotificationService", "NotificationService", "In-experience toasts."],
+          ["PointsService", "PointsService", "Award in-experience points."],
+          ["ScriptContext", "ScriptContext", "Inspect script errors."],
+          ["HapticService", "HapticService", "Gamepad rumble."],
+          ["AnalyticsService", "AnalyticsService", "Custom analytics events."]
+        ];
+
+        // Roblox type constructors — each carries an explicit `scope` (e.g. "Vector3")
+        // that the completion filter uses to narrow results when the user types
+        // `Vector3.` — without this, every method in the file would match.
+        const typeCtorDefs = [
+          ["Vector3.new(x, y, z)", "Vector3.new(${1:x}, ${2:y}, ${3:z})", "Create a Vector3 from components.", "Vector3"],
+          ["Vector3.zero", "Vector3.zero", "Vector3 (0, 0, 0).", "Vector3"],
+          ["Vector3.one", "Vector3.one", "Vector3 (1, 1, 1).", "Vector3"],
+          ["Vector3.xAxis", "Vector3.xAxis", "Unit vector along X axis.", "Vector3"],
+          ["Vector3.yAxis", "Vector3.yAxis", "Unit vector along Y axis.", "Vector3"],
+          ["Vector3.zAxis", "Vector3.zAxis", "Unit vector along Z axis.", "Vector3"],
+          ["Vector2.new(x, y)", "Vector2.new(${1:x}, ${2:y})", "Create a Vector2 from components.", "Vector2"],
+          ["Vector2.zero", "Vector2.zero", "Vector2 (0, 0).", "Vector2"],
+          ["Vector2.one", "Vector2.one", "Vector2 (1, 1).", "Vector2"],
+          ["CFrame.new(x, y, z)", "CFrame.new(${1:x}, ${2:y}, ${3:z})", "CFrame at position (x, y, z).", "CFrame"],
+          ["CFrame.Angles(rx, ry, rz)", "CFrame.Angles(${1:rx}, ${2:ry}, ${3:rz})", "CFrame from euler angles in radians.", "CFrame"],
+          ["CFrame.lookAt(at, lookAt)", "CFrame.lookAt(${1:at}, ${2:lookAt})", "CFrame positioned at at, looking at lookAt.", "CFrame"],
+          ["CFrame.identity", "CFrame.identity", "Identity CFrame (no rotation/translation).", "CFrame"],
+          ["Color3.new(r, g, b)", "Color3.new(${1:r}, ${2:g}, ${3:b})", "Color3 from 0-1 RGB components.", "Color3"],
+          ["Color3.fromRGB(r, g, b)", "Color3.fromRGB(${1:r}, ${2:g}, ${3:b})", "Color3 from 0-255 RGB components.", "Color3"],
+          ["Color3.fromHSV(h, s, v)", "Color3.fromHSV(${1:h}, ${2:s}, ${3:v})", "Color3 from HSV (h in 0-360, s/v in 0-1).", "Color3"],
+          ["UDim2.new(xs, xo, ys, yo)", "UDim2.new(${1:xs}, ${2:xo}, ${3:ys}, ${4:yo})", "UDim2 from scale and offset pairs.", "UDim2"],
+          ["UDim2.fromScale(xs, ys)", "UDim2.fromScale(${1:xs}, ${2:ys})", "UDim2 with only scale components.", "UDim2"],
+          ["UDim2.fromOffset(xo, yo)", "UDim2.fromOffset(${1:xo}, ${2:yo})", "UDim2 with only offset components.", "UDim2"],
+          ["UDim.new(scale, offset)", "UDim.new(${1:scale}, ${2:offset})", "UDim from scale and offset.", "UDim"],
+          ["NumberSequence.new(n0, n1, ...)", "NumberSequence.new(${1:n0}${2:, n1})", "NumberSequence from keypoints.", "NumberSequence"],
+          ["ColorSequence.new(c0, c1, ...)", "ColorSequence.new(${1:c0}${2:, c1})", "ColorSequence from keypoints.", "ColorSequence"],
+          ["TweenInfo.new(time, style, dir, rep, revs, delay)", "TweenInfo.new(${1:time}, ${2:EasingStyle.${3:Quad}}, ${4:EasingDirection.${5:Out}}, ${6:0}, ${7:false}, ${8:0})", "TweenInfo configuration.", "TweenInfo"],
+          ["Instance.new(className, parent)", "Instance.new(${1:\"ClassName\"}${2:, parent})", "Create a new Instance of the given class.", "Instance"]
+        ];
+
+        // Roblox methods — invoked via `:` (e.g. game:GetService(...))
+        // filterText strips the colon so suggestions fire after `game:`.
+        const methodDefs = [
+          ["GetService(className)", "GetService(\"${1:ClassName}\")", "Fetch a service by class name."],
+          ["WaitForChild(name, timeout)", "WaitForChild(\"${1:name}\"${2:, 5})", "Yield until the named child exists."],
+          ["FindFirstChild(name, recursive)", "FindFirstChild(\"${1:name}\"${2:, false})", "Find a child by name; recursive optional."],
+          ["FindFirstChildOfClass(className)", "FindFirstChildOfClass(\"${1:ClassName}\")", "Find first descendant of the given class."],
+          ["FindFirstChildWhichIsA(className)", "FindFirstChildWhichIsA(\"${1:ClassName}\")", "Find first descendant matching IsA."],
+          ["FindFirstAncestor(name)", "FindFirstAncestor(\"${1:name}\")", "Find first ancestor with the given Name."],
+          ["FindFirstAncestorOfClass(className)", "FindFirstAncestorOfClass(\"${1:ClassName}\")", "Find first ancestor of class."],
+          ["GetChildren()", "GetChildren()", "Return a table of all children."],
+          ["GetDescendants()", "GetDescendants()", "Return a table of all descendants."],
+          ["GetDebugId()", "GetDebugId()", "Return a string identifying this instance."],
+          ["IsA(className)", "IsA(\"${1:ClassName}\")", "Return true if this is an instance of className (or descendant)."],
+          ["Clone()", "Clone()", "Shallow-clone this instance."],
+          ["Destroy()", "Destroy()", "Remove this instance from the tree and lock its parent."],
+          ["ClearAllChildren()", "ClearAllChildren()", "Destroy every direct child."],
+          ["GetPropertyChangedSignal(prop)", "GetPropertyChangedSignal(\"${1:prop}\")", "Signal that fires when a property changes."],
+          ["Changed(prop)", "Changed:Connect(function(${1:prop}) ${2:-- end})", "Signal that fires when a property changes (shorthand)."],
+          ["GetAttributes()", "GetAttributes()", "Return all attributes as a dictionary."],
+          ["GetAttribute(name)", "GetAttribute(\"${1:name}\")", "Read an attribute."],
+          ["SetAttribute(name, value)", "SetAttribute(\"${1:name}\", ${2:value})", "Write an attribute."],
+          ["WaitForAttribute(name, timeout)", "WaitForAttribute(\"${1:name}\"${2:, 5})", "Yield until an attribute is set."],
+          ["GetAttributeChangedSignal(name)", "GetAttributeChangedSignal(\"${1:name}\")", "Signal that fires when an attribute changes."],
+          ["Connect(func)", "Connect(function(${1:...}) ${2:-- end})", "Subscribe a callback to a signal; returns RBXScriptConnection."],
+          ["Once(func)", "Once(function(${1:...}) ${2:-- end})", "Subscribe a callback that auto-disconnects after firing once."],
+          ["Wait()", "Wait()", "Yield until the signal fires; returns its args."],
+          ["Disconnect()", "Disconnect()", "Detach this connection."],
+          ["IsConnected()", "IsConnected()", "True if the connection is still active."],
+          ["ConnectParallel(func)", "ConnectParallel(function(${1:...}) ${2:-- end})", "Connect with parallel resume semantics."],
+          ["FireServer(...)", "FireServer(${1:...})", "Fire a RemoteEvent to the server."],
+          ["FireClient(player, ...)", "FireClient(${1:player}, ${2:...})", "Fire a RemoteEvent to a specific client."],
+          ["FireAllClients(...)", "FireAllClients(${1:...})", "Fire a RemoteEvent to every client."],
+          ["Fire(...)", "Fire(${1:...})", "Fire a BindableEvent or RBXScriptSignal."],
+          ["InvokeServer(...)", "InvokeServer(${1:...})", "Invoke a RemoteFunction on the server (yields)."],
+          ["InvokeClient(player, ...)", "InvokeClient(${1:player}, ${2:...})", "Invoke a RemoteFunction on a specific client."],
+          ["BindToRenderStep(name, priority, func)", "BindToRenderStep(\"${1:name}\", ${2:priority}, function(${3:dt}) ${4:-- end})", "Run func every render frame."],
+          ["UnbindFromRenderStep(name)", "UnbindFromRenderStep(\"${1:name}\")", "Remove a previously-bound render-step callback."],
+          ["SetStepMode(stepMode)", "SetStepMode(\"${1:stepMode}\")", "Set the step mode for a context-stepped signal."],
+          ["SetScheduleOffset(offset)", "SetScheduleOffset(${1:offset})", "Adjust the schedule offset for parallel signals."],
+          ["JSONDecode(str)", "JSONDecode(${1:str})", "Parse a JSON string into a Lua table."],
+          ["JSONEncode(value)", "JSONEncode(${1:value})", "Serialize a Lua table to a JSON string."],
+          ["GenerateGUID(brace, dash)", "GenerateGUID(${1:false}, ${2:false})", "Generate a unique identifier string."],
+          ["HttpGet(url, cached)", "HttpGet(${1:url}${2:, false})", "Perform an HTTP GET; optional cache flag."],
+          ["HttpGetAsync(url, cached)", "HttpGetAsync(${1:url}${2:, false})", "Asynchronous HTTP GET."],
+          ["HttpPost(url, body, type, compress)", "HttpPost(${1:url}, ${2:body}${3:, Enum.HttpContentType.ApplicationJson, false})", "HTTP POST with JSON body."],
+          ["Request(options)", "Request(${1:options})", "Generic HTTP request (Roblox)."],
+          ["GetAsync(key)", "GetAsync(\"${1:key}\")", "Read a DataStore value."],
+          ["SetAsync(key, value)", "SetAsync(\"${1:key}\", ${2:value})", "Write a DataStore value."],
+          ["UpdateAsync(key, transform)", "UpdateAsync(\"${1:key}\", function(${2:old}) return ${3:new} end)", "Read-modify-write a DataStore value."],
+          ["IncrementAsync(key, delta)", "IncrementAsync(\"${1:key}\", ${2:1})", "Atomically increment a numeric DataStore value."],
+          ["RemoveAsync(key)", "RemoveAsync(\"${1:key}\")", "Remove a key from a DataStore."],
+          ["Create(instance)", "Create(${1:instance})", "Create a Tween for an instance."],
+          ["TweenProperty(instance, info, props)", "TweenProperty(${1:instance}, ${2:info}, {${3:-- properties}})", "Construct a Tween that interpolates properties."],
+          ["Play()", "Play()", "Start playing a Tween / Sound."],
+          ["Pause()", "Pause()", "Pause a Tween / Sound."],
+          ["Cancel()", "Cancel()", "Cancel a Tween and snap properties back to start."],
+          ["PlayAsync()", "PlayAsync()", "Play a Sound asynchronously."],
+          ["Stop()", "Stop()", "Stop a Sound."],
+          ["Resume()", "Resume()", "Resume a paused Tween / Sound."],
+          ["PlayLocal()", "PlayLocal()", "Play a Sound locally only."],
+          ["Emit(count)", "Emit(${1:1})", "Emit a particle burst."],
+          ["Teleport(placeId, player, teleportData)", "Teleport(${1:placeId}${2:, player, teleportData})", "Teleport the given player to a place."],
+          ["TeleportAsync(placeId, players, teleportData)", "TeleportAsync(${1:placeId}, ${2:players}${3:, teleportData})", "Async teleport; returns TeleportResult."],
+          ["GetLocalPlayer()", "GetLocalPlayer()", "Return the local Player on the client."],
+          ["GetPlayers()", "GetPlayers()", "Return all players currently in the server."],
+          ["GetPlayerByUserId(userId)", "GetPlayerByUserId(${1:userId})", "Find a Player by userId (may be nil)."],
+          ["GetPlayerFromCharacter(character)", "GetPlayerFromCharacter(${1:character})", "Return the Player owning the given character."],
+          ["GetMouse()", "GetMouse()", "Return the player's legacy Mouse."],
+          ["GetUserId()", "GetUserId()", "Return the player's UserId."],
+          ["GetUserName()", "GetUserName()", "Return the player's username."],
+          ["GetRankInGroup(groupId)", "GetRankInGroup(${1:groupId})", "Return the player's rank in a group (0 if none)."],
+          ["GetRoleInGroup(groupId)", "GetRoleInGroup(${1:groupId})", "Return the player's role name in a group."],
+          ["IsInGroup(groupId)", "IsInGroup(${1:groupId})", "True if the player belongs to a group."],
+          ["Ray(origin, direction, params)", "Ray(${1:origin}, ${2:direction}${3:, RaycastParams.new()})", "Cast a ray and return the first hit."],
+          ["Raycast(origin, direction, params)", "Raycast(${1:origin}, ${2:direction}${3:, RaycastParams.new()})", "Cast a ray using workspace raycast rules."],
+          ["GetPartBoundsInBox(cframe, size, params)", "GetPartBoundsInBox(${1:cframe}, ${2:size}${3:, OverlapParams.new()})", "Parts whose bounding boxes overlap the box."],
+          ["GetPartBoundsInRadius(cframe, radius, params)", "GetPartBoundsInRadius(${1:cframe}, ${2:radius}${3:, OverlapParams.new()})", "Parts whose bounding spheres overlap the radius."],
+          ["GetTouchingParts(params)", "GetTouchingParts(${1:OverlapParams.new()})", "Parts touching this BasePart."],
+          ["BindAction(name, actionName, inputType, func)", "BindAction(\"${1:name}\", Enum.KeyCode.${2:E}, Enum.UserInputType.${3:Keyboard}, function(${4:actionName}, inputState, inputObject) ${5:Enum.ContextActionResult.Sink end})", "Bind an action handler to input."],
+          ["UnbindAction(name)", "UnbindAction(\"${1:name}\")", "Remove a previously bound action."],
+          ["BindActionAtPriority(name, actionName, inputType, priority, func)", "BindActionAtPriority(\"${1:name}\", Enum.KeyCode.${2:E}, Enum.UserInputType.${3:Keyboard}, Enum.ContextActionPriority.${4:Default}, function(${5:actionName}, inputState, inputObject) ${6:Enum.ContextActionResult.Sink end})", "Bind with explicit priority."],
+          ["UnbindActionAtPriority(name, inputType, priority)", "UnbindActionAtPriority(\"${1:name}\", Enum.UserInputType.${2:Keyboard}, Enum.ContextActionPriority.${3:Default})", "Remove an action bound with priority."],
+          ["IsKeyDown(keyCode)", "IsKeyDown(Enum.KeyCode.${1:E})", "True if the key is currently held down."],
+          ["IsMouseButtonPressed(button)", "IsMouseButtonPressed(Enum.UserInputType.${1:MouseButton1})", "True if the mouse button is pressed."],
+          ["GetMouseDelta()", "GetMouseDelta()", "Return the mouse movement since the last frame."],
+          ["IsClient()", "IsClient()", "True when called on a LocalScript."],
+          ["IsServer()", "IsServer()", "True when called on a server-side script."],
+          ["IsStudio()", "IsStudio()", "True when running inside Roblox Studio."],
+          ["BindToClose(func)", "BindToClose(function() ${1:-- shutdown end})", "Schedule a callback when the server shuts down."],
+          ["GetMessage()", "GetMessage()", "Receive a message from a MessageBus (yields)."],
+          ["Publish(topic, message)", "Publish(\"${1:topic}\", ${2:message})", "Publish a message on a MessageBus."],
+          ["Subscribe(topic, func)", "Subscribe(\"${1:topic}\", function(${2:message}) ${3:-- end})", "Subscribe to a MessageBus topic."],
+          ["LoadAsset(assetId)", "LoadAsset(${1:assetId})", "Load an asset and return its model."],
+          ["LoadAsync(asset)", "LoadAsync(${1:asset})", "Preload assets via ContentProvider."],
+          ["PreloadAsync(assets)", "PreloadAsync({${1:assets}})", "Preload a list of assets."],
+          ["Set(asset, version)", "Set(${1:asset}, ${2:version})", "Register asset version info."],
+          ["SetCore(name, value)", "SetCore(\"${1:name}\", ${2:value})", "Set a Roblox core GUI element."],
+          ["GetCore(name)", "GetCore(\"${1:name}\")", "Read a Roblox core GUI element."],
+          ["SetCoreGuiEnabled(enumType, enabled)", "SetCoreGuiEnabled(Enum.CoreGuiType.${1:All}, ${2:true})", "Enable/disable a core GUI type."],
+          ["WaitForChildAsync(name, timeout)", "WaitForChildAsync(\"${1:name}\"${2:, 5})", "Async wait for a child by name."],
+          ["GetPropertyChangedSignal(prop)", "GetPropertyChangedSignal(\"${1:prop}\")", "Signal fired when prop changes."]
+        ];
+
+        // Roblox properties — invoked via `:` (e.g. part.Position)
+        const propertyDefs = [
+          ["Parent", "Parent", "The instance's parent (or nil)."],
+          ["Name", "Name", "The instance's name."],
+          ["ClassName", "ClassName", "The class of this instance."],
+          ["Archivable", "Archivable", "Whether this instance is saved when the place is saved."],
+          ["DataCost", "DataCost", "Estimated replication data cost."],
+          ["DebugId", "DebugId", "Stable identifier for this instance."],
+          ["Attributes", "Attributes", "Dictionary of attributes."],
+          ["Connected", "Connected", "True if an RBXScriptConnection is still attached."],
+          ["Value", "Value", "Value held by a ValueBase (e.g. BoolValue, IntValue)."],
+          ["Position", "Position", "World-space position (Vector3)."],
+          ["Size", "Size", "Size of the part (Vector3)."],
+          ["CFrame", "CFrame", "World CFrame of the part."],
+          ["Color", "Color", "BasePart.Color (Color3)."],
+          ["Transparency", "Transparency", "BasePart.Transparency (0-1)."],
+          ["Anchored", "Anchored", "Whether physics affects this part."],
+          ["CanCollide", "CanCollide", "Whether the part collides with other parts."],
+          ["CanTouch", "CanTouch", "Whether the part can fire Touched events."],
+          ["Material", "Material", "BasePart.Material (Enum)."],
+          ["BrickColor", "BrickColor", "BasePart.BrickColor."],
+          ["Velocity", "Velocity", "Linear velocity of the part."],
+          ["RotVelocity", "RotVelocity", "Angular velocity of the part."]
+        ];
+
+        // sUNC executor library — categorised by https://docs.sunc.io/
+        // Each entry carries an explicit scope (4th element) so the completion
+        // filter can narrow results when the user types `sUNC.` or `debug.`.
+        const uncClosures = [
+          ["checkcaller()", "checkcaller()", "True if the calling script is the executor (not a game script).", "sUNC"],
+          ["iscclosure(func)", "iscclosure(${1:func})", "True if func is a C-closure.", "sUNC"],
+          ["islclosure(func)", "islclosure(${1:func})", "True if func is a Lua closure.", "sUNC"],
+          ["isexecutorclosure(func)", "isexecutorclosure(${1:func})", "True if func came from the executor.", "sUNC"],
+          ["clonefunction(func)", "clonefunction(${1:func})", "Clone func into a fresh C-closure (untouched by hooks).", "sUNC"],
+          ["newcclosure(func)", "newcclosure(${1:func})", "Wrap func as a new C-closure (untouchable by hooks).", "sUNC"],
+          ["hookfunction(func, hook)", "hookfunction(${1:func}, ${2:hook})", "Replace func with hook; returns the original.", "sUNC"],
+          ["restorefunction(func)", "restorefunction(${1:func})", "Restore func to its original implementation.", "sUNC"],
+          ["hookmetamethod(obj, meta, hook)", "hookmetamethod(${1:obj}, \"${2:__namecall}\", ${3:hook})", "Replace a metamethod on obj; returns the original.", "sUNC"],
+          ["getfunctionhash(func)", "getfunctionhash(${1:func})", "Return the bytecode hash of func.", "sUNC"],
+          ["loadstring(source)", "loadstring(${1:source})", "Compile source; returns a function or nil + error.", "sUNC"]
+        ];
+
+        const uncDebug = [
+          ["debug.getconstant(func, idx)", "debug.getconstant(${1:func}, ${2:idx})", "Return the constant at index idx of func.", "debug"],
+          ["debug.getconstants(func)", "debug.getconstants(${1:func})", "Return all constants of func as a table.", "debug"],
+          ["debug.setconstant(func, idx, value)", "debug.setconstant(${1:func}, ${2:idx}, ${3:value})", "Replace constant at idx of func.", "debug"],
+          ["debug.getproto(func, idx)", "debug.getproto(${1:func}, ${2:idx})", "Return the proto-function at idx of func.", "debug"],
+          ["debug.getprotos(func)", "debug.getprotos(${1:func})", "Return all protos of func as a table.", "debug"],
+          ["debug.getstack(func, idx)", "debug.getstack(${1:func}, ${2:idx})", "Return a value from func's debug stack.", "debug"],
+          ["debug.setstack(func, idx, value)", "debug.setstack(${1:func}, ${2:idx}, ${3:value})", "Set a value in func's debug stack.", "debug"],
+          ["debug.getupvalue(func, idx)", "debug.getupvalue(${1:func}, ${2:idx})", "Return the upvalue at idx of func.", "debug"],
+          ["debug.getupvalues(func)", "debug.getupvalues(${1:func})", "Return all upvalues of func as a table.", "debug"],
+          ["debug.setupvalue(func, idx, value)", "debug.setupvalue(${1:func}, ${2:idx}, ${3:value})", "Replace upvalue at idx of func.", "debug"]
+        ];
+
+        const uncDrawing = [
+          ["cleardrawcache()", "cleardrawcache()", "Destroy all Drawing objects created by this script.", "sUNC"],
+          ["isrenderobj(obj)", "isrenderobj(${1:obj})", "True if obj is a Drawing render object.", "sUNC"],
+          ["getrenderproperty(obj, prop)", "getrenderproperty(${1:obj}, \"${2:prop}\")", "Read a render property of a Drawing object.", "sUNC"],
+          ["setrenderproperty(obj, prop, value)", "setrenderproperty(${1:obj}, \"${2:prop}\", ${3:value})", "Write a render property of a Drawing object.", "sUNC"]
+        ];
+
+        const uncEncoding = [
+          ["base64encode(str)", "base64encode(${1:str})", "Encode str as Base64.", "sUNC"],
+          ["base64decode(str)", "base64decode(${1:str})", "Decode a Base64 string.", "sUNC"],
+          ["lz4compress(data, ...)", "lz4compress(${1:data})", "LZ4-compress data.", "sUNC"],
+          ["lz4decompress(data, ...)", "lz4decompress(${1:data})", "LZ4-decompress data.", "sUNC"]
+        ];
+
+        const uncEnv = [
+          ["getgc(includeMetatables)", "getgc(${1:false})", "Return all objects tracked by Lua's GC; includeMetatables is optional.", "sUNC"],
+          ["getgenv()", "getgenv()", "Return the executor's global environment.", "sUNC"],
+          ["getreg()", "getreg()", "Return the Lua registry table.", "sUNC"],
+          ["getrenv()", "getrenv()", "Return the Roblox environment.", "sUNC"]
+        ];
+
+        const uncFs = [
+          ["readfile(path)", "readfile(\"${1:path}\")", "Read the contents of path.", "sUNC"],
+          ["writefile(path, content)", "writefile(\"${1:path}\", ${2:content})", "Write content to path (overwrites).", "sUNC"],
+          ["appendfile(path, content)", "appendfile(\"${1:path}\", ${2:content})", "Append content to path.", "sUNC"],
+          ["loadfile(path)", "loadfile(\"${1:path}\")", "Compile a file and return its chunk.", "sUNC"],
+          ["delfile(path)", "delfile(\"${1:path}\")", "Delete a file at path.", "sUNC"],
+          ["delfolder(path)", "delfolder(\"${1:path}\")", "Delete a folder at path.", "sUNC"],
+          ["makefolder(path)", "makefolder(\"${1:path}\")", "Create the folder at path.", "sUNC"],
+          ["isfolder(path)", "isfolder(\"${1:path}\")", "True if path is a folder.", "sUNC"],
+          ["isfile(path)", "isfile(\"${1:path}\")", "True if path is a file.", "sUNC"],
+          ["listfiles(path)", "listfiles(\"${1:path}\")", "Return a table of file names under path.", "sUNC"],
+          ["getcustomasset(path)", "getcustomasset(\"${1:path}\")", "Return an rbxasset:// string for path.", "sUNC"]
+        ];
+
+        const uncInstances = [
+          ["cloneref(obj)", "cloneref(${1:obj})", "Return a fresh Lua-side reference to obj that preserves identity checks.", "sUNC"],
+          ["compareinstances(a, b)", "compareinstances(${1:a}, ${2:b})", "True if a and b refer to the same Roblox Instance.", "sUNC"],
+          ["gethui()", "gethui()", "Return the executor's hidden GUI container.", "sUNC"],
+          ["getinstances()", "getinstances()", "Return all Instances currently in memory.", "sUNC"],
+          ["getnilinstances()", "getnilinstances()", "Return Instances whose Lua reference is nil.", "sUNC"],
+          ["getcallbackvalue(signal)", "getcallbackvalue(${1:signal})", "Return the function backing a Roblox signal.", "sUNC"],
+          ["fireclickdetector(detector, distance, ...)", "fireclickdetector(${1:detector}, ${2:0}${3:, ...})", "Programmatically fire a ClickDetector.", "sUNC"],
+          ["fireproximityprompt(prompt, ...)", "fireproximityprompt(${1:prompt}${2:, ...})", "Programmatically trigger a ProximityPrompt.", "sUNC"],
+          ["firetouchinterest(part, fireDown, fireUp)", "firetouchinterest(${1:part}, ${2:true}, ${3:false})", "Simulate a Touched event on part.", "sUNC"]
+        ];
+
+        const uncMeta = [
+          ["getnamecallmethod()", "getnamecallmethod()", "Return the current namecall method inside a hooked __namecall.", "sUNC"],
+          ["getrawmetatable(obj)", "getrawmetatable(${1:obj})", "Return the raw metatable of obj, bypassing __metatable.", "sUNC"],
+          ["setrawmetatable(obj, mt)", "setrawmetatable(${1:obj}, ${2:mt})", "Replace the raw metatable of obj.", "sUNC"],
+          ["isreadonly(obj)", "isreadonly(${1:obj})", "True if the table is locked from writes.", "sUNC"],
+          ["setreadonly(obj, state)", "setreadonly(${1:obj}, ${2:false})", "Toggle a table's write lock.", "sUNC"]
+        ];
+
+        const uncMisc = [
+          ["identifyexecutor()", "identifyexecutor()", "Return info about the current executor (name, version, etc.).", "sUNC"],
+          ["request(options)", "request(${1:options})", "Generic HTTP request with options table.", "sUNC"]
+        ];
+
+        const uncReflection = [
+          ["gethiddenproperty(obj, prop)", "gethiddenproperty(${1:obj}, \"${2:prop}\")", "Read a hidden (non-scriptable) property.", "sUNC"],
+          ["sethiddenproperty(obj, prop, value)", "sethiddenproperty(${1:obj}, \"${2:prop}\", ${3:value})", "Write a hidden property.", "sUNC"],
+          ["isscriptable(obj, prop)", "isscriptable(${1:obj}, \"${2:prop}\")", "True if the property is currently scriptable.", "sUNC"],
+          ["setscriptable(obj, prop, state)", "setscriptable(${1:obj}, \"${2:prop}\", ${3:true})", "Toggle a property's scriptable flag.", "sUNC"],
+          ["getthreadidentity()", "getthreadidentity()", "Return the current thread Identity level.", "sUNC"],
+          ["setthreadidentity(level)", "setthreadidentity(${1:level})", "Change the current thread Identity (use with care).", "sUNC"]
+        ];
+
+        const uncScripts = [
+          ["getcallingscript()", "getcallingscript()", "Return the script that called the current function.", "sUNC"],
+          ["getscripts()", "getscripts()", "Return all Scripts and LocalScripts currently running.", "sUNC"],
+          ["getloadedmodules()", "getloadedmodules()", "Return all ModuleScripts currently loaded.", "sUNC"],
+          ["getrunningscripts()", "getrunningscripts()", "Return running Script/LocalScript instances.", "sUNC"],
+          ["getscriptclosure(script)", "getscriptclosure(${1:script})", "Return the Lua closure that backs script.", "sUNC"],
+          ["getscriptbytecode(script)", "getscriptbytecode(${1:script})", "Return the bytecode of script.", "sUNC"],
+          ["getscriptfromthread(thread)", "getscriptfromthread(${1:thread})", "Return the script associated with a Lua thread.", "sUNC"],
+          ["getscripthash(script)", "getscripthash(${1:script})", "Return the bytecode hash of script.", "sUNC"],
+          ["getsenv(script)", "getsenv(${1:script})", "Return the script's environment table.", "sUNC"]
+        ];
+
+        const uncSignals = [
+          ["firesignal(signal, ...)", "firesignal(${1:signal}${2:, ...})", "Programmatically fire any signal with arguments.", "sUNC"],
+          ["getconnections(signal)", "getconnections(${1:signal})", "Return all connections to a signal.", "sUNC"],
+          ["replicatesignal(signal, ...)", "replicatesignal(${1:signal}${2:, ...})", "Replicate a RemoteEvent/Function signal across the server boundary.", "sUNC"]
         ];
 
         const completionItems = [
@@ -303,15 +622,57 @@
             detail: "Lua keyword",
             sortText: "0_" + name
           })),
-          ...functionDefs.map(([label, insertText, documentation]) => ({
+          ...functionDefs.map(([label, insertText, documentation, scope]) => {
+            const baseName = label.slice(0, label.indexOf("("));
+            return {
+              label,
+              filterText: baseName,
+              insertText,
+              insertTextRules: SnippetRule,
+              kind: Kind.Function,
+              detail: "Lua / Luau function",
+              documentation,
+              sortText: "1_" + label
+            };
+          }),
+          ...serviceDefs.map(([label, insertText, documentation]) => ({
+            label,
+            filterText: label,
+            insertText,
+            insertTextRules: SnippetRule,
+            kind: Kind.Module,
+            detail: "Roblox service",
+            documentation,
+            sortText: "2_" + label
+          })),
+          ...typeCtorDefs.map(([label, insertText, documentation, scope]) => ({
             label,
             filterText: label.slice(0, label.indexOf("(")),
             insertText,
             insertTextRules: SnippetRule,
-            kind: Kind.Function,
-            detail: "Lua / Luau function",
+            kind: Kind.Constructor,
+            detail: "Roblox type constructor",
             documentation,
-            sortText: "1_" + label
+            sortText: "3_" + label
+          })),
+          ...methodDefs.map(([label, insertText, documentation]) => ({
+            label,
+            filterText: label.slice(0, label.indexOf("(")),
+            insertText,
+            insertTextRules: SnippetRule,
+            kind: Kind.Method,
+            detail: "Roblox method",
+            documentation,
+            sortText: "4_" + label
+          })),
+          ...propertyDefs.map(([label, insertText, documentation]) => ({
+            label,
+            filterText: label,
+            insertText,
+            kind: Kind.Property,
+            detail: "Roblox property",
+            documentation,
+            sortText: "5_" + label
           })),
           ...moduleNames.map((name) => ({
             label: name,
@@ -319,7 +680,127 @@
             insertText: name,
             kind: Kind.Module,
             detail: "Lua / Luau global",
-            sortText: "2_" + name
+            sortText: "6_" + name
+          })),
+          ...uncClosures.map(([label, insertText, documentation, scope]) => ({
+            label,
+            filterText: label.slice(0, label.indexOf("(")),
+            insertText,
+            insertTextRules: SnippetRule,
+            kind: Kind.Function,
+            detail: "sUNC closure",
+            documentation,
+            sortText: "7_" + label
+          })),
+          ...uncDebug.map(([label, insertText, documentation, scope]) => ({
+            label,
+            filterText: label.slice(0, label.indexOf("(")),
+            insertText,
+            insertTextRules: SnippetRule,
+            kind: Kind.Function,
+            detail: "sUNC debug",
+            documentation,
+            sortText: "8_" + label
+          })),
+          ...uncDrawing.map(([label, insertText, documentation, scope]) => ({
+            label,
+            filterText: label.slice(0, label.indexOf("(")),
+            insertText,
+            insertTextRules: SnippetRule,
+            kind: Kind.Function,
+            detail: "sUNC drawing",
+            documentation,
+            sortText: "9_" + label
+          })),
+          ...uncEncoding.map(([label, insertText, documentation, scope]) => ({
+            label,
+            filterText: label.slice(0, label.indexOf("(")),
+            insertText,
+            insertTextRules: SnippetRule,
+            kind: Kind.Function,
+            detail: "sUNC encoding",
+            documentation,
+            sortText: "10_" + label
+          })),
+          ...uncEnv.map(([label, insertText, documentation, scope]) => ({
+            label,
+            filterText: label.slice(0, label.indexOf("(")),
+            insertText,
+            insertTextRules: SnippetRule,
+            kind: Kind.Function,
+            detail: "sUNC environment",
+            documentation,
+            sortText: "11_" + label
+          })),
+          ...uncFs.map(([label, insertText, documentation, scope]) => ({
+            label,
+            filterText: label.slice(0, label.indexOf("(")),
+            insertText,
+            insertTextRules: SnippetRule,
+            kind: Kind.Function,
+            detail: "sUNC filesystem",
+            documentation,
+            sortText: "12_" + label
+          })),
+          ...uncInstances.map(([label, insertText, documentation, scope]) => ({
+            label,
+            filterText: label.slice(0, label.indexOf("(")),
+            insertText,
+            insertTextRules: SnippetRule,
+            kind: Kind.Function,
+            detail: "sUNC instance",
+            documentation,
+            sortText: "13_" + label
+          })),
+          ...uncMeta.map(([label, insertText, documentation, scope]) => ({
+            label,
+            filterText: label.slice(0, label.indexOf("(")),
+            insertText,
+            insertTextRules: SnippetRule,
+            kind: Kind.Function,
+            detail: "sUNC metatable",
+            documentation,
+            sortText: "14_" + label
+          })),
+          ...uncMisc.map(([label, insertText, documentation, scope]) => ({
+            label,
+            filterText: label.slice(0, label.indexOf("(")),
+            insertText,
+            insertTextRules: SnippetRule,
+            kind: Kind.Function,
+            detail: "sUNC misc",
+            documentation,
+            sortText: "15_" + label
+          })),
+          ...uncReflection.map(([label, insertText, documentation, scope]) => ({
+            label,
+            filterText: label.slice(0, label.indexOf("(")),
+            insertText,
+            insertTextRules: SnippetRule,
+            kind: Kind.Function,
+            detail: "sUNC reflection",
+            documentation,
+            sortText: "16_" + label
+          })),
+          ...uncScripts.map(([label, insertText, documentation, scope]) => ({
+            label,
+            filterText: label.slice(0, label.indexOf("(")),
+            insertText,
+            insertTextRules: SnippetRule,
+            kind: Kind.Function,
+            detail: "sUNC script",
+            documentation,
+            sortText: "17_" + label
+          })),
+          ...uncSignals.map(([label, insertText, documentation, scope]) => ({
+            label,
+            filterText: label.slice(0, label.indexOf("(")),
+            insertText,
+            insertTextRules: SnippetRule,
+            kind: Kind.Function,
+            detail: "sUNC signal",
+            documentation,
+            sortText: "18_" + label
           }))
         ];
 
@@ -341,17 +822,132 @@
             endColumn: position.column
           };
 
-          return completionItems
-            .filter((item) => {
-              if (!lowerQuery) return item.kind === Kind.Keyword;
-              const candidate = item.filterText.toLowerCase();
-              const tail = candidate.includes(".")
-                ? candidate.slice(candidate.lastIndexOf(".") + 1)
-                : candidate;
-              return candidate.startsWith(lowerQuery) ||
-                tail.startsWith(lowerQuery) ||
-                candidate.includes(lowerQuery);
-            })
+          // The query may end with `:` or `.` (e.g. "game:" or "Vector3.").
+          // Split into head (before last `:` / `.`) and tail (after). The head
+          // is the "scope" the user is calling on (game, math, sUNC, …) and
+          // the tail is what they're typing after the dot/colon.
+          const colonIndex = lowerQuery.lastIndexOf(":");
+          const dotIndex = lowerQuery.lastIndexOf(".");
+          const splitIndex = Math.max(colonIndex, dotIndex);
+          const hasScope = splitIndex >= 0;
+          const head = hasScope ? lowerQuery.slice(0, splitIndex) : lowerQuery;
+          const tail = hasScope ? lowerQuery.slice(splitIndex + 1) : "";
+
+          // Sort key:
+          //   rank 0: items whose filterText has the same head (e.g. "sUNC.hook")
+          //   rank 1: no-scope items of the kind the user is calling on.
+          //   rank 2-5: mismatched-scope items, hidden or de-prioritised.
+          const isRobloxMethod = (item) => item.detail === "Roblox method" ||
+            item.detail === "Roblox property" ||
+            item.detail === "Roblox type constructor";
+          const isRobloxService = (item) => item.detail === "Roblox service";
+          const isSUNCFn = (item) => typeof item.detail === "string" && item.detail.startsWith("sUNC");
+          const isKeyword = (item) => item.kind === Kind.Keyword;
+          const isPlainLua = (item) => item.detail === "Lua / Luau function";
+          const isLuaGlobal = (item) => item.detail === "Lua / Luau global";
+          const lastTrigger = lowerQuery.charAt(splitIndex);
+          // "executor" scopes: sUNC debug.* etc. live here. After these, we
+          // want sUNC flat functions and NOT Roblox instance methods.
+          // "roblox" scopes: game, script, workspace, parts, and all Roblox
+          // service names. After these we want Roblox methods.
+          // "module" scopes: math, string, table, task, coroutine, Vector3,
+          // CFrame, etc. — show their matching members; suppress the rest.
+          const sUNCScopes = new Set(["sunc", "debug"]);
+          const luaLibScopes = new Set([
+            "math", "string", "table", "task", "coroutine", "utf8", "bit32", "buffer"
+          ]);
+          const headIsUNC = sUNCScopes.has(head);
+          const headIsLuaLib = luaLibScopes.has(head);
+          const rank = (item) => {
+            const c = item.filterText.toLowerCase();
+            const cHead = c.includes(".") ? c.slice(0, c.lastIndexOf(".")) : "";
+            if (hasScope && cHead === head) return 0;            // exact scope match
+            if (!hasScope) {
+              if (cHead === "") return 2;
+              if (c.startsWith(lowerQuery)) return 2;
+              if (c.includes(lowerQuery)) return 3;
+              return 99;
+            }
+            // Scoped query.
+            if (isKeyword(item)) return 6;                        // keywords never after `.`/`:`
+            if (headIsUNC) {
+              if (cHead === "" && isSUNCFn(item)) return 1;       // sUNC flat functions rank high
+              if (cHead === "" && (isRobloxMethod(item) || isRobloxService(item) || isPlainLua(item) || isLuaGlobal(item))) return 5;
+              return 4;
+            }
+            if (headIsLuaLib) {
+              if (cHead === "" && isPlainLua(item)) return 1;     // math.foo etc.
+              if (cHead === "" && (isRobloxMethod(item) || isRobloxService(item) || isSUNCFn(item))) return 5;
+              return 4;
+            }
+            // Roblox-instance / module scope: rank 1 = Roblox method/property
+            // on any Instance, plus constructors and services.
+            if (cHead === "" && isRobloxMethod(item)) {
+              return lastTrigger === ":" ? 1 : 2;
+            }
+            if (cHead === "" && isRobloxService(item)) {
+              // Services are only meaningful via `game:GetService("…")`, so
+              // after `game:` (or `:`) they're not direct callables. Push
+              // them down so methods stay on top.
+              return lastTrigger === ":" ? 4 : 3;
+            }
+            if (cHead === "" && isSUNCFn(item)) {
+              return lastTrigger === ":" ? 5 : 2;
+            }
+            return 4;
+          };
+
+          const filtered = completionItems.filter((item) => {
+            // Empty query: keywords only.
+            if (!lowerQuery) return item.kind === Kind.Keyword;
+            const candidate = item.filterText.toLowerCase();
+            const candidateHead = candidate.includes(".")
+              ? candidate.slice(0, candidate.lastIndexOf("."))
+              : "";
+            const candidateTail = candidate.includes(".")
+              ? candidate.slice(candidate.lastIndexOf(".") + 1)
+              : candidate;
+
+            // Keywords are only relevant when the user has not yet typed a
+            // scope (`game:`, `Vector3.`) — keywords never appear after `.`
+            // or `:` in real Lua.
+            if (item.kind === Kind.Keyword) {
+              return !hasScope && (tail === "" || "andbreakdoelseelseifendfalseforfunctionifinlocalnilnotorrepeatreturnthentrueuntilwhilecontinueexporttypeof".includes(tail));
+            }
+
+            // If the user typed a scope (head), the item must either
+            //   (a) explicitly match that scope (cHead === head), or
+            //   (b) have no scope (cHead === "") — i.e. Roblox methods callable
+            //       on any Instance, or globals.
+            let headMatches;
+            if (hasScope) {
+              headMatches = candidateHead === head || candidateHead === "";
+            } else {
+              headMatches = true;
+            }
+
+            if (!headMatches) return false;
+
+            // Tail / name match.
+            if (tail === "" && !hasScope) {
+              // Bare non-empty query, no scope: show globals/keywords.
+              return candidate.startsWith(lowerQuery) || candidate.includes(lowerQuery);
+            }
+            if (tail === "" && hasScope) {
+              // After `game:` show all matching-scope items regardless of name.
+              return true;
+            }
+            return candidateTail.startsWith(tail) || candidateTail.includes(tail);
+          });
+
+          // Stable sort by rank + original sortText.
+          filtered.sort((a, b) => {
+            const ra = rank(a), rb = rank(b);
+            if (ra !== rb) return ra - rb;
+            return (a.sortText || "").localeCompare(b.sortText || "");
+          });
+
+          return filtered
             .slice(0, 80)
             .map((item) => ({ ...item, range }));
         };
@@ -363,220 +959,136 @@
           }
         });
 
-        // Tomorrow Light (светлая версия палитры Tomorrow Night Eighties)
-        const tomorrowLightThemeDefinition = {
-          base: "vs",
+        let editorThemeDefinition = {
+          base: "vs-dark",
           inherit: false,
           rules: [
             defaultTokenRule,
-            { token: "comment", foreground: "8E908C", fontStyle: "italic" },
-            { token: "keyword", foreground: "8959A8" },
-            { token: "keyword.control", foreground: "8959A8" },
-            { token: "keyword.local", foreground: "8959A8", fontStyle: "bold" },
-            { token: "keyword.operator", foreground: "3E999F" },
-            { token: "operator", foreground: "3E999F" },
-            { token: "string", foreground: "718C00" },
-            { token: "string.escape", foreground: "F5871F" },
-            { token: "number", foreground: "F5871F" },
-            { token: "regexp", foreground: "C82829" },
-            { token: "type", foreground: "EAB700" },
-            { token: "struct", foreground: "EAB700" },
-            { token: "class", foreground: "EAB700" },
-            { token: "interface", foreground: "EAB700" },
-            { token: "enum", foreground: "EAB700" },
-            { token: "type.parameter", foreground: "EAB700" },
-            { token: "function", foreground: "4271AE" },
-            { token: "method", foreground: "4271AE" },
-            { token: "entity.name.function", foreground: "4271AE" },
-            { token: "variable", foreground: "4D4D4C" },
-            { token: "variable.parameter", foreground: "4D4D4C" },
-            { token: "variable.property", foreground: "3E999F" },
-            { token: "variable.predefined", foreground: "4271AE" },
-            { token: "constant", foreground: "F5871F" },
-            { token: "tag", foreground: "C82829" },
-            { token: "attribute.name", foreground: "F5871F" },
-            { token: "attribute.value", foreground: "718C00" },
-            { token: "delimiter", foreground: "4D4D4C" },
-            { token: "delimiter.bracket", foreground: "8E908C" }
+            { token: "comment", foreground: "6A9955", fontStyle: "italic" },
+            { token: "keyword", foreground: "569CD6" },
+            { token: "keyword.control", foreground: "C586C0" },
+            { token: "string", foreground: "CE9178" },
+            { token: "string.escape", foreground: "D7BA7D" },
+            { token: "number", foreground: "B5CEA8" },
+            { token: "regexp", foreground: "D16969" },
+            { token: "operator", foreground: "D4D4D4" },
+            { token: "namespace", foreground: "4EC9B0" },
+            { token: "type", foreground: "4EC9B0" },
+            { token: "struct", foreground: "4EC9B0" },
+            { token: "class", foreground: "4EC9B0" },
+            { token: "interface", foreground: "4EC9B0" },
+            { token: "enum", foreground: "4EC9B0" },
+            { token: "type.parameter", foreground: "4EC9B0" },
+            { token: "function", foreground: "DCDCAA" },
+            { token: "method", foreground: "DCDCAA" },
+            { token: "variable", foreground: "9CDCFE" },
+            { token: "variable.predefined", foreground: "4FC1FF" },
+            { token: "constant", foreground: "4FC1FF" },
+            { token: "tag", foreground: "569CD6" },
+            { token: "attribute.name", foreground: "9CDCFE" },
+            { token: "attribute.value", foreground: "CE9178" }
           ],
           colors: {
             "editor.background": fixedBackground,
-            "editor.foreground": /^[0-9a-f]{6}$/i.test(requestedForeground || "") ? "#" + requestedForeground : "#4D4D4C",
-            "editorCursor.foreground": /^[0-9a-f]{6}$/i.test(requestedForeground || "") ? "#" + requestedForeground : "#4D4D4C",
-            "editorLineNumber.foreground": /^[0-9a-f]{6}$/i.test(requestedForeground || "") ? "#8A8A8A" : "#BCBCBC",
-            "editorLineNumber.activeForeground": /^[0-9a-f]{6}$/i.test(requestedForeground || "") ? "#202020" : "#4D4D4C",
+            "editor.foreground": "#D4D4D4",
             "editor.lineHighlightBackground": editorLineHighlight,
-            "editor.selectionBackground": "#D6D6D680",
-            "editor.inactiveSelectionBackground": "#E5E5E580",
-            "editor.selectionHighlightBackground": "#D6D6D640",
-            "editor.findMatchBackground": "#FFE57F80",
-            "editor.findMatchHighlightBackground": "#FFE57F40",
-            "editor.hoverHighlightBackground": "#E5E5E560",
-            "editor.wordHighlightBackground": "#0000000D",
-            "editor.wordHighlightStrongBackground": "#0000001A",
-            "editorWhitespace.foreground": "#D6D6D6",
-            "editorIndentGuide.background": "#E8E8E8",
-            "editorIndentGuide.activeBackground": "#BCBCBC",
+            "editor.selectionBackground": "#264F78",
+            "editor.inactiveSelectionBackground": "#3A3D41",
+            "editor.selectionHighlightBackground": "#ADD6FF26",
+            "editor.findMatchBackground": "#515C6A",
+            "editor.findMatchHighlightBackground": "#EA5C0055",
+            "editor.hoverHighlightBackground": "#264F7833",
+            "editor.wordHighlightBackground": "#575757B8",
+            "editor.wordHighlightStrongBackground": "#004972B8",
+            "editorCursor.foreground": "#AEAFAD",
+            "editorWhitespace.foreground": "#404040",
+            "editorLineNumber.foreground": "#858585",
+            "editorLineNumber.activeForeground": "#C6C6C6",
+            "editorIndentGuide.background": "#404040",
+            "editorIndentGuide.activeBackground": "#707070",
             "editorGutter.background": fixedBackground,
             "editorPane.background": fixedBackground,
             "minimap.background": fixedBackground,
-            "editorWidget.background": "#FAFAFA",
-            "editorWidget.border": "#D5D5D5",
-            "editorSuggestWidget.background": "#FAFAFA",
-            "editorSuggestWidget.border": "#D5D5D5",
-            "editorSuggestWidget.foreground": "#4D4D4C",
-            "editorSuggestWidget.selectedBackground": "#E5E5E5",
-            "editorSuggestWidget.highlightForeground": "#4271AE",
-            "editorHoverWidget.background": "#FAFAFA",
-            "editorHoverWidget.border": "#D5D5D5",
             "scrollbar.shadow": "#00000000",
-            "scrollbarSlider.background": "#8E908C33",
-            "scrollbarSlider.hoverBackground": "#8E908C55",
-            "scrollbarSlider.activeBackground": "#8E908C88",
-            "editorBracketHighlight.foreground1": "#4271AE",
-            "editorBracketHighlight.foreground2": "#8959A8",
-            "editorBracketHighlight.foreground3": "#3E999F",
-            "editorBracketPairGuide.background1": "#4271AE33",
-            "editorBracketPairGuide.activeBackground1": "#4271AE88"
+            "scrollbarSlider.background": "#79797966",
+            "scrollbarSlider.hoverBackground": "#646464B3",
+            "scrollbarSlider.activeBackground": "#BFBFBF66"
           }
         };
-
-        let editorThemeDefinition = tomorrowLightThemeDefinition;
-
-        if (!isTomorrowLight) {
+        if (isZenithSurface) {
           editorThemeDefinition = {
             base: "vs-dark",
-            inherit: false,
+            inherit: true,
             rules: [
-              defaultTokenRule,
-              { token: "comment", foreground: "6A9955", fontStyle: "italic" },
-              { token: "keyword", foreground: "569CD6" },
-              { token: "keyword.control", foreground: "C586C0" },
-              { token: "string", foreground: "CE9178" },
-              { token: "string.escape", foreground: "D7BA7D" },
-              { token: "number", foreground: "B5CEA8" },
-              { token: "regexp", foreground: "D16969" },
+              { token: "", foreground: "D4D4D4" },
+              { token: "variable.language.self", foreground: "A9A0A0" },
+              { token: "variable.parameter", foreground: "A9A0A0" },
+              { token: "variable", foreground: "A9A0A0" },
+              { token: "variable.property", foreground: "9CDCFE" },
+              { token: "keyword", foreground: "4CC2F7" },
+              { token: "keyword.local", foreground: "C678DD", fontStyle: "bold" },
+              { token: "keyword.operator", foreground: "4CC2F7" },
               { token: "operator", foreground: "D4D4D4" },
-              { token: "namespace", foreground: "4EC9B0" },
-              { token: "type", foreground: "4EC9B0" },
-              { token: "struct", foreground: "4EC9B0" },
-              { token: "class", foreground: "4EC9B0" },
-              { token: "interface", foreground: "4EC9B0" },
-              { token: "enum", foreground: "4EC9B0" },
-              { token: "type.parameter", foreground: "4EC9B0" },
               { token: "function", foreground: "DCDCAA" },
-              { token: "method", foreground: "DCDCAA" },
-              { token: "variable", foreground: "9CDCFE" },
-              { token: "variable.predefined", foreground: "4FC1FF" },
-              { token: "constant", foreground: "4FC1FF" },
-              { token: "tag", foreground: "569CD6" },
-              { token: "attribute.name", foreground: "9CDCFE" },
-              { token: "attribute.value", foreground: "CE9178" }
+              { token: "entity.name.function", foreground: "DCDCAA" },
+              { token: "global", foreground: "39A2FF", fontStyle: "bold" },
+              { token: "comment", foreground: "ABB2BF", fontStyle: "bold" },
+              { token: "delimiter", foreground: "9A9A9A" },
+              { token: "delimiter.bracket", foreground: "808080" },
+              { token: "string", foreground: "63F499" },
+              { token: "string.escape", foreground: "63F499" },
+              { token: "number", foreground: "E5C07B" },
+              { token: "constant", foreground: "39A2FF" },
+              { token: "support.function", foreground: "39A2FF" },
+              { token: "support.type", foreground: "39A2FF" }
             ],
             colors: {
-              "editor.background": fixedBackground,
-              "editor.foreground": /^[0-9a-f]{6}$/i.test(requestedForeground || "") ? "#" + requestedForeground : "#D4D4D4",
-              "editorCursor.foreground": /^[0-9a-f]{6}$/i.test(requestedForeground || "") ? "#" + requestedForeground : "#AEAFAD",
-              "editorLineNumber.foreground": /^[0-9a-f]{6}$/i.test(requestedForeground || "") ? "#8A8A8A" : "#858585",
-              "editorLineNumber.activeForeground": /^[0-9a-f]{6}$/i.test(requestedForeground || "") ? "#202020" : "#C6C6C6",
-              "editor.lineHighlightBackground": editorLineHighlight,
-              "editor.selectionBackground": "#264F78",
-              "editor.inactiveSelectionBackground": "#3A3D41",
-              "editor.selectionHighlightBackground": "#ADD6FF26",
-              "editor.findMatchBackground": "#515C6A",
-              "editor.findMatchHighlightBackground": "#EA5C0055",
-              "editor.hoverHighlightBackground": "#264F7833",
-              "editor.wordHighlightBackground": "#575757B8",
-              "editor.wordHighlightStrongBackground": "#004972B8",
-              "editorWhitespace.foreground": /^[0-9a-f]{6}$/i.test(requestedForeground || "") ? "#B0B0B0" : "#404040",
-              "editorIndentGuide.background": /^[0-9a-f]{6}$/i.test(requestedForeground || "") ? "#D0D0D0" : "#404040",
-              "editorIndentGuide.activeBackground": /^[0-9a-f]{6}$/i.test(requestedForeground || "") ? "#A8A8A8" : "#707070",
-              "editorGutter.background": fixedBackground,
-              "editorPane.background": fixedBackground,
-              "minimap.background": fixedBackground,
+              "editor.background": "#00000000",
+              "editor.foreground": "#D4D4D4",
+              "editor.selectionBackground": "#3A3D41",
+              "editor.inactiveSelectionBackground": "#3A3D4188",
+              "editor.lineHighlightBackground": "#14141411",
+              "editorLineNumber.foreground": "#FFFFFF",
+              "editorLineNumber.activeForeground": "#FFFFFF",
+              "editorCursor.foreground": "#D4D4D4",
+              "editorGutter.background": "#00000000",
+              "editorPane.background": "#00000000",
+              "minimap.background": "#00000000",
+              "editorWidget.background": "#111111",
+              "editorWidget.border": "#3A3B3C",
+              "editorSuggestWidget.background": "#111111",
+              "editorSuggestWidget.border": "#3A3B3C",
+              "editorSuggestWidget.foreground": "#FFFFFF",
+              "editorSuggestWidget.selectedBackground": "#3A3D41",
+              "editorSuggestWidget.highlightForeground": "#39A2FF",
+              "editorHoverWidget.background": "#111111",
+              "editorHoverWidget.border": "#3A3B3C",
               "scrollbar.shadow": "#00000000",
-              "scrollbarSlider.background": "#79797966",
-              "scrollbarSlider.hoverBackground": "#646464B3",
-              "scrollbarSlider.activeBackground": "#BFBFBF66"
+              "scrollbarSlider.background": "#3A3A3A",
+              "scrollbarSlider.hoverBackground": "#4A4A4A",
+              "scrollbarSlider.activeBackground": "#5A5A5A",
+              "editorBracketHighlight.foreground1": "#808080",
+              "editorBracketHighlight.foreground2": "#808080",
+              "editorBracketHighlight.foreground3": "#808080",
+              "editorBracketPairGuide.background1": "#80808040",
+              "editorBracketPairGuide.activeBackground1": "#808080"
             }
           };
-
-          if (isZenithSurface) {
-            editorThemeDefinition = {
-              base: "vs-dark",
-              inherit: true,
-              rules: [
-                { token: "", foreground: "D4D4D4" },
-                { token: "variable.language.self", foreground: "A9A0A0" },
-                { token: "variable.parameter", foreground: "A9A0A0" },
-                { token: "variable", foreground: "A9A0A0" },
-                { token: "variable.property", foreground: "9CDCFE" },
-                { token: "keyword", foreground: "4CC2F7" },
-                { token: "keyword.local", foreground: "C678DD", fontStyle: "bold" },
-                { token: "keyword.operator", foreground: "4CC2F7" },
-                { token: "operator", foreground: "D4D4D4" },
-                { token: "function", foreground: "DCDCAA" },
-                { token: "entity.name.function", foreground: "DCDCAA" },
-                { token: "global", foreground: "39A2FF", fontStyle: "bold" },
-                { token: "comment", foreground: "ABB2BF", fontStyle: "bold" },
-                { token: "delimiter", foreground: "9A9A9A" },
-                { token: "delimiter.bracket", foreground: "808080" },
-                { token: "string", foreground: "63F499" },
-                { token: "string.escape", foreground: "63F499" },
-                { token: "number", foreground: "E5C07B" },
-                { token: "constant", foreground: "39A2FF" },
-                { token: "support.function", foreground: "39A2FF" },
-                { token: "support.type", foreground: "39A2FF" }
-              ],
-              colors: {
-                "editor.background": "#00000000",
-                "editor.foreground": "#D4D4D4",
-                "editor.selectionBackground": "#3A3D41",
-                "editor.inactiveSelectionBackground": "#3A3D4188",
-                "editor.lineHighlightBackground": "#14141411",
-                "editorLineNumber.foreground": "#FFFFFF",
-                "editorLineNumber.activeForeground": "#FFFFFF",
-                "editorCursor.foreground": "#D4D4D4",
-                "editorGutter.background": "#00000000",
-                "editorPane.background": "#00000000",
-                "minimap.background": "#00000000",
-                "editorWidget.background": "#111111",
-                "editorWidget.border": "#3A3B3C",
-                "editorSuggestWidget.background": "#111111",
-                "editorSuggestWidget.border": "#3A3B3C",
-                "editorSuggestWidget.foreground": "#FFFFFF",
-                "editorSuggestWidget.selectedBackground": "#3A3D41",
-                "editorSuggestWidget.highlightForeground": "#39A2FF",
-                "editorHoverWidget.background": "#111111",
-                "editorHoverWidget.border": "#3A3B3C",
-                "scrollbar.shadow": "#00000000",
-                "scrollbarSlider.background": "#3A3A3A",
-                "scrollbarSlider.hoverBackground": "#4A4A4A",
-                "scrollbarSlider.activeBackground": "#5A5A5A",
-                "editorBracketHighlight.foreground1": "#808080",
-                "editorBracketHighlight.foreground2": "#808080",
-                "editorBracketHighlight.foreground3": "#808080",
-                "editorBracketPairGuide.background1": "#80808040",
-                "editorBracketPairGuide.activeBackground1": "#808080"
-              }
-            };
-          } else if (isBlueTheme) {
-            try {
-              const response = await fetch("./tomorrow-night-eighties.theme.json", { cache: "force-cache" });
-              if (!response.ok) throw new Error("HTTP " + response.status);
-              editorThemeDefinition = await response.json();
-            } catch (error) {
-              console.warn("Unable to load Synapse Blue's default Monaco theme; using the local fallback.", error);
-            }
+        } else if (isBlueTheme) {
+          try {
+            const response = await fetch("./tomorrow-night-eighties.theme.json", { cache: "force-cache" });
+            if (!response.ok) throw new Error("HTTP " + response.status);
+            editorThemeDefinition = await response.json();
+          } catch (error) {
+            console.warn("Unable to load Synapse Blue's default Monaco theme; using the local fallback.", error);
           }
         }
-
         monaco.editor.defineTheme(themeName, editorThemeDefinition);
 
         const editor = monaco.editor.create(document.getElementById("editor"), {
           value: [
-            "-- Monaco preview (Tomorrow Light)",
-            "local message = \"Hello from Tomorrow Light!\"",
+            isXenoTheme ? "-- Xeno UI preview" : "-- Monaco preview",
+            isXenoTheme ? "local message = \"Hello from Xeno!\"" : "local message = \"Hello from Orbit!\"",
             "",
             "function runScript()",
             "    print(message)",
@@ -638,7 +1150,7 @@
           padding: { top: 0, bottom: 2 },
           fixedOverflowWidgets: true,
           scrollbar: { useShadows: false },
-          bracketPairColorization: { enabled: true },
+          bracketPairColorization: { enabled: false },
           colorDecorators: false,
           experimentalWhitespaceRendering: "svg",
           stopRenderingLineAfter: 5000,
@@ -723,6 +1235,59 @@
             padding: { top: 0, bottom: 0 }
           } : {})
         });
+
+        // Theme Studio updates the native shell without navigating this
+        // WebView. Monaco stays transparent while its readable chrome follows
+        // the active Orion palette, preserving the model and cursor.
+        const toMonacoColour = (value, fallback) => {
+          if (typeof value !== "string") return fallback;
+          if (/^#[0-9a-f]{6}([0-9a-f]{2})?$/i.test(value)) return value;
+          const match = value.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)$/i);
+          if (!match) return fallback;
+          const hex = [match[1], match[2], match[3]]
+            .map((channel) => Math.max(0, Math.min(255, Number(channel))).toString(16).padStart(2, "0"))
+            .join("");
+          const alpha = Math.round(Math.max(0, Math.min(1, Number(match[4] ?? 1))) * 255)
+            .toString(16)
+            .padStart(2, "0");
+          return `#${hex}${alpha}`;
+        };
+
+        window.orionApplyTheme = (theme) => {
+          if (!theme || !isOrionSurface) return;
+          document.documentElement.style.setProperty("--orion-window-start", theme.windowStart || "#181a1b");
+          document.documentElement.style.setProperty("--orion-window-end", theme.windowEnd || "#08090a");
+          document.documentElement.style.setProperty("--orion-widget", theme.widget || "#181b1d");
+          document.documentElement.style.setProperty("--orion-widget-selection", theme.widgetSelection || "#292d32");
+          document.documentElement.style.setProperty("--orion-widget-hover", theme.widgetSelection || "#22262a");
+          document.documentElement.style.setProperty("--orion-widget-border", theme.border || "#303235");
+          const primaryText = toMonacoColour(theme.text, "#FFFFFFFF");
+
+          const liveTheme = {
+            ...editorThemeDefinition,
+            rules: [...(editorThemeDefinition.rules || [])],
+            colors: {
+              ...(editorThemeDefinition.colors || {}),
+              "editor.background": "#00000000",
+              "editorGutter.background": "#00000000",
+              "editorPane.background": "#00000000",
+              "minimap.background": "#00000000",
+              "editor.foreground": primaryText,
+              "editorCursor.foreground": primaryText,
+              "editorLineNumber.activeForeground": primaryText,
+              "editor.lineHighlightBackground": toMonacoColour(theme.lineHighlight, "#FFFFFF0A"),
+              "editorWidget.background": toMonacoColour(theme.widget, "#181B1DFA"),
+              "editorWidget.border": toMonacoColour(theme.border, "#303235FF"),
+              "editorSuggestWidget.background": toMonacoColour(theme.widget, "#181B1DFA"),
+              "editorSuggestWidget.border": toMonacoColour(theme.border, "#303235FF"),
+              "editorSuggestWidget.foreground": primaryText,
+              "editorSuggestWidget.selectedBackground": toMonacoColour(theme.widgetSelection, "#8DB7FF33")
+            }
+          };
+          monaco.editor.defineTheme("orion-live", liveTheme);
+          monaco.editor.setTheme("orion-live");
+          editor.layout();
+        };
 
         editor.addCommand(
           monaco.KeyCode.Tab,
@@ -855,16 +1420,6 @@
         };
 
         window.orionLayout = () => editor.layout();
-
-        window.orbitUpdateEditorOptions = (raw) => {
-          if (!editor || raw == null) return;
-          try {
-            const parsed = typeof raw === "string" ? JSON.parse(raw) : raw;
-            editor.updateOptions(parsed);
-          } catch (error) {
-            console.warn("orbitUpdateEditorOptions failed", error);
-          }
-        };
 
         editor.onDidChangeCursorPosition(publishCursorPosition);
         editor.onDidChangeModelContent((event) => {
