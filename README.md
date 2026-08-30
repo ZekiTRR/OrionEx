@@ -2,7 +2,7 @@
 
 A remake of [Orion](https://github.com/snooped-xl/Orion) — a multi-interface Roblox script executor built on Avalonia.
 
-Added menus: **Wave**, **SirHurt**, **Script-Ware**, **SirHurt Legacy**, **SirHurt Remake**, **Sentinel**, **Universal Console**.
+Added menus: **Wave**, **SirHurt**, **Script-Ware**, **SirHurt Legacy**, **SirHurt Remake**, **Sentinel**, **Universal Console**, **JJSploit**, **Wave Legacy**.
 
 > ⚠️ This is an MVP only — the menus may not match the originals 100%.
 
