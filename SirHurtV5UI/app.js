@@ -4771,11 +4771,11 @@ function setupMonaco() {
                         if (cHead === '' && (isRobloxMethod(item) || isRobloxService(item) || isSUNCFn(item))) return 5;
                         return 4;
                     }
+                    if (cHead === '' && isRobloxService(item)) {
+                        return lastTrigger === ':' ? 4 : 1;
+                    }
                     if (cHead === '' && isRobloxMethod(item)) {
                         return lastTrigger === ':' ? 1 : 2;
-                    }
-                    if (cHead === '' && isRobloxService(item)) {
-                        return lastTrigger === ':' ? 4 : 3;
                     }
                     if (cHead === '' && isSUNCFn(item)) {
                         return lastTrigger === ':' ? 5 : 2;

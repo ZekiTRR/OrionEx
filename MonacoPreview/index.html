@@ -881,15 +881,14 @@
               return 4;
             }
             // Roblox-instance / module scope: rank 1 = Roblox method/property
-            // on any Instance, plus constructors and services.
+            // on any Instance, plus services. After `game.` (a dot, not a
+            // colon) the user usually wants a service (`game.Workspace`),
+            // not a method — so services get rank 1 on `.`.
+            if (cHead === "" && isRobloxService(item)) {
+              return lastTrigger === ":" ? 4 : 1;
+            }
             if (cHead === "" && isRobloxMethod(item)) {
               return lastTrigger === ":" ? 1 : 2;
-            }
-            if (cHead === "" && isRobloxService(item)) {
-              // Services are only meaningful via `game:GetService("…")`, so
-              // after `game:` (or `:`) they're not direct callables. Push
-              // them down so methods stay on top.
-              return lastTrigger === ":" ? 4 : 3;
             }
             if (cHead === "" && isSUNCFn(item)) {
               return lastTrigger === ":" ? 5 : 2;
@@ -1111,10 +1110,10 @@
           lineHeight: 18,
           suggestFontSize: 13,
           suggestLineHeight: 18,
-          quickSuggestions: false,
+          quickSuggestions: { other: true, comments: false, strings: false },
           quickSuggestionsDelay: 50,
           wordBasedSuggestions: "off",
-          suggestOnTriggerCharacters: false,
+          suggestOnTriggerCharacters: true,
           tabCompletion: "off",
           inlineSuggest: { enabled: false },
           acceptSuggestionOnEnter: "on",
