@@ -68,6 +68,13 @@
     <link rel="stylesheet" href="style.css?v=1.2">
     <script>var require = { paths: { 'vs': './vs' } };</script>
     <script src="./vs/loader.js"></script>
+    <script>
+        // Luau LSP (luau-lsp.exe) bridge configuration; lsp-client.js attaches
+        // to every Monaco model (one per tab) and exposes window.__lspReady,
+        // which the static fallback provider in app.js uses as its gate.
+        window.OrionLspConfig = { language: 'luau', extension: 'luau' };
+    </script>
+    <script src="./lsp-client.js"></script>
     <style>
         /* OrionEx remake: sections that are not part of this build */
         .nav-item[data-page="accounts"],
@@ -3838,13 +3845,6 @@
                 fetch('/__click?x=' + encodeURIComponent(label)).catch(function(){});
             } catch (err) { }
         }, true);
-
-        setTimeout(function () {
-            try {
-                var b = document.getElementById('btn-open');
-                if (b) { b.click(); }
-            } catch (e) { }
-        }, 7000);
 
         function prune() {
             try {

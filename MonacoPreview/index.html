@@ -198,6 +198,13 @@
     <script src="./vs/loader.js"
             onerror="document.getElementById('loading-status').textContent = 'Unable to load Monaco loader.'"></script>
     <script>
+      // Luau LSP (luau-lsp.exe) bridge configuration; the client attaches to
+      // every Monaco model automatically and exposes window.__lspReady, which
+      // the static fallback provider below uses as its gate.
+      window.OrionLspConfig = { language: "lua", extension: "lua" };
+    </script>
+    <script src="./lsp-client.js"></script>
+    <script>
       const previewParameters = new URLSearchParams(window.location.search);
       const isXenoTheme = previewParameters.get("theme") === "xeno";
       const isBlueTheme = previewParameters.get("theme") === "blue";
@@ -815,10 +822,14 @@
         const matchingCompletionItems = (model, position) => {
           const query = completionQueryAt(model, position);
           const lowerQuery = query.toLowerCase();
+          // The replacement range must cover only the text the user typed
+          // *after* the last `:` / `.`, not the whole `game:GetService`.
+          // Otherwise accepting `GetService` would erase the `game:` prefix.
+          const replaceFrom = Math.max(0, position.column - tail.length);
           const range = {
             startLineNumber: position.lineNumber,
             endLineNumber: position.lineNumber,
-            startColumn: position.column - query.length,
+            startColumn: replaceFrom,
             endColumn: position.column
           };
 
@@ -951,9 +962,36 @@
             .map((item) => ({ ...item, range }));
         };
 
+        // Keep `:` and `.` inside the word so that `game:GetService` is treated as
+        // one token by Monaco's suggest widget. Without this the default
+        // wordPattern splits on `:` and the widget's "current word" becomes
+        // empty after `game:`, which suppresses the suggestions.
+        monaco.languages.setLanguageConfiguration("lua", {
+          wordPattern: /[\w.:]+/,
+          comments: { lineComment: "--", blockComment: ["[[", "]]"] },
+          brackets: [["{", "}"], ["[", "]"], ["(", ")"]],
+          autoClosingPairs: [
+            { open: "{", close: "}" },
+            { open: "[", close: "]" },
+            { open: "(", close: ")" },
+            { open: "\"", close: "\"" },
+            { open: "'", close: "'" }
+          ],
+          surroundingPairs: [
+            { open: "(", close: ")" },
+            { open: "[", close: "]" },
+            { open: "{", close: "}" },
+            { open: "\"", close: "\"" },
+            { open: "'", close: "'" }
+          ]
+        });
+
         monaco.languages.registerCompletionItemProvider("lua", {
           triggerCharacters: [".", ":"],
           provideCompletionItems(model, position) {
+            // When the Luau language server is healthy it owns the completion
+            // experience; this static provider stays only as its fallback.
+            if (window.__lspReady) return { suggestions: [] };
             return { suggestions: matchingCompletionItems(model, position) };
           }
         });
@@ -1294,15 +1332,21 @@
           "suggestWidgetVisible"
         );
 
+        // `.` and `:` are `triggerCharacters`, so Monaco already opens the suggest
+        // widget for them. Don't re-trigger — and never call `hideSuggestWidget`
+        // here, because that raced with the widget's own state and could
+        // dismiss the popup before the provider's items had a chance to
+        // render. Only nudge the widget on plain word characters.
         editor.onDidType((text) => {
-          if (/^[\w.:]+$/.test(text)) {
-            const model = editor.getModel();
-            const position = editor.getPosition();
-            if (model && position && matchingCompletionItems(model, position).length > 0) {
-              editor.trigger("keyboard", "editor.action.triggerSuggest", {});
-            } else {
-              editor.trigger("keyboard", "hideSuggestWidget", {});
-            }
+          if (/^[.:]$/.test(text)) return;
+          if (!/^[\w]+$/.test(text)) return;
+
+          const model = editor.getModel();
+          const position = editor.getPosition();
+          if (!model || !position) return;
+
+          if (matchingCompletionItems(model, position).length > 0) {
+            editor.trigger("keyboard", "editor.action.triggerSuggest", {});
           }
         });
 

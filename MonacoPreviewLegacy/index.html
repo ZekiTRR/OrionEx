@@ -14,20 +14,19 @@
       }
 
       :root {
-        color-scheme: dark;
+        color-scheme: light; /* Изменено на light */
         --editor-bg: transparent;
         --editor-radius: 0px;
-        --orion-window-start: #181a1b;
-        --orion-window-end: #08090a;
-        --orion-widget: #181b1d;
-        --orion-widget-selection: #292d32;
-        --orion-widget-hover: #22262a;
-        --orion-widget-border: #303235;
+        --orion-window-start: #f3f3f3; /* Светлые градиенты */
+        --orion-window-end: #e8e8e8;
+        --orion-widget: #ffffff; /* Светлый фон виджетов */
+        --orion-widget-selection: #e4e6f1;
+        --orion-widget-hover: #f2f2f2;
+        --orion-widget-border: #cccccc;
         background: var(--editor-bg);
       }
 
-      html,
-      body {
+      html, body {
         width: 100%;
         height: 100%;
         margin: 0;
@@ -46,7 +45,7 @@
         position: absolute;
         inset: 16px;
         z-index: 2;
-        color: #858585;
+        color: #555555; /* Более темный текст для загрузки */
         font: 12px/18px Consolas, monospace;
         pointer-events: none;
       }
@@ -75,10 +74,6 @@
       }
 
       body.orion-surface {
-        /* This is the exact Orion window gradient, positioned as though the
-           browser occupied the entire 896.4 x 558 shell. Monaco itself still
-           contributes no editor background; this only continues the native
-           surface through WebView2's Windows airspace. */
         background-image: linear-gradient(
           122.2466557642525deg,
           var(--orion-window-start) 0%,
@@ -98,7 +93,7 @@
         border: 1px solid var(--orion-widget-border) !important;
         border-radius: 6px !important;
         overflow: hidden !important;
-        box-shadow: 0 10px 28px #00000066 !important;
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.1) !important; /* Мягкая тень */
       }
 
       .suggest-widget .monaco-list,
@@ -116,12 +111,9 @@
 
       .suggest-widget .details-label,
       .suggest-widget .monaco-highlighted-label .highlight {
-        color: #dcdcaa !important;
+        color: #0066cc !important; /* Синий цвет для совпадений вместо желтого */
       }
 
-      /* Monaco otherwise leaves a framed completion surface on screen when
-         a typed prefix resolves to no items. Empty result/preview chrome is
-         intentionally absent in every Orion shell. */
       .suggest-widget.orion-empty-suggest,
       .suggest-details-container.orion-empty-preview,
       .suggest-details.orion-empty-preview {
@@ -136,7 +128,7 @@
         z-index: 5;
         display: flex;
         justify-content: center;
-        color: rgba(154, 154, 154, 0.5);
+        color: rgba(0, 0, 0, 0.4); /* Темный текст подсказки */
         font-family: "Zenith Nunito", sans-serif;
         font-size: 12px;
         font-style: italic;
@@ -154,7 +146,7 @@
         margin: 0;
         padding: 0;
         border: 0;
-        color: rgba(154, 154, 154, 0.6);
+        color: rgba(0, 0, 0, 0.5);
         background: transparent;
         font: inherit;
         text-decoration-line: underline;
@@ -166,7 +158,7 @@
       }
 
       #zenith-editor-help:hover {
-        color: rgba(154, 154, 154, 0.9);
+        color: rgba(0, 0, 0, 0.9);
       }
     </style>
   </head>
@@ -197,6 +189,13 @@
     </script>
     <script src="./vs/loader.js"
             onerror="document.getElementById('loading-status').textContent = 'Unable to load Monaco loader.'"></script>
+    <script>
+      // Luau LSP (luau-lsp.exe) bridge configuration; the client attaches to
+      // every Monaco model automatically and exposes window.__lspReady, which
+      // the static fallback provider below uses as its gate.
+      window.OrionLspConfig = { language: "lua", extension: "lua" };
+    </script>
+    <script src="./lsp-client.js"></script>
     <script>
       const previewParameters = new URLSearchParams(window.location.search);
       const isXenoTheme = previewParameters.get("theme") === "xeno";
@@ -815,10 +814,14 @@
         const matchingCompletionItems = (model, position) => {
           const query = completionQueryAt(model, position);
           const lowerQuery = query.toLowerCase();
+          // The replacement range must cover only the text the user typed
+          // *after* the last `:` / `.`, not the whole `game:GetService`.
+          // Otherwise accepting `GetService` would erase the `game:` prefix.
+          const replaceFrom = Math.max(0, position.column - tail.length);
           const range = {
             startLineNumber: position.lineNumber,
             endLineNumber: position.lineNumber,
-            startColumn: position.column - query.length,
+            startColumn: replaceFrom,
             endColumn: position.column
           };
 
@@ -951,9 +954,36 @@
             .map((item) => ({ ...item, range }));
         };
 
+        // Keep `:` and `.` inside the word so that `game:GetService` is treated as
+        // one token by Monaco's suggest widget. Without this the default
+        // wordPattern splits on `:` and the widget's "current word" becomes
+        // empty after `game:`, which suppresses the suggestions.
+        monaco.languages.setLanguageConfiguration("lua", {
+          wordPattern: /[\w.:]+/,
+          comments: { lineComment: "--", blockComment: ["[[", "]]"] },
+          brackets: [["{", "}"], ["[", "]"], ["(", ")"]],
+          autoClosingPairs: [
+            { open: "{", close: "}" },
+            { open: "[", close: "]" },
+            { open: "(", close: ")" },
+            { open: "\"", close: "\"" },
+            { open: "'", close: "'" }
+          ],
+          surroundingPairs: [
+            { open: "(", close: ")" },
+            { open: "[", close: "]" },
+            { open: "{", close: "}" },
+            { open: "\"", close: "\"" },
+            { open: "'", close: "'" }
+          ]
+        });
+
         monaco.languages.registerCompletionItemProvider("lua", {
           triggerCharacters: [".", ":"],
           provideCompletionItems(model, position) {
+            // When the Luau language server is healthy it owns the completion
+            // experience; this static provider stays only as its fallback.
+            if (window.__lspReady) return { suggestions: [] };
             return { suggestions: matchingCompletionItems(model, position) };
           }
         });
@@ -1294,15 +1324,21 @@
           "suggestWidgetVisible"
         );
 
+        // `.` and `:` are `triggerCharacters`, so Monaco already opens the suggest
+        // widget for them. Don't re-trigger — and never call `hideSuggestWidget`
+        // here, because that raced with the widget's own state and could
+        // dismiss the popup before the provider's items had a chance to
+        // render. Only nudge the widget on plain word characters.
         editor.onDidType((text) => {
-          if (/^[\w.:]+$/.test(text)) {
-            const model = editor.getModel();
-            const position = editor.getPosition();
-            if (model && position && matchingCompletionItems(model, position).length > 0) {
-              editor.trigger("keyboard", "editor.action.triggerSuggest", {});
-            } else {
-              editor.trigger("keyboard", "hideSuggestWidget", {});
-            }
+          if (/^[.:]$/.test(text)) return;
+          if (!/^[\w]+$/.test(text)) return;
+
+          const model = editor.getModel();
+          const position = editor.getPosition();
+          if (!model || !position) return;
+
+          if (matchingCompletionItems(model, position).length > 0) {
+            editor.trigger("keyboard", "editor.action.triggerSuggest", {});
           }
         });
 

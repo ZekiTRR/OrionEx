@@ -3411,6 +3411,7 @@ function enterSplitView(id1, id2) {
             fontFamily: "'JetBrains Mono', Consolas, monospace", fontLigatures: true,
             padding: { top: 12, bottom: 12 },
             links: false,
+            hover: { above: false },
             scrollBeyondLastLine: false,
             scrollbar: {
                 vertical: vMode, horizontal: hMode,
@@ -3529,7 +3530,7 @@ function showRootHub() {
     updateHeaderText('File List');
     fpBack.style.opacity = '0'; setTimeout(function () { fpBack.style.display = 'none'; }, 250);
     fpBody.classList.remove('blur-anim'); void fpBody.offsetWidth; fpBody.classList.add('blur-anim');
-    fpBody.innerHTML = '<div class="fp-item fp-root-item" data-root="scripts" onclick="loadFolder(\'scripts\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg><span>Scripts</span></div><div class="fp-item fp-root-item" data-root="autoexe" onclick="loadFolder(\'autoexe\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg><span>AutoExec</span></div><div class="fp-item fp-root-item" data-root="workspace" onclick="loadFolder(\'workspace\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg><span>Workspace</span></div><div class="fp-item fp-root-item" data-root="SirHurtV5.exe.WebView2/scriptshistory" onclick="loadFolder(\'SirHurtV5.exe.WebView2/scriptshistory\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>History</span></div>';
+    fpBody.innerHTML = '<div class="fp-item fp-root-item" data-root="scripts" onclick="loadFolder(\'scripts\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg><span>Scripts</span></div><div class="fp-item fp-root-item" data-root="autoexe" onclick="loadFolder(\'autoexe\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg><span>AutoExec</span></div><div class="fp-item fp-root-item" data-root="workspace" onclick="loadFolder(\'workspace\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg><span>Workspace</span></div>';
 }
 
 window.resolveZenithPath = function (rel) {
@@ -4178,6 +4179,12 @@ function setupMonaco() {
     try {
         monaco.languages.register({ id: 'luau' });
         monaco.languages.setLanguageConfiguration('luau', {
+            // Keep `:` and `.` inside the word so that `game:GetService` is
+            // treated as one token by Monaco's suggest widget. Without this
+            // the default wordPattern splits on `:` and the widget's "current
+            // word" becomes empty after `game:`, which suppresses the
+            // suggestions.
+            wordPattern: /[\w.:]+/,
             brackets: [
                 ['{', '}'],
                 ['[', ']'],
@@ -4232,7 +4239,12 @@ function setupMonaco() {
             });
         }
         monaco.languages.registerCompletionItemProvider('luau', {
+            triggerCharacters: ['.', ':'],
             provideCompletionItems: (model, position) => {
+                // When the Luau language server is healthy it owns the
+                // completion experience; this static provider stays only as
+                // its fallback.
+                if (window.__lspReady) return { suggestions: [] };
                 const suggestions = [];
 
                 // 1. Luau / Lua Keywords
@@ -4735,6 +4747,16 @@ function setupMonaco() {
                 const head = hasScope ? lowerQuery.slice(0, splitIdx) : lowerQuery;
                 const tail = hasScope ? lowerQuery.slice(splitIdx + 1) : '';
 
+                // Replacement range must cover only the text typed *after* the
+                // last `:` / `.`, not the whole `game:GetService`. Otherwise
+                // accepting `GetService` would erase the `game:` prefix.
+                const itemRange = {
+                    startLineNumber: position.lineNumber,
+                    endLineNumber: position.lineNumber,
+                    startColumn: Math.max(0, position.column - tail.length),
+                    endColumn: position.column
+                };
+
                 // Pre-compute helper predicates for ranking.
                 const KindKind = monaco.languages.CompletionItemKind;
                 const isRobloxMethod = (item) => item.detail === 'Roblox method' || item.detail === 'Roblox property' || item.detail === 'Roblox type constructor';
@@ -4814,7 +4836,7 @@ function setupMonaco() {
                     return (a.sortText || '').localeCompare(b.sortText || '');
                 });
 
-                return { suggestions: filtered.slice(0, 80) };
+                return { suggestions: filtered.slice(0, 80).map(item => ({ ...item, range: itemRange })) };
             }
         });
 
@@ -4840,6 +4862,7 @@ function setupMonaco() {
             fontFamily: "'JetBrains Mono', Consolas, monospace", fontLigatures: true,
             padding: { top: 12, bottom: 12 },
             links: false,
+            hover: { above: false },
             scrollBeyondLastLine: false,
             scrollbar: {
                 vertical: vMode, horizontal: hMode,

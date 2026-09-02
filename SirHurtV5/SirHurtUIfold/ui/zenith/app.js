@@ -4174,6 +4174,12 @@ function setupMonaco() {
     try {
         monaco.languages.register({ id: 'luau' });
         monaco.languages.setLanguageConfiguration('luau', {
+            // Keep `:` and `.` inside the word so that `game:GetService` is
+            // treated as one token by Monaco's suggest widget. Without this
+            // the default wordPattern splits on `:` and the widget's "current
+            // word" becomes empty after `game:`, which suppresses the
+            // suggestions.
+            wordPattern: /[\w.:]+/,
             brackets: [
                 ['{', '}'],
                 ['[', ']'],
@@ -4228,6 +4234,7 @@ function setupMonaco() {
             });
         }
         monaco.languages.registerCompletionItemProvider('luau', {
+            triggerCharacters: ['.', ':'],
             provideCompletionItems: (model, position) => {
                 const suggestions = [];
 
@@ -4403,6 +4410,22 @@ function setupMonaco() {
                         };
                     });
                 }
+
+                // Replacement range must cover only the text typed *after* the
+                // last `:` / `.`, not the whole `game:GetService`. Otherwise
+                // accepting `GetService` would erase the `game:` prefix.
+                const beforeCursor = model.getLineContent(position.lineNumber).slice(0, position.column - 1);
+                const queryMatch = /[\w.:]*$/.exec(beforeCursor);
+                const rawQuery = queryMatch ? queryMatch[0] : '';
+                const splitIdx = Math.max(rawQuery.lastIndexOf(':'), rawQuery.lastIndexOf('.'));
+                const tail = splitIdx >= 0 ? rawQuery.slice(splitIdx + 1) : rawQuery;
+                const itemRange = {
+                    startLineNumber: position.lineNumber,
+                    endLineNumber: position.lineNumber,
+                    startColumn: Math.max(0, position.column - tail.length),
+                    endColumn: position.column
+                };
+                suggestions.forEach(s => { s.range = itemRange; });
                 return { suggestions };
             }
         });

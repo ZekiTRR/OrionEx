@@ -377,15 +377,30 @@ public sealed partial class OrionWindow : Window
 
     protected override void OnClosed(EventArgs e)
     {
-        DisposeOrionNavigation();
-        DisposeOrionPages();
-        DisposeOrionEditor();
-        DisposeOrionExplorer();
-        DisposeOrionThemeStudio();
-        _startupCancellation.Cancel();
-        _startupCancellation.Dispose();
-        _spinnerTimer.Stop();
+        // Every cleanup step is best-effort: a failure here must never stop
+        // base.OnClosed from running, otherwise the lifetime never observes
+        // the main window closing and the process outlives the UI.
+        TryCloseStep(DisposeOrionNavigation);
+        TryCloseStep(DisposeOrionPages);
+        TryCloseStep(DisposeOrionEditor);
+        TryCloseStep(DisposeOrionExplorer);
+        TryCloseStep(DisposeOrionThemeStudio);
+        TryCloseStep(() => _startupCancellation.Cancel());
+        TryCloseStep(() => _startupCancellation.Dispose());
+        TryCloseStep(() => _spinnerTimer.Stop());
         base.OnClosed(e);
+    }
+
+    private static void TryCloseStep(Action step)
+    {
+        try
+        {
+            step();
+        }
+        catch
+        {
+            // Shutdown must proceed regardless.
+        }
     }
 }
 
