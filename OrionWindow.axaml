@@ -706,7 +706,7 @@
                     Width="18" Height="16" HorizontalAlignment="Right" Margin="0,0,3,0"
                     Classes="orion-action-hit" Click="OrionExplorerAdd_Click"
                     ToolTip.Tip="Add / sync">
-              <TextBlock Text="+" FontSize="9.333" Foreground="#7D7D80"
+              <TextBlock Text="+" FontSize="11.333" Foreground="#E8E8E8"
                          HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-3,0,0" />
             </Button>
           </Grid>
@@ -1961,9 +1961,15 @@
             </ScrollViewer>
           </Border>
         </Canvas>
-        </Canvas>
-      </Viewbox>
 
+        <!-- Lives inside the scaled design canvas so Canvas.Left/Top apply and
+             it scales with the UI. The native Monaco HWND would cover it in
+             the editor page, so the code-behind hides the WebView while this
+             dialog is open. -->
+        <!-- Click-away backdrop: closing the dialog must never require input. -->
+        <Border x:Name="OrionGistDialogBackdrop"
+                Canvas.Left="0" Canvas.Top="0" Width="664" Height="413.333"
+                ZIndex="49" IsVisible="False" Background="Transparent" />
         <Border x:Name="OrionGistDialog"
                Canvas.Left="207" Canvas.Top="150" Width="250" Height="96"
                ZIndex="50" IsVisible="False"
@@ -1985,6 +1991,8 @@
             </StackPanel>
           </StackPanel>
         </Border>
+        </Canvas>
+      </Viewbox>
 
       <!-- NativeWebView is kept outside the scaled design canvas so its HWND
            remains pixel-sharp and editable. These values are the exact 1.35x

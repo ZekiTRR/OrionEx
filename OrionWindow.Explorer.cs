@@ -215,8 +215,8 @@ public sealed partial class OrionWindow
         var bookmarked = _orionBookmarks.Contains(entry.Path);
         var bookmark = new Button
         {
-            Width = 10,
-            Height = 10,
+            Width = 8,
+            Height = 8,
             Padding = new Thickness(0),
             Background = Brushes.Transparent,
             BorderThickness = new Thickness(0),
@@ -227,8 +227,8 @@ public sealed partial class OrionWindow
             Content = new Avalonia.Controls.Shapes.Path
             {
                 Data = Geometry.Parse("M0,0 H7 V11 L3.5,8.2 L0,11 Z"),
-                Width = 7,
-                Height = 11,
+                Width = 5.5,
+                Height = 8,
                 Stretch = Stretch.Fill,
                 Fill = bookmarked
                     ? new SolidColorBrush(Color.Parse("#FFD54A"))
@@ -416,25 +416,62 @@ public sealed partial class OrionWindow
     private Border? _orionGistDialog;
     private TextBox? _orionGistUrlBox;
     private TextBlock? _orionGistError;
+    private Border? _orionGistDialogBackdrop;
+    private bool _orionGistDialogHooked;
 
     private void ShowOrionGistDialog()
     {
         _orionGistDialog ??= OrionExplorerRequired<Border>("OrionGistDialog");
         _orionGistUrlBox ??= OrionExplorerRequired<TextBox>("OrionGistUrlBox");
         _orionGistError ??= OrionExplorerRequired<TextBlock>("OrionGistError");
+        if (!_orionGistDialogHooked)
+        {
+            _orionGistDialogBackdrop = OrionExplorerRequired<Border>("OrionGistDialogBackdrop");
+            _orionGistDialogBackdrop.Tapped += (_, _) => CloseOrionGistDialog();
+            _orionGistUrlBox.KeyDown += OrionGistUrlBox_KeyDown;
+            _orionGistDialogHooked = true;
+        }
 
         _orionGistUrlBox.Text = string.Empty;
         _orionGistError.IsVisible = false;
+        // The native Monaco HWND renders above all Avalonia content, so the
+        // dialog is invisible over the editor until the WebView is hidden.
+        _orionMonacoWebView.IsVisible = false;
+        _orionGistDialogBackdrop.IsVisible = true;
         _orionGistDialog.IsVisible = true;
         _orionGistUrlBox.Focus();
     }
 
-    private void OrionGistCancel_Click(object? sender, RoutedEventArgs e)
+    private void OrionGistUrlBox_KeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Escape)
+        {
+            CloseOrionGistDialog();
+            e.Handled = true;
+        }
+    }
+
+    private void CloseOrionGistDialog()
     {
         if (_orionGistDialog is { } dialog)
         {
             dialog.IsVisible = false;
         }
+
+        if (_orionGistDialogBackdrop is { } backdrop)
+        {
+            backdrop.IsVisible = false;
+        }
+
+        if (_orionCurrentPage == OrionPage.Editor)
+        {
+            _orionMonacoWebView.IsVisible = true;
+        }
+    }
+
+    private void OrionGistCancel_Click(object? sender, RoutedEventArgs e)
+    {
+        CloseOrionGistDialog();
     }
 
     private void OrionGistAdd_Click(object? sender, RoutedEventArgs e)
@@ -449,10 +486,7 @@ public sealed partial class OrionWindow
             var title = _orionFilesService.StoreGistUrl(box.Text ?? string.Empty);
             AppendOrionConsoleLine("info", $"Added gist {title}");
             error.IsVisible = false;
-            if (_orionGistDialog is { } dialog)
-            {
-                dialog.IsVisible = false;
-            }
+            CloseOrionGistDialog();
 
             RefreshOrionExplorer();
         }
