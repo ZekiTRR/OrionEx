@@ -57,6 +57,7 @@
     <AvaloniaResource Include="Assets\Orion\Fonts\**\*" />
     <AvaloniaResource Include="Assets\Orion\UiSelection\**\*" />
     <AvaloniaResource Include="Assets\Bunni\**\*" />
+    <AvaloniaResource Include="Assets\ScriptWare\**\*" />
     <AvaloniaResource Include="Assets\Orion\Sentinel\**\*" />
     <AvaloniaResource Include="Assets\Orion\Bridge\**\*" />
     <AvaloniaResource Include="Assets\AWP\**\*" />

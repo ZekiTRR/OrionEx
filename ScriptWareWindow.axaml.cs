@@ -11,6 +11,7 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -131,6 +132,7 @@ public sealed partial class ScriptWareWindow : Window
         RenderTabs();
         UpdateBridgeVisuals();
         BuildScriptsTree();
+        UpdateRailVisuals();
 
         _bridge.ConnectionChanged += BridgeConnectionChanged;
         _bridge.ClientsChanged += BridgeClientsChanged;
@@ -306,6 +308,22 @@ public sealed partial class ScriptWareWindow : Window
 
     // ─────────────────────────── rail ───────────────────────────
 
+    private void Attach_Click(object? sender, RoutedEventArgs e)
+    {
+        RefreshClientTargets();
+        var clients = _bridge.GetConnectedClients();
+        if (_bridge.IsConnected && clients.Count > 0)
+        {
+            _statusText.Text = $" Attached to {clients.Count} client(s)";
+            _ = ShowToastAsync($"Attached to {clients.Count} client(s)");
+        }
+        else
+        {
+            _statusText.Text = " Not Attached";
+            _ = ShowToastAsync("Not attached — run Scripts/Orion Bridge.lua");
+        }
+    }
+
     private void RailCode_Click(object? sender, RoutedEventArgs e) => ShowEditorMode();
 
     private void RailSettings_Click(object? sender, RoutedEventArgs e) => ShowSettingsMode();
@@ -345,14 +363,15 @@ public sealed partial class ScriptWareWindow : Window
 
     private void UpdateRailVisuals()
     {
-        // Active page icon renders light, the inactive one blue, matching the
-        // original rail where only the current page is highlighted.
-        SetClass(_railCode.Classes, "light", !_settingsOpen);
-        SetClass(_railCode.Classes, "blue", _settingsOpen);
-        SetClass(_railTools.Classes, "light", _settingsOpen);
-        SetClass(_railTools.Classes, "blue", !_settingsOpen);
+        // The original rail highlights the CURRENT page in blue; the rest stay light.
+        SetClass(_railCode.Classes, "blue", !_settingsOpen);
+        SetClass(_railCode.Classes, "light", _settingsOpen);
         SetClass(_railCode.Classes, "active", !_settingsOpen);
+        SetClass(_railTools.Classes, "blue", _settingsOpen);
+        SetClass(_railTools.Classes, "light", !_settingsOpen);
         SetClass(_railTools.Classes, "active", _settingsOpen);
+        SetClass(_railGear.Classes, "blue", _settingsOpen);
+        SetClass(_railGear.Classes, "light", !_settingsOpen);
         SetClass(_railGear.Classes, "active", _settingsOpen);
     }
 
@@ -431,9 +450,9 @@ public sealed partial class ScriptWareWindow : Window
             MinWidth = 90,
             MaxWidth = 190,
             VerticalAlignment = VerticalAlignment.Stretch,
-            Background = new SolidColorBrush(Color.Parse(active ? "#3C3C3C" : "#00000000")),
+            Background = new SolidColorBrush(Color.Parse(active ? "#3A3A3A" : "#00000000")),
             BorderBrush = new SolidColorBrush(Color.Parse(active ? "#0A84FF" : "#00000000")),
-            BorderThickness = new Thickness(0, 0, 0, 3),
+            BorderThickness = new Thickness(0, 0, 0, 2),
             Cursor = new Cursor(StandardCursorType.Hand)
         };
         border.Transitions = new Transitions
@@ -766,6 +785,7 @@ public sealed partial class ScriptWareWindow : Window
                     {
                         _editorReady = true;
                         PushActiveTabToEditor();
+                        ApplyEditorFontPreference(save: false);
                     });
                     break;
 
@@ -880,6 +900,109 @@ public sealed partial class ScriptWareWindow : Window
 
     // ─────────────────────────── settings ───────────────────────────
 
+    private static readonly string[] EditorFontChoices =
+    [
+        "Consolas",
+        "Cascadia Mono",
+        "Courier New",
+        "JetBrains Mono",
+        "Fira Code",
+        "Segoe UI"
+    ];
+
+    private static string EditorFontPath => System.IO.Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+        "Orion",
+        "scriptware-editor-font.txt");
+    private static string EditorFontSizePath => System.IO.Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+        "Orion",
+        "scriptware-editor-size.txt");
+
+    private static (string Family, double Size) LoadEditorFontPreference()
+    {
+        try
+        {
+            var family = File.Exists(EditorFontPath) ? File.ReadAllText(EditorFontPath).Trim() : "Consolas";
+            var size = 14.0;
+            if (File.Exists(EditorFontSizePath) &&
+                double.TryParse(File.ReadAllText(EditorFontSizePath).Trim(), out var parsed))
+            {
+                size = Math.Clamp(parsed, 8, 28);
+            }
+
+            return (string.IsNullOrWhiteSpace(family) ? "Consolas" : family, size);
+        }
+        catch (IOException)
+        {
+            return ("Consolas", 14.0);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return ("Consolas", 14.0);
+        }
+    }
+
+    private static void SaveEditorFontPreference(string family, double size)
+    {
+        try
+        {
+            Directory.CreateDirectory(System.IO.Path.GetDirectoryName(EditorFontPath)!);
+            File.WriteAllText(EditorFontPath, family);
+            File.WriteAllText(EditorFontSizePath, size.ToString("0.#"));
+        }
+        catch (IOException)
+        {
+        }
+        catch (UnauthorizedAccessException)
+        {
+        }
+    }
+
+    private ComboBox? _editorFontBox;
+    private NumericUpDown? _editorFontSizeBox;
+    private bool _fontControlsReady;
+
+    private void ApplyEditorFontPreference(bool save)
+    {
+        if (!_fontControlsReady ||
+            _editorFontBox is not { } fontBox ||
+            _editorFontSizeBox is not { } sizeBox)
+        {
+            return;
+        }
+
+        var family = fontBox.SelectedItem as string ?? "Consolas";
+        var size = sizeBox.Value is decimal chosen ? (double)chosen : 14.0;
+        size = Math.Clamp(size, 8, 28);
+        if (save)
+        {
+            SaveEditorFontPreference(family, size);
+        }
+
+        if (!_editorReady)
+        {
+            return;
+        }
+
+        try
+        {
+            var familyJson = System.Text.Json.JsonSerializer.Serialize(family);
+            _editor.InvokeScript(
+                $"window.orbitSetEditorFont && window.orbitSetEditorFont({familyJson}, {size.ToString("0.#")});");
+        }
+        catch (InvalidOperationException)
+        {
+            // Monaco may still be loading; the preference applies on ready.
+        }
+    }
+
+    private void EditorFont_SelectionChanged(object? sender, SelectionChangedEventArgs e) =>
+        ApplyEditorFontPreference(save: true);
+
+    private void EditorFontSize_ValueChanged(object? sender, NumericUpDownValueChangedEventArgs e) =>
+        ApplyEditorFontPreference(save: true);
+
     private void InitializeSettingsRows()
     {
         _settingsList.Children.Add(BuildSettingsRow(
@@ -887,6 +1010,40 @@ public sealed partial class ScriptWareWindow : Window
             "Closes ScriptWare and restores the main Orion workspace with all tabs.",
             BuildReturnButton()));
 
+        _settingsList.Children.Add(BuildDivider());
+
+        var savedFont = LoadEditorFontPreference();
+        _editorFontBox = new ComboBox
+        {
+            MinWidth = 150,
+            Height = 26,
+            FontSize = 11.5,
+            ItemsSource = EditorFontChoices,
+            SelectedItem = EditorFontChoices.Contains(savedFont.Family) ? savedFont.Family : EditorFontChoices[0]
+        };
+        _editorFontBox.SelectionChanged += EditorFont_SelectionChanged;
+        _editorFontSizeBox = new NumericUpDown
+        {
+            MinWidth = 84,
+            Height = 26,
+            FontSize = 11.5,
+            Minimum = 8,
+            Maximum = 28,
+            Increment = 1,
+            Value = (decimal)savedFont.Size
+        };
+        _editorFontSizeBox.ValueChanged += EditorFontSize_ValueChanged;
+        _fontControlsReady = true;
+
+        _settingsList.Children.Add(BuildSettingsRow(
+            "Editor Font",
+            "Font family used inside the code editor.",
+            _editorFontBox));
+        _settingsList.Children.Add(BuildDivider());
+        _settingsList.Children.Add(BuildSettingsRow(
+            "Editor Font Size",
+            "Font size for the code editor (8-28).",
+            _editorFontSizeBox));
         _settingsList.Children.Add(BuildDivider());
 
         var topMostRow = BuildSettingsRow(
@@ -1472,16 +1629,16 @@ public sealed partial class ScriptWareWindow : Window
             });
         }
 
-        panel.Children.Add(new AvaloniaPath
+        // The .txt icon exactly as the asset Assets/ScriptWare/txt-icon.png.
+        var fileIcon = new Image
         {
-            Data = (Geometry?)Resources["SwPageIcon"],
-            Width = 11,
-            Height = 11,
+            Height = 12,
             Stretch = Stretch.Uniform,
-            Fill = new SolidColorBrush(Color.Parse("#D8D8D8")),
-            StrokeThickness = 0,
+            Source = new Bitmap(Avalonia.Platform.AssetLoader.Open(new Uri("avares://Orion/Assets/ScriptWare/txt-icon.png"))),
             VerticalAlignment = VerticalAlignment.Center
-        });
+        };
+        RenderOptions.SetBitmapInterpolationMode(fileIcon, BitmapInterpolationMode.HighQuality);
+        panel.Children.Add(fileIcon);
 
         panel.Children.Add(new TextBlock
         {
