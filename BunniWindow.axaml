@@ -454,7 +454,8 @@
                   <StackPanel Orientation="Horizontal" Spacing="9">
                     <Viewbox Width="23" Height="23">
                       <Canvas Width="24" Height="24">
-                        <Path Data="M6 4.8L19 12L6 19.2Z" Fill="{Binding $parent[Button].Foreground}" />
+                        <Path Data="M8 5.4L18.8 12L8 18.6Z" Fill="{Binding $parent[Button].Foreground}"
+                              Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="2.4" StrokeJoin="Round" />
                       </Canvas>
                     </Viewbox>
                     <TextBlock Text="Execute" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" />
@@ -464,12 +465,12 @@
                   <StackPanel Orientation="Horizontal" Spacing="9">
                     <Viewbox Width="23" Height="23">
                       <Canvas Width="24" Height="24">
-                        <Path Data="M8 7V4.6C8 4.27 8.27 4 8.6 4L15.4 4C15.73 4 16 4.27 16 4.6L16 7"
-                              Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="1.9" StrokeJoin="Round" />
-                        <Path Data="M4.6 7L19.4 7" Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="1.9"
-                              StrokeLineCap="Round" />
-                        <Path Data="M6.8 9.5L7.7 19.2C7.73 19.65 8.1 20 8.55 20L15.45 20C15.9 20 16.27 19.65 16.3 19.2L17.2 9.5"
-                              Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="1.9" StrokeJoin="Round" />
+                        <Path Data="M9.3 3.2H14.7C15.1 3.2 15.4 3.5 15.4 3.9V5.5H8.6V3.9C8.6 3.5 8.9 3.2 9.3 3.2Z"
+                              Fill="{Binding $parent[Button].Foreground}" />
+                        <Path Data="M4.6 5.9H19.4C20 5.9 20.5 6.4 20.5 7C20.5 7.6 20 8.1 19.4 8.1H4.6C4 8.1 3.5 7.6 3.5 7C3.5 6.4 4 5.9 4.6 5.9Z"
+                              Fill="{Binding $parent[Button].Foreground}" />
+                        <Path Data="M5.4 9.1H18.6L17.8 19.7C17.75 20.5 17.1 21.1 16.3 21.1H7.7C6.9 21.1 6.25 20.5 6.2 19.7Z"
+                              Fill="{Binding $parent[Button].Foreground}" />
                       </Canvas>
                     </Viewbox>
                     <TextBlock Text="Clear" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" />
@@ -479,7 +480,9 @@
                   <StackPanel Orientation="Horizontal" Spacing="9">
                     <Viewbox Width="23" Height="23">
                       <Canvas Width="24" Height="24">
-                        <Path Data="M3.2 6.4C3.2 5.6 3.8 5 4.6 5L9.4 5L11.6 7.4L19.4 7.4C20.2 7.4 20.8 8 20.8 8.8L20.8 17.6C20.8 18.4 20.2 19 19.4 19L4.6 19C3.8 19 3.2 18.4 3.2 17.6Z"
+                        <Path Data="M4.4 6.1C4.4 5.6 4.8 5.2 5.3 5.2H9.7C10 5.2 10.3 5.35 10.5 5.6L12.2 7.7H18.8C19.5 7.7 20 8.2 20 8.9V9.9H6.1C5.3 9.9 4.7 10.35 4.4 11Z"
+                              Fill="{Binding $parent[Button].Foreground}" />
+                        <Path Data="M4.9 10.9H20.5C21.3 10.9 21.9 11.6 21.7 12.4L20.3 18.6C20.15 19.35 19.5 19.9 18.7 19.9H5.4C4.5 19.9 3.8 19.2 3.8 18.3V12C3.8 11.4 4.3 10.9 4.9 10.9Z"
                               Fill="{Binding $parent[Button].Foreground}" />
                       </Canvas>
                     </Viewbox>
@@ -490,10 +493,10 @@
                   <StackPanel Orientation="Horizontal" Spacing="9">
                     <Viewbox Width="23" Height="23">
                       <Canvas Width="24" Height="24">
-                        <Path Data="M6 3L14.5 3L19 7.5L19 21L6 21Z" Fill="{Binding $parent[Button].Foreground}" />
-                        <Path Data="M14.5 3L14.5 7.5L19 7.5" Stroke="#18181A" StrokeThickness="1.4" StrokeJoin="Round" />
-                        <Path Data="M9 12L16 12M9 15.5L16 15.5M9 19L13 19" Stroke="#18181A" StrokeThickness="1.25"
-                              StrokeLineCap="Round" />
+                        <Path Data="M6.5 3.3H13.8C14.2 3.3 14.6 3.45 14.9 3.75L18.95 7.8C19.25 8.1 19.4 8.5 19.4 8.9V19.3C19.4 20.25 18.65 21 17.7 21H6.5C5.55 21 4.8 20.25 4.8 19.3V5C4.8 4.05 5.55 3.3 6.5 3.3Z"
+                              Fill="{Binding $parent[Button].Foreground}" />
+                        <Path Data="M14.1 3.5V7.1C14.1 7.7 14.6 8.2 15.2 8.2H19.3"
+                              Stroke="#18181A" StrokeThickness="1.5" StrokeLineCap="Round" />
                       </Canvas>
                     </Viewbox>
                     <TextBlock Text="Save" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" />
@@ -506,9 +509,9 @@
                 <StackPanel Orientation="Horizontal" Spacing="9">
                   <Viewbox Width="23" Height="23">
                     <Canvas Width="24" Height="24">
-                      <Path Data="M8.5 12.7L14.9 6.3C16.6 4.6 19.4 4.6 21.1 6.3C22.8 8 22.8 10.8 21.1 12.5L13 20.6C10.3 23.3 5.9 23.3 3.2 20.6C0.5 17.9 0.5 13.5 3.2 10.8L11 3"
-                            Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="1.9"
-                            StrokeLineCap="Round" />
+                      <Path Data="M21.44 11.05L12.25 20.24C10.28 22.21 7.09 22.21 5.12 20.24C3.15 18.27 3.15 15.08 5.12 13.11L14.31 3.92C15.62 2.61 17.75 2.61 19.06 3.92C20.37 5.23 20.37 7.36 19.06 8.67L9.87 17.86C9.21 18.52 8.15 18.52 7.49 17.86C6.83 17.2 6.83 16.14 7.49 15.48L16.1 6.87"
+                            Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="2.2"
+                            StrokeLineCap="Round" StrokeJoin="Round" />
                     </Canvas>
                   </Viewbox>
                   <TextBlock Text="Attach" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" />

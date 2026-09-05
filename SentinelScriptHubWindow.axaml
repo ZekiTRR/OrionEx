@@ -25,6 +25,9 @@
       <Setter Property="Cursor" Value="Hand" />
     </Style>
 
+    <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="Transparent" />
+    </Style>
     <Style Selector="Button.sn-close">
       <Setter Property="Width" Value="14" />
       <Setter Property="Height" Value="14" />
@@ -33,6 +36,7 @@
     </Style>
     <Style Selector="Button.sn-close:pointerover">
       <Setter Property="Foreground" Value="#DB1739" />
+      <Setter Property="Background" Value="Transparent" />
     </Style>
 
     <!-- Reference .script-list button: height 18, left aligned -->
@@ -46,6 +50,7 @@
     </Style>
     <Style Selector="Button.sn-hub:pointerover">
       <Setter Property="Foreground" Value="#DB1739" />
+      <Setter Property="Background" Value="Transparent" />
     </Style>
 
     <Style Selector="Button.sn-hub-exec">
@@ -57,6 +62,7 @@
     </Style>
     <Style Selector="Button.sn-hub-exec:pointerover">
       <Setter Property="Foreground" Value="#DB1739" />
+      <Setter Property="Background" Value="Transparent" />
     </Style>
 
     <Style Selector="TextBox.sn-preview">
@@ -90,9 +96,9 @@
       <Grid Grid.Row="1" Margin="6,6,6,7" ColumnDefinitions="97,6,*">
         <Border Grid.Column="0" Background="#181818" Padding="5,7">
           <StackPanel>
-            <Button Classes="sn-hub" Content="Dark Dex" Click="HubItem_Click" Tag="Dark Dex" />
-            <Button Classes="sn-hub" Content="Remote Spy" Click="HubItem_Click" Tag="Remote Spy" />
-            <Button Classes="sn-hub" Content="Script Dumpe" Click="HubItem_Click" Tag="Script Dumpe" />
+            <Button Classes="sn-hub" Content="Dark Dex" Click="HubItem_Click" Tag="DexRER" />
+            <Button Classes="sn-hub" Content="Remote Spy" Click="HubItem_Click" Tag="Cobalt Spy" />
+            <Button Classes="sn-hub" Content="InfYield" Click="HubItem_Click" Tag="infyield" />
           </StackPanel>
         </Border>
         <Grid Grid.Column="2" RowDefinitions="*,5,70,5,16">

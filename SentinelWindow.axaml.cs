@@ -238,6 +238,7 @@ public sealed partial class SentinelWindow : Window
     private static readonly IntPtr CursorNesw = LoadCursor(IntPtr.Zero, new IntPtr(32643));
 
     private DispatcherTimer? _edgeTimer;
+    private string? _lastEdgeZone;
     private bool _nativeResizing;
 
     private IntPtr NativeHandle => TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
@@ -288,10 +289,19 @@ public sealed partial class SentinelWindow : Window
 
         if (zone.Length == 0)
         {
-            SetCursor(CursorArrow);
+            // Reset the resize cursor once after leaving an edge zone. Forcing
+            // it every tick fights the I-beam/hand cursors of the WebView and
+            // buttons and makes the cursor flicker all over the window.
+            if (_lastEdgeZone is not null)
+            {
+                _lastEdgeZone = null;
+                SetCursor(CursorArrow);
+            }
+
             return;
         }
 
+        _lastEdgeZone = zone;
         SetCursor(zone is "LT" or "RB" ? CursorNwse : zone is "RT" or "LB" ? CursorNesw : zone is "L" or "R" ? CursorWe : CursorNs);
 
         if ((GetAsyncKeyState(VkLbutton) & 0x8000) != 0)

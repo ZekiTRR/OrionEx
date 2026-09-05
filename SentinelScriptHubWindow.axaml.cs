@@ -9,9 +9,12 @@ namespace OrbitAvalonia;
 
 public sealed partial class SentinelScriptHubWindow : Window
 {
+    private const int PreviewCharacterLimit = 20_000;
+
     private readonly SentinelWindow? _owner;
     private readonly string _scriptsDirectory;
     private string? _loadedFile;
+    private string _loadedSource = string.Empty;
 
     public SentinelScriptHubWindow() : this(null, System.IO.Path.Combine(AppContext.BaseDirectory, "Scripts"))
     {
@@ -40,15 +43,23 @@ public sealed partial class SentinelScriptHubWindow : Window
             return;
         }
 
+        var label = (sender as Button)?.Content as string ?? tag;
+
         var path = System.IO.Path.Combine(_scriptsDirectory, tag + ".lua");
         try
         {
             if (File.Exists(path))
             {
                 var source = File.ReadAllText(path);
-                preview.Text = source;
                 _loadedFile = path;
-                status.Text = $"{tag}.lua — {source.Length} chars loaded.";
+                _loadedSource = source;
+                // Big hubs (Dark Dex is ~800K chars) render slowly in a TextBox;
+                // preview a slice and keep the full source for execution.
+                preview.Text = source.Length <= PreviewCharacterLimit
+                    ? source
+                    : source[..PreviewCharacterLimit] +
+                      "\n\n-- \u2026 preview truncated \u2014 the full script will be executed.";
+                status.Text = $"{label} — {source.Length} chars loaded, ready to execute.";
                 return;
             }
         }
@@ -56,12 +67,14 @@ public sealed partial class SentinelScriptHubWindow : Window
         {
             preview.Text = string.Empty;
             _loadedFile = null;
+            _loadedSource = string.Empty;
             status.Text = $"Failed to read '{tag}.lua': {ex.Message}";
             return;
         }
 
         preview.Text = string.Empty;
         _loadedFile = null;
+        _loadedSource = string.Empty;
         status.Text = $"'{tag}.lua' was not found. Put the script into the Scripts folder under this name.";
     }
 
@@ -69,12 +82,12 @@ public sealed partial class SentinelScriptHubWindow : Window
     {
         if (_loadedFile is null ||
             this.FindControl<TextBox>("PreviewBox") is not { } preview ||
-            string.IsNullOrWhiteSpace(preview.Text))
+            string.IsNullOrWhiteSpace(_loadedSource))
         {
             return;
         }
 
-        UnifiedBridgeServer.Shared.EnqueueExecute(preview.Text);
+        UnifiedBridgeServer.Shared.EnqueueExecute(_loadedSource);
         _owner?.AppendConsoleLine("info", $"Script Hub: executed {System.IO.Path.GetFileName(_loadedFile)}.");
     }
 

