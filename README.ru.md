@@ -2,7 +2,7 @@
 
 Ремейк [Orion](https://github.com/snooped-xl/Orion) — мультиинтерфейсного скрипт-исполнителя на Avalonia.
 
-Добавлены меню: **Wave**, **SirHurt**, **Script-Ware**, **SirHurt Legacy**, **SirHurt Remake**, **Sentinel**, **JJSploit**, **Wave Legacy**.
+Добавлены меню: **Wave**, **SirHurt**, **Script-Ware**, **SirHurt Legacy**, **SirHurt Remake**, **Sentinel**, **JJSploit**, **Wave Legacy**, **Bunni.lol**.
 
 > ⚠️ Это лишь MVP — меню могут не соответствовать оригиналу на все 100%.
 
