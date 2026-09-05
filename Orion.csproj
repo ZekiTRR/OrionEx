@@ -56,6 +56,7 @@
     <AvaloniaResource Include="Assets\Orion\Nav\**\*" />
     <AvaloniaResource Include="Assets\Orion\Fonts\**\*" />
     <AvaloniaResource Include="Assets\Orion\UiSelection\**\*" />
+    <AvaloniaResource Include="Assets\Bunni\**\*" />
     <AvaloniaResource Include="Assets\Orion\Sentinel\**\*" />
     <AvaloniaResource Include="Assets\Orion\Bridge\**\*" />
     <AvaloniaResource Include="Assets\AWP\**\*" />
@@ -76,6 +77,8 @@
                       Link="RC7Assets\%(Filename)%(Extension)" />
     <EmbeddedResource Include="Assets\Legacy\RC7\rc7_nKh_icon.ico"
                       Link="RC7Assets\rc7_nKh_icon.ico" />
+    <EmbeddedResource Include="Assets\Legacy\RC7\Light\*.bmp"
+                      Link="RC7Assets\Light\%(Filename)%(Extension)" />
     <EmbeddedResource Include="Assets\Legacy\Krnl\krnl.resx"
                       Link="KrnlAssets\krnl.resx"
                       LogicalName="OrbitAvalonia.KrnlSource.xml"

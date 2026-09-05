@@ -1,0 +1,742 @@
+<Window x:Class="OrbitAvalonia.BunniWindow"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Width="1100" Height="690"
+        MinWidth="840" MinHeight="520"
+        Title="Bunni"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        WindowDecorations="BorderOnly"
+        ExtendClientAreaToDecorationsHint="True"
+        FontFamily="avares://Avalonia.Fonts.Inter/Assets#Inter"
+        CanResize="False">
+
+  <Window.Styles>
+    <!-- Top navigation chips: Bunni's soft asymmetric "chip" shape. -->
+    <Style Selector="Button.bunni-nav">
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Foreground" Duration="0:0:0.15" />
+          <BrushTransition Property="Background" Duration="0:0:0.18" />
+        </Transitions>
+      </Setter>
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="#A6A4A9" />
+      <Setter Property="MinHeight" Value="38" />
+      <Setter Property="Padding" Value="12,0" />
+      <Setter Property="CornerRadius" Value="12,6,12,6" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.bunni-nav:pointerover">
+      <Setter Property="Foreground" Value="#D2D0D5" />
+      <Setter Property="Background" Value="#222225" />
+    </Style>
+    <Style Selector="Button.bunni-nav:pressed">
+      <Setter Property="Background" Value="#26262A" />
+    </Style>
+    <Style Selector="Button.bunni-nav.active">
+      <Setter Property="Foreground" Value="#E3BA7C" />
+      <Setter Property="Background">
+        <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+          <GradientStop Color="#6B5A41" Offset="0" />
+          <GradientStop Color="#564835" Offset="1" />
+        </LinearGradientBrush>
+      </Setter>
+    </Style>
+    <Style Selector="Button.bunni-nav.active:pointerover">
+      <Setter Property="Foreground" Value="#E3BA7C" />
+      <Setter Property="Background">
+        <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+          <GradientStop Color="#756347" Offset="0" />
+          <GradientStop Color="#5F4F3B" Offset="1" />
+        </LinearGradientBrush>
+      </Setter>
+    </Style>
+
+    <!-- Window controls. -->
+    <Style Selector="Button.bunni-wc">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="#85838A" />
+      <Setter Property="Width" Value="40" />
+      <Setter Property="Height" Value="36" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="Padding" Value="0" />
+    </Style>
+    <Style Selector="Button.bunni-wc:pointerover">
+      <Setter Property="Foreground" Value="#C9C7CC" />
+      <Setter Property="Background" Value="#222226" />
+    </Style>
+    <Style Selector="Button.bunni-wc:pressed">
+      <Setter Property="Background" Value="#28282C" />
+    </Style>
+
+    <!-- Editor tabs. -->
+    <Style Selector="Button.bunni-tab">
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Foreground" Duration="0:0:0.15" />
+          <BrushTransition Property="Background" Duration="0:0:0.18" />
+        </Transitions>
+      </Setter>
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="#A4A2A7" />
+      <Setter Property="MinWidth" Value="185" />
+      <Setter Property="Height" Value="40" />
+      <Setter Property="CornerRadius" Value="12" />
+      <Setter Property="Padding" Value="15,0,11,0" />
+      <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.bunni-tab:pointerover">
+      <Setter Property="Foreground" Value="#CBC9CE" />
+      <Setter Property="Background" Value="#211F24" />
+    </Style>
+    <Style Selector="Button.bunni-tab.active">
+      <Setter Property="Foreground" Value="#E3BA7C" />
+      <Setter Property="Background" Value="#343337" />
+    </Style>
+    <Style Selector="Button.bunni-tab.active:pointerover">
+      <Setter Property="Foreground" Value="#D8B279" />
+      <Setter Property="Background" Value="#3A393E" />
+    </Style>
+    <Style Selector="Button.bunni-tab-close">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="#6D6B72" />
+      <Setter Property="Width" Value="20" />
+      <Setter Property="Height" Value="20" />
+      <Setter Property="CornerRadius" Value="5" />
+      <Setter Property="Padding" Value="0" />
+    </Style>
+    <Style Selector="Button.bunni-tab-close:pointerover">
+      <Setter Property="Foreground" Value="#C9C7CC" />
+      <Setter Property="Background" Value="#454449" />
+    </Style>
+    <Style Selector="Button.bunni-plus">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="#BCB9BE" />
+      <Setter Property="Width" Value="36" />
+      <Setter Property="Height" Value="36" />
+      <Setter Property="CornerRadius" Value="12,6,12,6" />
+      <Setter Property="Padding" Value="0" />
+    </Style>
+    <Style Selector="Button.bunni-plus:pointerover">
+      <Setter Property="Background" Value="#26262A" />
+      <Setter Property="Foreground" Value="#E4E2E7" />
+    </Style>
+
+    <!-- Toolbar actions. -->
+    <Style Selector="Button.bunni-tool">
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Foreground" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="#AAA8AE" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="CornerRadius" Value="7" />
+    </Style>
+    <Style Selector="Button.bunni-tool:pointerover">
+      <Setter Property="Foreground" Value="#D8D6DB" />
+    </Style>
+    <Style Selector="Button.bunni-tool:disabled">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="#7A7880" />
+    </Style>
+    <Style Selector="Button.bunni-tool:pointerover:disabled">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="#7A7880" />
+    </Style>
+    <Style Selector="Button.bunni-tool:pressed">
+      <Setter Property="Background" Value="Transparent" />
+    </Style>
+    <Style Selector="Button.bunni-tool.dim">
+      <Setter Property="Foreground" Value="#6E6C74" />
+    </Style>
+    <Style Selector="Button.bunni-tool.dim:pointerover">
+      <Setter Property="Foreground" Value="#8A888E" />
+      <Setter Property="Background" Value="Transparent" />
+    </Style>
+    <Style Selector="Button.bunni-tool.attached">
+      <Setter Property="Foreground" Value="#9FCB8F" />
+    </Style>
+
+    <!-- Console bar + rows. -->
+    <Style Selector="Button.bunni-console">
+      <Setter Property="Background" Value="#18181A" />
+      <Setter Property="Foreground" Value="#A8A6AC" />
+      <Setter Property="Padding" Value="12,0" />
+      <Setter Property="CornerRadius" Value="12,6,12,6" />
+      <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.bunni-console:pointerover">
+      <Setter Property="Foreground" Value="#CFCDD2" />
+      <Setter Property="Background" Value="#1E1E21" />
+    </Style>
+    <Style Selector="Button.bunni-script-row">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="#C6C4C9" />
+      <Setter Property="MinHeight" Value="40" />
+      <Setter Property="Padding" Value="12,0" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.bunni-script-row:pointerover">
+      <Setter Property="Background" Value="#222226" />
+      <Setter Property="Foreground" Value="#ECEAEF" />
+    </Style>
+    <Style Selector="Button.bunni-action">
+      <Setter Property="Background" Value="#26262A" />
+      <Setter Property="Foreground" Value="#C6C4C9" />
+      <Setter Property="Padding" Value="14,0" />
+      <Setter Property="MinHeight" Value="34" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="FontSize" Value="13.5" />
+      <Setter Property="FontWeight" Value="Medium" />
+    </Style>
+    <Style Selector="Button.bunni-action:pointerover">
+      <Setter Property="Background" Value="#303036" />
+      <Setter Property="Foreground" Value="#ECEAEF" />
+    </Style>
+
+    <!-- Custom switch (keeps Bunni's muted gold accent, no theme bleed). -->
+    <Style Selector="ToggleButton.bunni-switch">
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Panel Width="44" Height="24">
+            <Border x:Name="PART_Track" CornerRadius="12" Background="#26262A" BorderBrush="#333338" BorderThickness="1" />
+            <Border x:Name="PART_Thumb" Width="18" Height="18" CornerRadius="9" Background="#7C7A80"
+                    HorizontalAlignment="Left" Margin="3,0,0,0" />
+          </Panel>
+        </ControlTemplate>
+      </Setter>
+    </Style>
+    <Style Selector="ToggleButton.bunni-switch:checked /template/ Border#PART_Track">
+      <Setter Property="Background" Value="#5A4B36" />
+      <Setter Property="BorderBrush" Value="#6B5A41" />
+    </Style>
+    <Style Selector="ToggleButton.bunni-switch:checked /template/ Border#PART_Thumb">
+      <Setter Property="Background" Value="#E3BA7C" />
+      <Setter Property="HorizontalAlignment" Value="Right" />
+      <Setter Property="Margin" Value="0,0,3,0" />
+    </Style>
+
+    <Style Selector="TextBox.bunni-input">
+      <Setter Property="Background" Value="#171719" />
+      <Setter Property="Foreground" Value="#E2E0E5" />
+      <Setter Property="BorderBrush" Value="#2A2A2E" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="Padding" Value="10,7" />
+      <Setter Property="FontSize" Value="14" />
+      <Setter Property="MinHeight" Value="36" />
+    </Style>
+    <Style Selector="TextBox.bunni-input:focus">
+      <Setter Property="BorderBrush" Value="#6B5A41" />
+    </Style>
+    <Style Selector="ComboBox.bunni-combo">
+      <Setter Property="Background" Value="#171719" />
+      <Setter Property="Foreground" Value="#E2E0E5" />
+      <Setter Property="BorderBrush" Value="#2A2A2E" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="FontSize" Value="13.5" />
+    </Style>
+    <Style Selector="NumericUpDown.bunni-combo">
+      <Setter Property="Background" Value="#171719" />
+      <Setter Property="Foreground" Value="#E2E0E5" />
+      <Setter Property="BorderBrush" Value="#2A2A2E" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="FontSize" Value="13.5" />
+    </Style>
+    <Style Selector="Button.bunni-accent">
+      <Setter Property="Foreground" Value="#E3BA7C" />
+      <Setter Property="FontSize" Value="13.5" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="MinHeight" Value="36" />
+      <Setter Property="Padding" Value="16,0" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="Background">
+        <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+          <GradientStop Color="#6B5A41" Offset="0" />
+          <GradientStop Color="#564835" Offset="1" />
+        </LinearGradientBrush>
+      </Setter>
+    </Style>
+    <Style Selector="Button.bunni-accent:pointerover /template/ ContentPresenter">
+      <Setter Property="Background">
+        <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+          <GradientStop Color="#77644a" Offset="0" />
+          <GradientStop Color="#61503c" Offset="1" />
+        </LinearGradientBrush>
+      </Setter>
+    </Style>
+    <Style Selector="Button.bunni-script-card">
+      <Setter Property="Background" Value="#1B1B1E" />
+      <Setter Property="Foreground" Value="#C6C4C9" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="CornerRadius" Value="9" />
+    </Style>
+    <Style Selector="Button.bunni-script-card:pointerover">
+      <Setter Property="Background" Value="#232327" />
+      <Setter Property="Foreground" Value="#ECEAEF" />
+    </Style>
+    <Style Selector="TextBlock.bunni-view-title">
+      <Setter Property="FontSize" Value="19" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Foreground" Value="#E2E0E5" />
+    </Style>
+    <Style Selector="TextBlock.bunni-view-subtitle">
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="Foreground" Value="#8B8990" />
+    </Style>
+    <Style Selector="TextBlock.bunni-setting-label">
+      <Setter Property="FontSize" Value="15" />
+      <Setter Property="FontWeight" Value="Medium" />
+      <Setter Property="Foreground" Value="#C6C4C9" />
+    </Style>
+    <Style Selector="TextBlock.bunni-setting-hint">
+      <Setter Property="FontSize" Value="12.5" />
+      <Setter Property="Foreground" Value="#8B8990" />
+    </Style>
+  </Window.Styles>
+
+  <!-- Bunni chrome. -->
+  <Border x:Name="BunniChrome"
+          Background="#151517"
+          CornerRadius="10"
+          ClipToBounds="True">
+    <Panel>
+      <!-- Soft warm light falling from the top-left corner. -->
+      <Border IsHitTestVisible="False">
+        <Border.Background>
+          <RadialGradientBrush GradientOrigin="0%,0%" Center="0%,0%" RadiusX="0.6" RadiusY="0.85">
+            <GradientStop Color="#8CF7E9CD" Offset="0" />
+            <GradientStop Color="#4DF0C77F" Offset="0.3" />
+            <GradientStop Color="#00F0C77F" Offset="1" />
+          </RadialGradientBrush>
+        </Border.Background>
+      </Border>
+    <Grid RowDefinitions="86,*">
+
+      <!-- ============ Top bar: logo, chip navigation, window controls ============ -->
+      <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Margin="18,12,14,0"
+            Background="Transparent"
+            PointerPressed="TitleBar_PointerPressed">
+        <Panel Grid.Column="0" Width="68" Height="56" Margin="0,0,8,0" VerticalAlignment="Top">
+          <Image Source="avares://Orion/Assets/Bunni/bunni_logo.png"
+                 Width="68" Height="56" Stretch="Uniform"
+                 HorizontalAlignment="Center" VerticalAlignment="Center"
+                 RenderOptions.BitmapInterpolationMode="HighQuality">
+          </Image>
+        </Panel>
+
+        <Border Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top"
+                Background="#18181A" CornerRadius="17" Padding="4,3">
+          <StackPanel Orientation="Horizontal" Spacing="5">
+            <Button x:Name="NavEditorChip" Classes="bunni-nav active" Click="NavEditor_Click">
+              <StackPanel Orientation="Horizontal" Spacing="10">
+                <Viewbox Width="20" Height="20">
+                  <Canvas Width="24" Height="24">
+                    <Path Data="M8 7L3 12L8 17" Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="2"
+                          StrokeLineCap="Round" StrokeJoin="Round" />
+                    <Path Data="M16 7L21 12L16 17" Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="2"
+                          StrokeLineCap="Round" StrokeJoin="Round" />
+                    <Path Data="M14 4L10 20" Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="2"
+                          StrokeLineCap="Round" />
+                  </Canvas>
+                </Viewbox>
+                <TextBlock Text="Editor" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+            <Button x:Name="NavScriptsChip" Classes="bunni-nav" Click="NavScripts_Click">
+              <StackPanel Orientation="Horizontal" Spacing="10">
+                <Viewbox Width="20" Height="20">
+                  <Canvas Width="24" Height="24">
+                    <Path Data="M12 1.6L21.2 6.5L21.2 17.4L12 22.3L2.8 17.4L2.8 6.5Z"
+                          Fill="{Binding $parent[Button].Foreground}" />
+                    <Path Data="M2.8 6.5L12 11.3L21.2 6.5M12 11.3L12 22.3"
+                          Stroke="#1A1A1C" StrokeThickness="1.4" StrokeJoin="Round" />
+                  </Canvas>
+                </Viewbox>
+                <TextBlock Text="Scripts" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+            <Button x:Name="NavSettingsChip" Classes="bunni-nav" Click="NavSettings_Click">
+              <StackPanel Orientation="Horizontal" Spacing="10">
+                <Viewbox Width="20" Height="20">
+                  <Canvas Width="24" Height="24">
+                    <Path Data="M19.14 12.94C19.18 12.64 19.2 12.33 19.2 12C19.2 11.68 19.18 11.36 19.13 11.06L21.16 9.48C21.34 9.34 21.39 9.07 21.28 8.87L19.36 5.55C19.24 5.33 18.99 5.26 18.77 5.33L16.38 6.29C15.88 5.91 15.35 5.59 14.76 5.35L14.4 2.81C14.36 2.57 14.16 2.4 13.92 2.4L10.08 2.4C9.84 2.4 9.65 2.57 9.61 2.81L9.25 5.35C8.66 5.59 8.12 5.92 7.63 6.29L5.24 5.33C5.02 5.25 4.77 5.33 4.65 5.55L2.73 8.87C2.61 9.08 2.65 9.34 2.85 9.48L4.88 11.06C4.83 11.36 4.79 11.69 4.79 12C4.79 12.32 4.81 12.64 4.86 12.94L2.83 14.52C2.65 14.66 2.6 14.93 2.71 15.13L4.63 18.45C4.75 18.67 5 18.74 5.22 18.66L7.61 17.7C8.11 18.08 8.64 18.4 9.23 18.64L9.59 21.18C9.64 21.42 9.83 21.59 10.07 21.59L13.91 21.59C14.15 21.59 14.35 21.42 14.38 21.18L14.74 18.64C15.33 18.4 15.87 18.08 16.36 17.7L18.75 18.66C18.97 18.74 19.22 18.66 19.34 18.44L21.26 15.12C21.38 14.9 21.33 14.65 21.14 14.51L19.14 12.94ZM12 15.6C10.02 15.6 8.4 13.98 8.4 12C8.4 10.02 10.02 8.4 12 8.4C13.98 8.4 15.6 10.02 15.6 12C15.6 13.98 13.98 15.6 12 15.6Z"
+                          Fill="{Binding $parent[Button].Foreground}" />
+                  </Canvas>
+                </Viewbox>
+                <TextBlock Text="Settings" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+            <Button x:Name="NavProfileChip" Classes="bunni-nav" Click="NavProfile_Click">
+              <StackPanel Orientation="Horizontal" Spacing="10">
+                <Viewbox Width="20" Height="20">
+                  <Canvas Width="24" Height="24">
+                    <Path Data="M12 3C14.48 3 16.5 5 16.5 7.5C16.5 10 14.48 12 12 12C9.52 12 7.5 10 7.5 7.5C7.5 5 9.52 3 12 3Z"
+                          Fill="{Binding $parent[Button].Foreground}" />
+                    <Path Data="M4.2 21.2C4.9 16.8 7.6 14.6 12 14.6C16.4 14.6 19.1 16.8 19.8 21.2C19.9 21.7 19.5 22 19 22L5 22C4.5 22 4.1 21.7 4.2 21.2Z"
+                          Fill="{Binding $parent[Button].Foreground}" />
+                  </Canvas>
+                </Viewbox>
+                <TextBlock Text="Profile" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+          </StackPanel>
+        </Border>
+
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="16" Margin="0,4,4,0"
+                    VerticalAlignment="Top">
+          <Button Classes="bunni-wc" Click="Minimize_Click" ToolTip.Tip="Minimize">
+            <Viewbox Width="18" Height="18">
+              <Canvas Width="24" Height="24">
+                <Path Data="M4 12L20 12" Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="1.8"
+                      StrokeLineCap="Round" />
+              </Canvas>
+            </Viewbox>
+          </Button>
+          <Button Classes="bunni-wc" Click="Maximize_Click" ToolTip.Tip="Maximize">
+            <Border Width="13" Height="13" CornerRadius="2.5" BorderBrush="{Binding $parent[Button].Foreground}"
+                    BorderThickness="1.7" />
+          </Button>
+          <Button Classes="bunni-wc" Click="Close_Click" ToolTip.Tip="Close">
+            <Viewbox Width="17" Height="17">
+              <Canvas Width="24" Height="24">
+                <Path Data="M5 5L19 19M19 5L5 19" Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="1.8"
+                      StrokeLineCap="Round" />
+              </Canvas>
+            </Viewbox>
+          </Button>
+        </StackPanel>
+      </Grid>
+
+      <!-- ============ Views ============ -->
+      <Grid Grid.Row="1">
+
+        <!-- Editor view -->
+        <Grid x:Name="EditorView" RowDefinitions="Auto,Auto,*,Auto">
+          <Grid.Transitions>
+            <Transitions>
+              <DoubleTransition Property="Opacity" Duration="0:0:0.2" />
+            </Transitions>
+          </Grid.Transitions>
+
+          <!-- Tab strip (Editor only) -->
+          <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="6" Margin="25,0,25,0"
+                      VerticalAlignment="Center">
+            <StackPanel x:Name="TabStripPanel" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" />
+            <Button x:Name="AddTabButton" Classes="bunni-plus" Click="AddTab_Click"
+                    ToolTip.Tip="New tab" VerticalAlignment="Center" Margin="8,0,0,0">
+              <Viewbox Width="17" Height="17">
+                <Canvas Width="24" Height="24">
+                  <Path Data="M12 4.5L12 19.5M4.5 12L19.5 12" Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="1.9"
+                        StrokeLineCap="Round" />
+                </Canvas>
+              </Viewbox>
+            </Button>
+          </StackPanel>
+
+          <!-- Toolbar -->
+          <Border Grid.Row="1" Margin="25,8,25,0" Height="58" CornerRadius="12,6,12,6"
+                  Background="#18181A" BorderBrush="#2A2A2E" BorderThickness="1">
+            <Grid ColumnDefinitions="*,Auto">
+              <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="26" VerticalAlignment="Center" Margin="17,0,0,0">
+                <Button x:Name="ExecuteButton" Classes="bunni-tool" Click="Execute_Click" ToolTip.Tip="Execute">
+                  <StackPanel Orientation="Horizontal" Spacing="9">
+                    <Viewbox Width="23" Height="23">
+                      <Canvas Width="24" Height="24">
+                        <Path Data="M6 4.8L19 12L6 19.2Z" Fill="{Binding $parent[Button].Foreground}" />
+                      </Canvas>
+                    </Viewbox>
+                    <TextBlock Text="Execute" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" />
+                  </StackPanel>
+                </Button>
+                <Button Classes="bunni-tool" Click="Clear_Click" ToolTip.Tip="Clear">
+                  <StackPanel Orientation="Horizontal" Spacing="9">
+                    <Viewbox Width="23" Height="23">
+                      <Canvas Width="24" Height="24">
+                        <Path Data="M8 7V4.6C8 4.27 8.27 4 8.6 4L15.4 4C15.73 4 16 4.27 16 4.6L16 7"
+                              Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="1.9" StrokeJoin="Round" />
+                        <Path Data="M4.6 7L19.4 7" Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="1.9"
+                              StrokeLineCap="Round" />
+                        <Path Data="M6.8 9.5L7.7 19.2C7.73 19.65 8.1 20 8.55 20L15.45 20C15.9 20 16.27 19.65 16.3 19.2L17.2 9.5"
+                              Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="1.9" StrokeJoin="Round" />
+                      </Canvas>
+                    </Viewbox>
+                    <TextBlock Text="Clear" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" />
+                  </StackPanel>
+                </Button>
+                <Button Classes="bunni-tool" Click="Open_Click" ToolTip.Tip="Open">
+                  <StackPanel Orientation="Horizontal" Spacing="9">
+                    <Viewbox Width="23" Height="23">
+                      <Canvas Width="24" Height="24">
+                        <Path Data="M3.2 6.4C3.2 5.6 3.8 5 4.6 5L9.4 5L11.6 7.4L19.4 7.4C20.2 7.4 20.8 8 20.8 8.8L20.8 17.6C20.8 18.4 20.2 19 19.4 19L4.6 19C3.8 19 3.2 18.4 3.2 17.6Z"
+                              Fill="{Binding $parent[Button].Foreground}" />
+                      </Canvas>
+                    </Viewbox>
+                    <TextBlock Text="Open" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" />
+                  </StackPanel>
+                </Button>
+                <Button Classes="bunni-tool" Click="Save_Click" ToolTip.Tip="Save">
+                  <StackPanel Orientation="Horizontal" Spacing="9">
+                    <Viewbox Width="23" Height="23">
+                      <Canvas Width="24" Height="24">
+                        <Path Data="M6 3L14.5 3L19 7.5L19 21L6 21Z" Fill="{Binding $parent[Button].Foreground}" />
+                        <Path Data="M14.5 3L14.5 7.5L19 7.5" Stroke="#18181A" StrokeThickness="1.4" StrokeJoin="Round" />
+                        <Path Data="M9 12L16 12M9 15.5L16 15.5M9 19L13 19" Stroke="#18181A" StrokeThickness="1.25"
+                              StrokeLineCap="Round" />
+                      </Canvas>
+                    </Viewbox>
+                    <TextBlock Text="Save" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" />
+                  </StackPanel>
+                </Button>
+              </StackPanel>
+
+              <Button x:Name="AttachButton" Grid.Column="1" Classes="bunni-tool" Click="Attach_Click"
+                      ToolTip.Tip="Attach" Margin="0,0,17,0">
+                <StackPanel Orientation="Horizontal" Spacing="9">
+                  <Viewbox Width="23" Height="23">
+                    <Canvas Width="24" Height="24">
+                      <Path Data="M8.5 12.7L14.9 6.3C16.6 4.6 19.4 4.6 21.1 6.3C22.8 8 22.8 10.8 21.1 12.5L13 20.6C10.3 23.3 5.9 23.3 3.2 20.6C0.5 17.9 0.5 13.5 3.2 10.8L11 3"
+                            Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="1.9"
+                            StrokeLineCap="Round" />
+                    </Canvas>
+                  </Viewbox>
+                  <TextBlock Text="Attach" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+            </Grid>
+          </Border>
+
+          <!-- Editor + expanded console -->
+          <Grid Grid.Row="2" RowDefinitions="*,Auto" Margin="25,12,25,0">
+            <Border Grid.Row="0" Background="#151517" BorderThickness="0"
+                    ClipToBounds="True">
+              <NativeWebView x:Name="EditorWebView" Background="#151517" />
+            </Border>
+
+            <Border x:Name="ConsolePanel" Grid.Row="1" Height="216" IsVisible="False" Margin="0,12,0,0"
+                    CornerRadius="10" Background="#171719" BorderBrush="#2A2A2E" BorderThickness="1"
+                    ClipToBounds="True">
+              <Border.Transitions>
+                <Transitions>
+                  <DoubleTransition Property="Height" Duration="0:0:0.24" Easing="CubicEaseOut" />
+                </Transitions>
+              </Border.Transitions>
+              <Panel>
+              <Grid RowDefinitions="Auto,*" Margin="0,0,0,4">
+                <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="14,10,10,8">
+                  <TextBlock Text="Console output" FontSize="12.5" FontWeight="Medium" Foreground="#8B8990"
+                             VerticalAlignment="Center" />
+                  <Button Grid.Column="1" Classes="bunni-tab-close" Click="ClearConsole_Click" ToolTip.Tip="Clear console">
+                    <Viewbox Width="12" Height="12">
+                      <Canvas Width="24" Height="24">
+                        <Path Data="M5 5L19 19M19 5L5 19" Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="2.2"
+                              StrokeLineCap="Round" />
+                      </Canvas>
+                    </Viewbox>
+                  </Button>
+                </Grid>
+                <ScrollViewer x:Name="ConsoleScroll" Grid.Row="1" Margin="14,0,8,0"
+                              HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                  <StackPanel x:Name="ConsoleLogList" Spacing="3" />
+                </ScrollViewer>
+              </Grid>
+              <Border x:Name="ConsoleResizeGrip" Height="7" VerticalAlignment="Top"
+                      Background="Transparent" Cursor="SizeNorthSouth"
+                      PointerPressed="ConsoleResize_PointerPressed"
+                      PointerMoved="ConsoleResize_PointerMoved"
+                      PointerReleased="ConsoleResize_PointerReleased" />
+              </Panel>
+            </Border>
+          </Grid>
+
+          <!-- Console bar -->
+          <Button x:Name="ConsoleBar" Grid.Row="3" Classes="bunni-console" Height="60" Margin="25,12,25,14"
+                  HorizontalAlignment="Stretch"
+                  Click="ConsoleToggle_Click" ToolTip.Tip="Toggle console">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+              <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                <Viewbox Width="23" Height="23">
+                  <Canvas Width="24" Height="24">
+                    <Path Data="M5 3L19 3C20.6 3 22 4.4 22 6L22 18C22 19.6 20.6 21 19 21L5 21C3.4 21 2 19.6 2 18L2 6C2 4.4 3.4 3 5 3Z"
+                          Fill="{Binding $parent[Button].Foreground}" />
+                    <Path Data="M6.5 9L9.5 12L6.5 15" Stroke="#18181A" StrokeThickness="1.7"
+                          StrokeLineCap="Round" StrokeJoin="Round" />
+                    <Path Data="M11.5 15L17 15" Stroke="#18181A" StrokeThickness="1.7"
+                          StrokeLineCap="Round" />
+                  </Canvas>
+                </Viewbox>
+                <TextBlock Text="Console" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" />
+              </StackPanel>
+              <Viewbox x:Name="ConsoleChevron" Grid.Column="2" Width="23" Height="23" VerticalAlignment="Center"
+                       RenderTransformOrigin="50%,50%">
+                <Viewbox.RenderTransform>
+                  <RotateTransform Angle="0" />
+                </Viewbox.RenderTransform>
+                <Canvas Width="24" Height="24">
+                  <Path Data="M4 9L12 17L20 9" Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="2.1"
+                        StrokeLineCap="Round" StrokeJoin="Round" />
+                </Canvas>
+              </Viewbox>
+            </Grid>
+          </Button>
+        </Grid>
+
+        <!-- Scripts view: ScriptBlox / RScripts hub -->
+        <Grid x:Name="ScriptsView" RowDefinitions="Auto,Auto,*,Auto" Margin="25,10,25,18" IsVisible="False">
+          <Grid.Transitions>
+            <Transitions>
+              <DoubleTransition Property="Opacity" Duration="0:0:0.2" />
+            </Transitions>
+          </Grid.Transitions>
+          <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="2,2,2,10">
+            <StackPanel Orientation="Vertical" Spacing="3">
+              <TextBlock Classes="bunni-view-title" Text="Scripts" />
+              <TextBlock x:Name="ScriptsCountText" Classes="bunni-view-subtitle" Text="Search community scripts" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+              <Button x:Name="ProviderScriptBloxChip" Classes="bunni-nav active" MinHeight="32" Padding="12,0"
+                      Click="ProviderScriptBlox_Click">
+                <TextBlock Text="ScriptBlox" FontSize="13.5" FontWeight="SemiBold" VerticalAlignment="Center" />
+              </Button>
+              <Button x:Name="ProviderRscriptsChip" Classes="bunni-nav" MinHeight="32" Padding="12,0"
+                      Click="ProviderRscripts_Click">
+                <TextBlock Text="RScripts" FontSize="13.5" FontWeight="SemiBold" VerticalAlignment="Center" />
+              </Button>
+            </StackPanel>
+          </Grid>
+          <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Margin="2,0,2,10">
+            <TextBox x:Name="ScriptsSearchBox" Watermark="Search scripts..."
+                     Classes="bunni-input" Margin="0,0,8,0"
+                     KeyDown="ScriptsSearch_KeyDown" />
+            <Button Grid.Column="1" Classes="bunni-accent" Content="Search" Click="SearchScripts_Click" />
+          </Grid>
+          <Border Grid.Row="2" CornerRadius="10" Background="#171719" BorderBrush="#202023" BorderThickness="1"
+                  ClipToBounds="True">
+            <ScrollViewer x:Name="ScriptsHubScroll" Margin="8" HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto"
+                          ScrollChanged="ScriptsHubScroll_ScrollChanged">
+              <StackPanel>
+                <UniformGrid x:Name="ScriptsHubPanel" Columns="4" />
+                <TextBlock x:Name="ScriptsHubStatus" Margin="10,14" FontSize="13" Foreground="#6D6B72"
+                           Text="Type a query or press Search to browse fresh scripts." />
+              </StackPanel>
+            </ScrollViewer>
+          </Border>
+          <TextBlock Grid.Row="3" x:Name="ScriptsHintText" Margin="2,10,2,0" FontSize="12" Foreground="#6D6B72"
+                     Text="Click a script to open it in the editor. Scroll to the bottom to load more." />
+        </Grid>
+
+        <!-- Settings view -->
+        <ScrollViewer x:Name="SettingsView" Margin="25,14,25,18" IsVisible="False"
+                      HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+          <ScrollViewer.Transitions>
+            <Transitions>
+              <DoubleTransition Property="Opacity" Duration="0:0:0.2" />
+            </Transitions>
+          </ScrollViewer.Transitions>
+          <StackPanel Spacing="14" MaxWidth="640" HorizontalAlignment="Left">
+            <StackPanel Orientation="Vertical" Spacing="3" Margin="2,0,2,4">
+              <TextBlock Classes="bunni-view-title" Text="Settings" />
+              <TextBlock Classes="bunni-view-subtitle" Text="Applies to the whole Orion workspace." />
+            </StackPanel>
+
+            <Border CornerRadius="10" Background="#171719" BorderBrush="#202023" BorderThickness="1" Padding="18,6">
+              <StackPanel>
+                <Grid ColumnDefinitions="*,Auto" MinHeight="58">
+                  <StackPanel Orientation="Vertical" Spacing="3" VerticalAlignment="Center">
+                    <TextBlock Classes="bunni-setting-label" Text="Topmost" />
+                    <TextBlock Classes="bunni-setting-hint" Text="Keep Bunni above every other window." />
+                  </StackPanel>
+                  <ToggleButton x:Name="TopMostToggle" Classes="bunni-switch" Grid.Column="1"
+                                VerticalAlignment="Center" Click="TopMostToggle_Click" />
+                </Grid>
+                <Border Height="1" Background="#232327" />
+                <Grid ColumnDefinitions="*,Auto,Auto" MinHeight="58">
+                  <StackPanel Orientation="Vertical" Spacing="3" VerticalAlignment="Center" Margin="0,0,12,0">
+                    <TextBlock Classes="bunni-setting-label" Text="Editor font" />
+                    <TextBlock Classes="bunni-setting-hint" Text="Font family and size for the script editor only." />
+                  </StackPanel>
+                  <ComboBox x:Name="EditorFontBox" MinWidth="168" Classes="bunni-combo" Grid.Column="1"
+                            VerticalAlignment="Center" SelectionChanged="EditorFont_SelectionChanged" />
+                  <NumericUpDown x:Name="EditorFontSizeBox" Grid.Column="2" MinWidth="84" Margin="8,0,0,0"
+                                 Minimum="8" Maximum="28" Increment="1" VerticalAlignment="Center"
+                                 Classes="bunni-combo" ValueChanged="EditorFontSize_ValueChanged" />
+                </Grid>
+                <Border Height="1" Background="#232327" />
+                <Grid ColumnDefinitions="*,Auto" MinHeight="58">
+                  <StackPanel Orientation="Vertical" Spacing="3" VerticalAlignment="Center">
+                    <TextBlock Classes="bunni-setting-label" Text="Return to Orion" />
+                    <TextBlock Classes="bunni-setting-hint" Text="Close Bunni and hand the workspace back to Orion." />
+                  </StackPanel>
+                  <Button x:Name="ReturnToOrionButton" Classes="bunni-action" Content="Return" Grid.Column="1"
+                          VerticalAlignment="Center" Click="ReturnToOrion_Click" />
+                </Grid>
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
+
+        <!-- Profile view -->
+        <ScrollViewer x:Name="ProfileView" Margin="25,14,25,18" IsVisible="False"
+                      HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+          <ScrollViewer.Transitions>
+            <Transitions>
+              <DoubleTransition Property="Opacity" Duration="0:0:0.2" />
+            </Transitions>
+          </ScrollViewer.Transitions>
+          <StackPanel MaxWidth="640" HorizontalAlignment="Left" Spacing="14">
+            <Border CornerRadius="12" Background="#171719" BorderBrush="#202023" BorderThickness="1"
+                    Padding="20,18">
+              <StackPanel Orientation="Horizontal" Spacing="16">
+                <Border Width="72" Height="72" CornerRadius="36" Background="#1E1E22" BorderBrush="#2E2E33"
+                        BorderThickness="1">
+                  <Image Source="avares://Orion/Assets/Bunni/bunni_logo.png" Width="44" Height="40" Stretch="Uniform" />
+                </Border>
+                <StackPanel Orientation="Vertical" Spacing="4" VerticalAlignment="Center">
+                  <TextBlock Text="Local Session" FontSize="19" FontWeight="SemiBold" Foreground="#E2E0E5" />
+                  <TextBlock x:Name="ProfileStatusText" FontSize="13" Foreground="#8B8990" Text="Bridge status" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
+
+            <StackPanel Orientation="Vertical" Spacing="3" Margin="2,6,2,0">
+              <TextBlock Classes="bunni-view-title" FontSize="15" Text="Attached clients" />
+              <TextBlock Classes="bunni-view-subtitle" Text="Clients connected through Scripts/Orion Bridge.lua." />
+            </StackPanel>
+            <Border CornerRadius="10" Background="#171719" BorderBrush="#202023" BorderThickness="1" Padding="8">
+              <StackPanel MinHeight="44">
+                <StackPanel x:Name="ProfileClientsList" Spacing="2" />
+                <TextBlock x:Name="ProfileNoClientsText" Margin="10,12" FontSize="13.5" Foreground="#6D6B72"
+                           Text="No clients attached. Run Scripts/Orion Bridge.lua inside the game." />
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
+      </Grid>
+
+    </Grid>
+
+    <!-- Gentle light wash across the top-left corner, above the content. -->
+    <Border IsHitTestVisible="False">
+      <Border.Background>
+        <RadialGradientBrush GradientOrigin="0%,0%" Center="0%,0%" RadiusX="0.48" RadiusY="0.7">
+          <GradientStop Color="#47F7E9CD" Offset="0" />
+          <GradientStop Color="#22F0C77F" Offset="0.4" />
+          <GradientStop Color="#00F0C77F" Offset="1" />
+        </RadialGradientBrush>
+      </Border.Background>
+    </Border>
+    </Panel>
+  </Border>
+</Window>

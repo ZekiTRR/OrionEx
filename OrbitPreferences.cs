@@ -15,6 +15,7 @@ internal static class OrbitPreferences
     private static readonly string SetupCompletedPath = Path.Combine(PreferencesDirectory, "setup-completed");
     private static readonly string AutoexecPathFile = Path.Combine(PreferencesDirectory, "autoexec-path");
     private static readonly string LastInterfacePath = Path.Combine(PreferencesDirectory, "last-ui");
+    private static readonly string Rc7LightThemePath = Path.Combine(PreferencesDirectory, "rc7-light-theme");
     internal const string OrionInterface = "Orion";
     private static bool _topMostEnabled = LoadTopMost();
     private static bool _legacyColoursEnabled = LoadFlag(LegacyColoursPath);
@@ -23,6 +24,7 @@ internal static class OrbitPreferences
     private static bool _setupCompleted = LoadFlag(SetupCompletedPath);
     private static string? _autoexecPath = LoadText(AutoexecPathFile);
     private static string _lastInterface = LoadLastInterface();
+    private static bool _rc7LightThemeEnabled = LoadFlag(Rc7LightThemePath);
 
     public static string LastInterface
     {
@@ -147,6 +149,23 @@ internal static class OrbitPreferences
         }
     }
 
+    public static bool Rc7LightThemeEnabled
+    {
+        get
+        {
+            lock (Gate) return _rc7LightThemeEnabled;
+        }
+    }
+
+    public static void SetRc7LightTheme(bool enabled)
+    {
+        lock (Gate)
+        {
+            _rc7LightThemeEnabled = enabled;
+            SaveFlag(Rc7LightThemePath, enabled);
+        }
+    }
+
     public static void SetAutoexecPath(string? path)
     {
         lock (Gate)
@@ -227,6 +246,7 @@ internal static class OrbitPreferences
         "SirHurtV5Remake" => "SirHurtV5Remake",
         "JJSploit" => "JJSploit",
         "Sentinel" => "Sentinel",
+        "Bunni" => "Bunni",
         _ => OrionInterface
     };
 

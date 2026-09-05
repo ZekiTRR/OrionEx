@@ -208,6 +208,7 @@
       const previewParameters = new URLSearchParams(window.location.search);
       const isXenoTheme = previewParameters.get("theme") === "xeno";
       const isBlueTheme = previewParameters.get("theme") === "blue";
+      const isBunniTheme = previewParameters.get("theme") === "bunni";
       const isTransparent = previewParameters.get("transparent") === "1";
       const isOrionSurface = previewParameters.get("surface") === "orion";
       const isAwpSurface = previewParameters.get("shell") === "awp";
@@ -252,7 +253,7 @@
           ? "zenith-transparent"
           : ((isTransparent || isOrionSurface)
             ? "orion-transparent"
-            : (isBlueTheme ? "synapse-blue-default" : (isXenoTheme ? "xeno-fixed" : "orbit-fixed")));
+            : (isBlueTheme ? "synapse-blue-default" : (isXenoTheme ? "xeno-fixed" : (isBunniTheme ? "bunni-fixed" : "orbit-fixed"))));
         const defaultTokenRule = { token: "", foreground: "D4D4D4" };
         if (!isTransparent && !isOrionSurface) {
           defaultTokenRule.background = fixedBackground.slice(1);
@@ -1119,13 +1120,87 @@
           } catch (error) {
             console.warn("Unable to load Synapse Blue's default Monaco theme; using the local fallback.", error);
           }
+        } else if (isBunniTheme) {
+          // Bunni.lol's muted warm editor: grey prose, gold strings, white-bold keywords.
+          editorThemeDefinition = {
+            base: "vs-dark",
+            inherit: false,
+            rules: [
+              { token: "", foreground: "D6D4D9" },
+              { token: "comment", foreground: "888D98" },
+              { token: "keyword", foreground: "E4E3E7", fontStyle: "bold" },
+              { token: "keyword.control", foreground: "E4E3E7", fontStyle: "bold" },
+              { token: "keyword.operator", foreground: "BEBCC1" },
+              { token: "string", foreground: "F0DA75" },
+              { token: "string.escape", foreground: "F0DA75" },
+              { token: "number", foreground: "F0DA75" },
+              { token: "regexp", foreground: "F0DA75" },
+              { token: "operator", foreground: "BEBCC1" },
+              { token: "delimiter", foreground: "BEBCC1" },
+              { token: "namespace", foreground: "D8D6DB" },
+              { token: "type", foreground: "D8D6DB" },
+              { token: "struct", foreground: "D8D6DB" },
+              { token: "class", foreground: "D8D6DB" },
+              { token: "interface", foreground: "D8D6DB" },
+              { token: "enum", foreground: "D8D6DB" },
+              { token: "type.parameter", foreground: "D8D6DB" },
+              { token: "function", foreground: "EDEBEF" },
+              { token: "method", foreground: "EDEBEF" },
+              { token: "variable", foreground: "D8D6DB" },
+              { token: "variable.predefined", foreground: "E4E3E7" },
+              { token: "constant", foreground: "F0DA75" },
+              { token: "tag", foreground: "E4E3E7" },
+              { token: "attribute.name", foreground: "D8D6DB" },
+              { token: "attribute.value", foreground: "F0DA75" }
+            ],
+            colors: {
+              "editor.background": fixedBackground,
+              "editor.foreground": "#D6D4D9",
+              "editor.lineHighlightBackground": "#232326",
+              "editor.selectionBackground": "#44424866",
+              "editor.inactiveSelectionBackground": "#3A3D41",
+              "editor.selectionHighlightBackground": "#D8B27922",
+              "editor.findMatchBackground": "#5A5040",
+              "editor.findMatchHighlightBackground": "#D8B27955",
+              "editor.hoverHighlightBackground": "#44424833",
+              "editor.wordHighlightBackground": "#57575788",
+              "editor.wordHighlightStrongBackground": "#6B5A4188",
+              "editorCursor.foreground": "#D8D6DB",
+              "editorWhitespace.foreground": "#3A3A3E",
+              "editorLineNumber.foreground": "#6E6C73",
+              "editorLineNumber.activeForeground": "#A8A6AC",
+              "editorIndentGuide.background": "#333338",
+              "editorIndentGuide.activeBackground": "#4A4A50",
+              "editorGutter.background": fixedBackground,
+              "editorPane.background": fixedBackground,
+              "minimap.background": fixedBackground,
+              "scrollbar.shadow": "#00000000",
+              "scrollbarSlider.background": "#5A595E66",
+              "scrollbarSlider.hoverBackground": "#6E6D7380",
+              "scrollbarSlider.activeBackground": "#8A888EB0",
+              "editorBracketHighlight.foreground1": "#BEBCC1",
+              "editorBracketHighlight.foreground2": "#BEBCC1",
+              "editorBracketHighlight.foreground3": "#BEBCC1",
+              "editorBracketPairGuide.background1": "#BEBCC140",
+              "editorBracketPairGuide.activeBackground1": "#BEBCC160",
+              "editorWidget.background": "#1E1E21",
+              "editorWidget.border": "#303035",
+              "editorSuggestWidget.background": "#1E1E21",
+              "editorSuggestWidget.border": "#303035",
+              "editorSuggestWidget.foreground": "#D6D4D9",
+              "editorSuggestWidget.selectedBackground": "#6B5A4155",
+              "editorSuggestWidget.highlightForeground": "#E3BA7C",
+              "editorHoverWidget.background": "#1E1E21",
+              "editorHoverWidget.border": "#303035"
+            }
+          };
         }
         monaco.editor.defineTheme(themeName, editorThemeDefinition);
 
         const editor = monaco.editor.create(document.getElementById("editor"), {
           value: [
-            isXenoTheme ? "-- Xeno UI preview" : "-- Monaco preview",
-            isXenoTheme ? "local message = \"Hello from Xeno!\"" : "local message = \"Hello from Orbit!\"",
+            isBunniTheme ? "-- Bunni UI preview" : (isXenoTheme ? "-- Xeno UI preview" : "-- Monaco preview"),
+            isBunniTheme ? "print('Hello from Bunni!')" : (isXenoTheme ? "local message = \"Hello from Xeno!\"" : "local message = \"Hello from Orbit!\""),
             "",
             "function runScript()",
             "    print(message)",
@@ -1144,10 +1219,10 @@
           codeLens: false,
           inlayHints: { enabled: "off" },
           minimap: { enabled: false },
-          fontSize: 13,
-          lineHeight: 18,
-          suggestFontSize: 13,
-          suggestLineHeight: 18,
+          fontSize: isBunniTheme ? 15 : 13,
+          lineHeight: isBunniTheme ? 27 : 18,
+          suggestFontSize: isBunniTheme ? 14 : 13,
+          suggestLineHeight: isBunniTheme ? 22 : 18,
           quickSuggestions: { other: true, comments: false, strings: false },
           quickSuggestionsDelay: 50,
           wordBasedSuggestions: "off",
@@ -1445,6 +1520,19 @@
           applyingHostContent = false;
           editor.focus();
           publishCursorPosition();
+        };
+
+        // Bunni (and any host) can retune the editor font at runtime.
+        window.orbitSetEditorFont = (family, size) => {
+          const numeric = Math.max(8, Math.min(28, Number(size) || 15));
+          const options = {
+            fontSize: numeric,
+            lineHeight: Math.max(12, Math.round(numeric * 1.8))
+          };
+          if (typeof family === "string" && family.length > 0) {
+            options.fontFamily = "'" + family.replace(/'/g, "") + "', monospace";
+          }
+          editor.updateOptions(options);
         };
 
         const publishCursorPosition = () => {

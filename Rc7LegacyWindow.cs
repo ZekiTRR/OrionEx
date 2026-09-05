@@ -17,11 +17,14 @@ internal sealed class Rc7LegacyWindow : Forms.Form
     private readonly List<Drawing.Image> _ownedImages = [];
     private readonly Forms.TabControl _tabs;
     private readonly Forms.ToolTip _toolTips = new();
-    private readonly Drawing.Image? _buttonIdle;
-    private readonly Drawing.Image? _buttonHover;
+    private Drawing.Image? _buttonIdle;
+    private Drawing.Image? _buttonHover;
     private readonly Forms.Button _executeButton;
     private bool _returningToOrbit;
     private int _tabCount = 2;
+    private bool _useLightTheme;
+    private Forms.ToolStripMenuItem? _themeOriginalItem;
+    private Forms.ToolStripMenuItem? _themeLightItem;
 
     public Rc7LegacyWindow(EditorWorkspaceState initialWorkspace, Action<EditorWorkspaceState> returnToOrbit)
     {
@@ -50,9 +53,10 @@ internal sealed class Rc7LegacyWindow : Forms.Form
             Icon = icon;
         }
 
-        BackgroundImage = Own(LoadImage("MainUi.bmp"));
-        _buttonIdle = Own(LoadImage("Button_Idle.bmp"));
-        _buttonHover = Own(LoadImage("Button_Hover.bmp"));
+        _useLightTheme = OrbitPreferences.Rc7LightThemeEnabled;
+        BackgroundImage = Own(LoadImage("MainUi.bmp", _useLightTheme));
+        _buttonIdle = Own(LoadImage("Button_Idle.bmp", _useLightTheme));
+        _buttonHover = Own(LoadImage("Button_Hover.bmp", _useLightTheme));
 
         var menu = BuildMenu();
         MainMenuStrip = menu;
@@ -60,7 +64,7 @@ internal sealed class Rc7LegacyWindow : Forms.Form
 
         var editorPanel = new Forms.Panel
         {
-            BackColor = Drawing.Color.FromArgb(240, 240, 240),
+            BackColor = ThemeEditorPanelBackColor(),
             Location = new Drawing.Point(8, 24),
             Name = "editorPanel",
             Size = new Drawing.Size(283, 301),
@@ -103,7 +107,7 @@ internal sealed class Rc7LegacyWindow : Forms.Form
 
         var rightPanel = new Forms.Panel
         {
-            BackgroundImage = Own(LoadImage("Hide_Side.bmp")),
+            BackgroundImage = Own(LoadImage("Hide_Side.bmp", _useLightTheme)),
             BackgroundImageLayout = Forms.ImageLayout.Stretch,
             Location = new Drawing.Point(300, 24),
             Name = "rightPanel",
@@ -166,10 +170,148 @@ internal sealed class Rc7LegacyWindow : Forms.Form
         help.DropDownItems.Add(new Forms.ToolStripMenuItem("Credits") { Enabled = false });
 
         var editTheme = new Forms.ToolStripMenuItem("Edit Theme");
-        editTheme.DropDownItems.Add(new Forms.ToolStripMenuItem("Original") { Checked = true });
+        _themeOriginalItem = new Forms.ToolStripMenuItem("Original (Dark)");
+        _themeOriginalItem.Click += (_, _) => SetTheme(useLight: false);
+        editTheme.DropDownItems.Add(_themeOriginalItem);
+        _themeLightItem = new Forms.ToolStripMenuItem("Light");
+        _themeLightItem.Click += (_, _) => SetTheme(useLight: true);
+        editTheme.DropDownItems.Add(_themeLightItem);
+        UpdateThemeMenuChecks();
 
         menu.Items.AddRange([settings, commands, help, editTheme]);
         return menu;
+    }
+
+    private void SetTheme(bool useLight)
+    {
+        if (_useLightTheme == useLight)
+        {
+            UpdateThemeMenuChecks();
+            return;
+        }
+
+        _useLightTheme = useLight;
+        OrbitPreferences.SetRc7LightTheme(useLight);
+        ApplyTheme();
+        UpdateThemeMenuChecks();
+    }
+
+    private void UpdateThemeMenuChecks()
+    {
+        if (_themeOriginalItem is not null)
+        {
+            _themeOriginalItem.Checked = !_useLightTheme;
+        }
+        if (_themeLightItem is not null)
+        {
+            _themeLightItem.Checked = _useLightTheme;
+        }
+    }
+
+    private void ApplyTheme()
+    {
+        // Drop the previously-loaded theme bitmaps so the new ones become the
+        // sole owners of any GDI handles used by the form's controls.
+        BackgroundImage = null;
+        foreach (Forms.Control c in Controls)
+        {
+            c.BackgroundImage = null;
+        }
+        if (Controls["rightPanel"] is Forms.Panel rp)
+        {
+            foreach (Forms.Control c in rp.Controls)
+            {
+                c.BackgroundImage = null;
+            }
+        }
+
+        foreach (var img in _ownedImages)
+        {
+            img.Dispose();
+        }
+        _ownedImages.Clear();
+
+        BackgroundImage = Own(LoadImage("MainUi.bmp", _useLightTheme));
+        _buttonIdle = Own(LoadImage("Button_Idle.bmp", _useLightTheme));
+        _buttonHover = Own(LoadImage("Button_Hover.bmp", _useLightTheme));
+
+        var buttonTextColor = ThemeButtonTextColor();
+        foreach (Forms.Control c in Controls)
+        {
+            if (c is Forms.Button btn && (btn.Text == "Open" || btn.Text == "Execute" || btn.Text == "Clear"))
+            {
+                btn.BackgroundImage = _buttonIdle;
+                btn.ForeColor = buttonTextColor;
+            }
+        }
+
+        // The plain tab control in WinForms keeps its system background when
+        // UseVisualStyleBackColor is true; that hard-codes a light surface and
+        // looks wrong on the dark theme. Pin the panel and tab colors so the
+        // editor surface always matches the chosen theme.
+        if (Controls["editorPanel"] is Forms.Panel editorPanel)
+        {
+            editorPanel.BackColor = ThemeEditorPanelBackColor();
+        }
+        ApplyEditorColorsToAllTabs();
+
+        if (Controls["rightPanel"] is Forms.Panel rp2)
+        {
+            rp2.BackgroundImage = Own(LoadImage("Hide_Side.bmp", _useLightTheme));
+            foreach (Forms.Control c in rp2.Controls)
+            {
+                if (c is Forms.Button sb)
+                {
+                    var tooltip = _toolTips.GetToolTip(sb);
+                    var imgName = tooltip switch
+                    {
+                        "Save script" => "Save_In.bmp",
+                        "Toggle word wrap" => "WordWrap_In.bmp",
+                        "Preserved UI control" when sb.Location.Y == 185 => "Auto_In.bmp",
+                        "Preserved UI control" when sb.Location.Y == 221 => "Google_Drive_In.bmp",
+                        "Preserved UI control" when sb.Location.Y == 257 => "Krystal_In.bmp",
+                        "Preserved UI control" when sb.Location.Y == 293 => "Wofly_In.bmp",
+                        _ => null
+                    };
+                    if (imgName != null)
+                    {
+                        sb.BackgroundImage = Own(LoadImage(imgName, _useLightTheme));
+                    }
+                }
+            }
+        }
+
+        Refresh();
+    }
+
+    private Drawing.Color ThemeButtonTextColor() => _useLightTheme
+        ? Drawing.Color.FromArgb(40, 40, 40)
+        : Drawing.Color.FromArgb(100, 100, 100);
+
+    private Drawing.Color ThemeEditorPanelBackColor() => _useLightTheme
+        ? Drawing.Color.FromArgb(245, 245, 247)
+        : Drawing.Color.FromArgb(240, 240, 240);
+
+    private Drawing.Color ThemeEditorBackColor() => _useLightTheme
+        ? Drawing.Color.FromArgb(255, 255, 255)
+        : Drawing.Color.FromArgb(16, 18, 22);
+
+    private Drawing.Color ThemeEditorForeColor() => _useLightTheme
+        ? Drawing.Color.FromArgb(20, 20, 20)
+        : Drawing.Color.FromArgb(224, 225, 227);
+
+    private void ApplyEditorColorsToAllTabs()
+    {
+        var back = ThemeEditorBackColor();
+        var fore = ThemeEditorForeColor();
+        foreach (Forms.TabPage page in _tabs.TabPages)
+        {
+            foreach (Forms.RichTextBox editor in page.Controls.OfType<Forms.RichTextBox>())
+            {
+                editor.BackColor = back;
+                editor.ForeColor = fore;
+            }
+        }
     }
 
     private Forms.Button CreateMainButton(string text, Drawing.Point location)
@@ -181,7 +323,7 @@ internal sealed class Rc7LegacyWindow : Forms.Form
             Cursor = Forms.Cursors.Arrow,
             FlatStyle = Forms.FlatStyle.Flat,
             Font = new Drawing.Font("Lucida Sans", 15F, Drawing.FontStyle.Bold, Drawing.GraphicsUnit.Pixel),
-            ForeColor = Drawing.Color.FromArgb(100, 100, 100),
+            ForeColor = ThemeButtonTextColor(),
             Location = location,
             Size = new Drawing.Size(95, 25),
             TabStop = false,
@@ -198,7 +340,7 @@ internal sealed class Rc7LegacyWindow : Forms.Form
     {
         var button = new Forms.Button
         {
-            BackgroundImage = Own(LoadImage(imageName)),
+            BackgroundImage = Own(LoadImage(imageName, _useLightTheme)),
             BackgroundImageLayout = Forms.ImageLayout.Stretch,
             Cursor = Forms.Cursors.Arrow,
             FlatStyle = Forms.FlatStyle.Flat,
@@ -230,12 +372,12 @@ internal sealed class Rc7LegacyWindow : Forms.Form
         var editor = new Forms.RichTextBox
         {
             AcceptsTab = true,
-            BackColor = Drawing.Color.FromArgb(16, 18, 22),
+            BackColor = ThemeEditorBackColor(),
             BorderStyle = Forms.BorderStyle.None,
             DetectUrls = false,
             Dock = Forms.DockStyle.Fill,
             Font = new Drawing.Font("Consolas", 10F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point),
-            ForeColor = Drawing.Color.FromArgb(224, 225, 227),
+            ForeColor = ThemeEditorForeColor(),
             WordWrap = false
         };
         tab.Controls.Add(editor);
@@ -507,11 +649,20 @@ internal sealed class Rc7LegacyWindow : Forms.Form
         return image;
     }
 
-    private static Drawing.Image? LoadImage(string fileName)
+    private static Drawing.Image? LoadImage(string fileName, bool useLight)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = assembly.GetManifestResourceNames().FirstOrDefault(name =>
-            name.EndsWith(fileName, StringComparison.OrdinalIgnoreCase));
+        var allNames = assembly.GetManifestResourceNames();
+        // When the user has selected the Light theme, look for the matching
+        // bitmap in the Light subfolder first. This is the only way both
+        // themes can co-exist inside the same WinForms window because the
+        // bmp file names are identical between the two folders.
+        var resourceName = useLight
+            ? allNames.FirstOrDefault(name => name.EndsWith($".Light.{fileName}", StringComparison.OrdinalIgnoreCase))
+            : null;
+        resourceName ??= allNames.FirstOrDefault(name =>
+            name.EndsWith($".{fileName}", StringComparison.OrdinalIgnoreCase) &&
+            !name.Contains(".Light.", StringComparison.OrdinalIgnoreCase));
         if (resourceName is null)
         {
             return null;
