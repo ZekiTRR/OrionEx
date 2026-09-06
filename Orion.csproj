@@ -47,6 +47,7 @@
   <ItemGroup>
     <AvaloniaXaml Include="*.axaml" />
     <AvaloniaResource Include="Assets\orbit-logo-hq.png" />
+    <AvaloniaResource Include="syn_logo.png" />
     <AvaloniaResource Include="Assets\fluent--plug-connected-20-filled.svg" />
     <AvaloniaResource Include="Assets\Xeno\**\*" />
     <AvaloniaResource Include="Assets\Synapse\**\*" />

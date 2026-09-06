@@ -1522,6 +1522,9 @@
           publishCursorPosition();
         };
 
+        // Hosts can read the full editor text without the delta protocol.
+        window.orionEditorContent = () => editor.getValue();
+
         // Bunni (and any host) can retune the editor font at runtime.
         window.orbitSetEditorFont = (family, size) => {
           const numeric = Math.max(8, Math.min(28, Number(size) || 15));

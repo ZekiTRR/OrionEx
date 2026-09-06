@@ -1,0 +1,300 @@
+<Window x:Class="OrbitAvalonia.SynapseXInternalWindow"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Width="1000" Height="640"
+        Title="Synapse X"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        WindowDecorations="None"
+        ExtendClientAreaToDecorationsHint="True"
+        ShowInTaskbar="False"
+        Topmost="True"
+        CanResize="False"
+        FontFamily="Segoe UI, avares://Avalonia.Fonts.Inter/Assets#Inter"
+        FontSize="13"
+        RenderOptions.TextRenderingMode="Antialias">
+
+  <Window.Resources>
+    <StreamGeometry x:Key="SxiCloseIcon">M6 6L18 18M18 6L6 18</StreamGeometry>
+    <StreamGeometry x:Key="SxiGripIcon">M3 11L11 3M7 11L11 7</StreamGeometry>
+  </Window.Resources>
+
+  <Window.Styles>
+    <!-- ── ImGui window: vertical gradient, darker toward the bottom ── -->
+    <Style Selector="Border.sxi-window">
+      <Setter Property="Background">
+        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+          <GradientStop Color="#3C3C3C" Offset="0" />
+          <GradientStop Color="#2E2E2E" Offset="1" />
+        </LinearGradientBrush>
+      </Setter>
+      <Setter Property="BorderBrush" Value="#262626" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="BoxShadow" Value="0 4 14 0 #A0000000" />
+    </Style>
+    <Style Selector="Border.sxi-title">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Height" Value="26" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    <Style Selector="TextBlock.sxi-title-text">
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="Foreground" Value="#BFBFBF" />
+      <Setter Property="HorizontalAlignment" Value="Center" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Image.sxi-logo">
+      <Setter Property="Source" Value="avares://Orion/syn_logo.png" />
+      <Setter Property="Height" Value="20" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <!-- ImGui button: rounded, slightly lighter than the window, no outline -->
+    <Style Selector="Button.sxi-btn">
+      <Setter Property="Background" Value="#454545" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="CornerRadius" Value="4" />
+      <Setter Property="Padding" Value="12,5" />
+      <Setter Property="FontSize" Value="12.5" />
+      <Setter Property="Foreground" Value="#BFBFBF" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sxi-btn:pointerover">
+      <Setter Property="Background" Value="#4E4E4E" />
+    </Style>
+    <Style Selector="Button.sxi-btn:pressed">
+      <Setter Property="Background" Value="#3E3E3E" />
+    </Style>
+
+    <Style Selector="Button.sxi-close">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="#9A9A9A" />
+      <Setter Property="Padding" Value="3,0" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    <Style Selector="Button.sxi-close:pointerover">
+      <Setter Property="Foreground" Value="#FFFFFF" />
+    </Style>
+
+    <Style Selector="Button.sxi-listitem">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Padding" Value="6,2" />
+      <Setter Property="FontSize" Value="12.5" />
+      <Setter Property="Foreground" Value="#E8E8E8" />
+      <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+      <Setter Property="CornerRadius" Value="0" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sxi-listitem:pointerover">
+      <Setter Property="Background" Value="#333333" />
+    </Style>
+    <Style Selector="Button.sxi-listitem.selected">
+      <Setter Property="Background" Value="#3C3C3C" />
+    </Style>
+
+    <!-- Dark rounded inset box used by the editor and the script lists -->
+    <Style Selector="Border.sxi-inset">
+      <Setter Property="Background" Value="#1E1E1E" />
+      <Setter Property="BorderBrush" Value="#4D4D4D" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="4" />
+      <Setter Property="ClipToBounds" Value="True" />
+    </Style>
+
+    <Style Selector="TextBox.sxi-input">
+      <Setter Property="Background" Value="#1E1E1E" />
+      <Setter Property="BorderBrush" Value="#4D4D4D" />
+      <Setter Property="CornerRadius" Value="4" />
+      <Setter Property="Foreground" Value="#BFBFBF" />
+      <Setter Property="FontSize" Value="12.5" />
+      <Setter Property="Padding" Value="5,2" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <!-- Resize grip in the bottom-right corner of every panel -->
+    <Style Selector="Border.sxi-grip">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Width" Value="14" />
+      <Setter Property="Height" Value="14" />
+      <Setter Property="Cursor" Value="BottomRightCorner" />
+    </Style>
+    <Style Selector="Border.sxi-grip Path">
+      <Setter Property="Stroke" Value="#6A6A6A" />
+      <Setter Property="StrokeThickness" Value="1.4" />
+      <Setter Property="StrokeLineCap" Value="Round" />
+    </Style>
+
+    <Style Selector="CheckBox.sxi-check">
+      <Setter Property="Foreground" Value="#E8E8E8" />
+      <Setter Property="FontSize" Value="12.5" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Padding" Value="4,0,0,0" />
+    </Style>
+
+    <Style Selector="TextBlock.sxi-dim">
+      <Setter Property="Foreground" Value="#8A8A8A" />
+      <Setter Property="FontSize" Value="12.5" />
+    </Style>
+
+    <!-- Console log line (muted blue like the original) -->
+    <Style Selector="TextBlock.sxi-log">
+      <Setter Property="FontSize" Value="12.5" />
+      <Setter Property="Foreground" Value="#5F6A7F" />
+      <Setter Property="FontFamily" Value="Consolas" />
+    </Style>
+  </Window.Styles>
+
+  <Canvas x:Name="OverlayCanvas" Background="Transparent" ClipToBounds="False">
+
+    <!-- ══════════ "Executor" (main window) ══════════ -->
+    <Border x:Name="ExecutorWindow" Classes="sxi-window" Width="480" Height="285"
+            Canvas.Left="24" Canvas.Top="24">
+      <Grid RowDefinitions="26,*">
+        <Border Grid.Row="0" Classes="sxi-title" Tag="ExecutorWindow"
+                PointerPressed="WindowTitle_PointerPressed">
+          <Grid ColumnDefinitions="Auto,*,Auto">
+            <Image Classes="sxi-logo" RenderOptions.BitmapInterpolationMode="HighQuality" Margin="8,0,0,0" />
+            <TextBlock Grid.Column="1" Classes="sxi-title-text" Text="Executor" />
+            <Button Grid.Column="2" Classes="sxi-close" Click="CloseOverlay_Click"
+                    VerticalAlignment="Center" Margin="0,0,6,0" ToolTip.Tip="Close">
+              <Path Data="{StaticResource SxiCloseIcon}" Width="9" Height="9" Stretch="Uniform"
+                    Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="1.6" StrokeLineCap="Round" />
+            </Button>
+          </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" ColumnDefinitions="*,86" Margin="8,4,8,0">
+          <!-- Editor column: Monaco, then the horizontal scrollbar strip, then the footer -->
+          <Grid Margin="0,0,6,0" RowDefinitions="*,Auto,Auto">
+            <Border Grid.Row="0" Classes="sxi-inset">
+              <NativeWebView x:Name="EditorWebView" Background="#1E1E1E" />
+            </Border>
+
+            <Border Grid.Row="1" x:Name="EditorScrollStrip" Background="#2A2A2A" Height="10"
+                    CornerRadius="3" Margin="1,4,1,0" IsVisible="False">
+              <Border Background="#4F4F4F" Height="6" Width="180" CornerRadius="3"
+                      HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2,0,0,0" />
+            </Border>
+
+            <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="6" Margin="0,7,0,8">
+              <Button Classes="sxi-btn" Content="Execute" Click="Execute_Click" />
+              <Button Classes="sxi-btn" Content="Clear" Click="Clear_Click" />
+              <Button Classes="sxi-btn" Content="Open File" Click="OpenFile_Click" />
+              <Button Classes="sxi-btn" Content="Execute File" Click="ExecuteFile_Click"
+                      ToolTip.Tip="Execute the script selected in the list" />
+              <Button Classes="sxi-btn" Content="Save File" Click="SaveFile_Click" />
+            </StackPanel>
+          </Grid>
+
+          <!-- Script list column: full height, from the title to the bottom -->
+          <Border Grid.Column="1" Classes="sxi-inset">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+              <StackPanel x:Name="ExecutorScriptList" Spacing="1" Margin="2" />
+            </ScrollViewer>
+          </Border>
+
+          <Border Grid.RowSpan="2" Classes="sxi-grip" Tag="ExecutorWindow"
+                  HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,1,1"
+                  PointerPressed="WindowResize_PointerPressed"
+                  PointerMoved="WindowResize_PointerMoved"
+                  PointerReleased="WindowResize_PointerReleased">
+            <Path Data="{StaticResource SxiGripIcon}" Width="9" Height="9" Stretch="Uniform" />
+          </Border>
+        </Grid>
+      </Grid>
+    </Border>
+
+    <!-- ══════════ "Console" ══════════ -->
+    <Border x:Name="ConsoleWindow" Classes="sxi-window" Width="533" Height="322"
+            Canvas.Left="540" Canvas.Top="24">
+      <Grid RowDefinitions="26,*,Auto">
+        <Border Grid.Row="0" Classes="sxi-title" Tag="ConsoleWindow"
+                PointerPressed="WindowTitle_PointerPressed">
+          <Grid ColumnDefinitions="Auto,*,Auto">
+            <Image Classes="sxi-logo" RenderOptions.BitmapInterpolationMode="HighQuality" Margin="8,0,0,0" />
+            <TextBlock Grid.Column="1" Classes="sxi-title-text" Text="Console" />
+          </Grid>
+        </Border>
+
+        <Border Grid.Row="1" Background="Transparent" ClipToBounds="True">
+          <ScrollViewer x:Name="ConsolePane" Padding="8,5"
+                        HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <StackPanel x:Name="ConsoleOutput" Spacing="2" />
+          </ScrollViewer>
+        </Border>
+
+        <Grid Grid.Row="2" Margin="8,4,8,8">
+          <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left">
+            <TextBox x:Name="ConsoleInput" Classes="sxi-input" Width="90" Height="23"
+                     KeyDown="ConsoleInput_KeyDown" />
+            <Button Classes="sxi-btn" Content="Clear" Click="ConsoleClear_Click" />
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right"
+                      VerticalAlignment="Center">
+            <CheckBox x:Name="ConsoleRedirectCheck" Classes="sxi-check" Content="Output Redirection" IsChecked="True" />
+            <CheckBox x:Name="ConsoleAutoScrollCheck" Classes="sxi-check" Content="AutoScroll" IsChecked="True" />
+          </StackPanel>
+        </Grid>
+
+        <Border Grid.RowSpan="3" Classes="sxi-grip" Tag="ConsoleWindow"
+                HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,1,1"
+                PointerPressed="WindowResize_PointerPressed"
+                PointerMoved="WindowResize_PointerMoved"
+                PointerReleased="WindowResize_PointerReleased">
+          <Path Data="{StaticResource SxiGripIcon}" Width="9" Height="9" Stretch="Uniform" />
+        </Border>
+      </Grid>
+    </Border>
+
+    <!-- ══════════ "Script Hub" ══════════ -->
+    <Border x:Name="HubWindow" Classes="sxi-window" Width="591" Height="293"
+            Canvas.Left="24" Canvas.Top="340">
+      <Grid RowDefinitions="26,*">
+        <Border Grid.Row="0" Classes="sxi-title" Tag="HubWindow"
+                PointerPressed="WindowTitle_PointerPressed">
+          <Grid ColumnDefinitions="Auto,*,Auto">
+            <Image Classes="sxi-logo" RenderOptions.BitmapInterpolationMode="HighQuality" Margin="8,0,0,0" />
+            <TextBlock Grid.Column="1" Classes="sxi-title-text" Text="Script Hub" />
+          </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" ColumnDefinitions="130,*" Margin="8,4,8,8">
+          <Border Classes="sxi-inset" Margin="0,0,6,0">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+              <StackPanel x:Name="HubList" Spacing="1" Margin="2" />
+            </ScrollViewer>
+          </Border>
+          <Border Grid.Column="1" Background="Transparent" ClipToBounds="True">
+            <StackPanel x:Name="HubDetails" IsVisible="False" Margin="12,10,0,0" Spacing="8">
+              <TextBlock x:Name="HubDetailsName" FontSize="13" FontWeight="SemiBold"
+                         Foreground="#E8E8E8" />
+              <Button Classes="sxi-btn" Content="Execute" HorizontalAlignment="Left"
+                      Click="HubExecute_Click" />
+            </StackPanel>
+          </Border>
+        </Grid>
+
+        <Border Grid.RowSpan="2" Classes="sxi-grip" Tag="HubWindow"
+                HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,1,1"
+                PointerPressed="WindowResize_PointerPressed"
+                PointerMoved="WindowResize_PointerMoved"
+                PointerReleased="WindowResize_PointerReleased">
+          <Path Data="{StaticResource SxiGripIcon}" Width="9" Height="9" Stretch="Uniform" />
+        </Border>
+      </Grid>
+    </Border>
+  </Canvas>
+</Window>

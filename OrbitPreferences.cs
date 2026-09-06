@@ -247,6 +247,7 @@ internal static class OrbitPreferences
         "JJSploit" => "JJSploit",
         "Sentinel" => "Sentinel",
         "Bunni" => "Bunni",
+        "SynapseXInternal" => "SynapseXInternal",
         _ => OrionInterface
     };
 

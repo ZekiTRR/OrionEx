@@ -427,6 +427,28 @@ public sealed partial class OrionWindow
                         workspace,
                         RestoreOrionWorkspace));
                     break;
+                case "SynapseXInternal":
+                    // Only one internal overlay may exist; re-clicking the card
+                    // just brings the existing one back.
+                    if (_orionInternalOverlay is { } existingOverlay)
+                    {
+                        RevealOrionEditor();
+                        existingOverlay.Activate();
+                        break;
+                    }
+
+                    // The internal overlay floats above the game and must not
+                    // hide Orion: it is a companion window, not a preserved UI.
+                    _orionInterfaceHandoffActive = false;
+                    OrbitPreferences.SetLastInterface(OrbitPreferences.OrionInterface);
+                    RevealOrionEditor();
+                    _orionInternalOverlay = new SynapseXInternalWindow(
+                        _orionMonacoServer.Address,
+                        _orionWorkspace.ScriptsDirectory,
+                        workspace,
+                        HandleSynapseInternalReturn);
+                    _orionInternalOverlay.Closed += (_, _) => _orionInternalOverlay = null;
+                    break;
                 case "SirHurtV5Remake":
                     ShowPreservedAvaloniaWindow(new SirHurtV5RemakeWindow(
                         _orionWorkspace.ScriptsDirectory,
@@ -479,6 +501,14 @@ public sealed partial class OrionWindow
             Activate();
             RevealOrionEditor();
         }
+    }
+
+    private SynapseXInternalWindow? _orionInternalOverlay;
+
+    private void HandleSynapseInternalReturn(EditorWorkspaceState workspace)
+    {
+        // Orion stayed visible the whole time; only merge the edited tabs back.
+        ApplyOrionWorkspace(workspace);
     }
 
     private Task ReturnToOrionEditorAsync() => SwitchOrionPageAsync(OrionPage.Editor);
@@ -608,6 +638,10 @@ public sealed partial class OrionWindow
                 else if (returningWindow is BunniWindow bunni)
                 {
                     bunni.CloseForOrbit();
+                }
+                else if (returningWindow is SynapseXInternalWindow synapseInternal)
+                {
+                    synapseInternal.CloseForOrbit();
                 }
 
                 try { System.IO.File.AppendAllText(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "orion-handoff.log"), $"{DateTime.Now:HH:mm:ss.fff} [Orion] about to ApplyOrionWorkspace\n"); } catch { }
