@@ -5,6 +5,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
+
 using Avalonia.Threading;
 using System.Globalization;
 using System.Runtime.InteropServices;
@@ -345,15 +346,18 @@ public sealed partial class OrionWindow
 
         if (isGlass)
         {
+            // Transparent must come first: blur levels (AcrylicBlur/Blur) do
+            // not provide real per-pixel alpha, so the wedges outside the
+            // rounded shell corners would render as an opaque colour (black
+            // on light themes). With Transparent the corners stay genuinely
+            // transparent; the acrylic border still renders its material.
             TransparencyLevelHint =
             [
+                WindowTransparencyLevel.Transparent,
                 WindowTransparencyLevel.AcrylicBlur,
-                WindowTransparencyLevel.Blur,
-                WindowTransparencyLevel.Transparent
+                WindowTransparencyLevel.Blur
             ];
-            TransparencyBackgroundFallback = SolidBrush(
-                ThemeColour(profile, "WindowEnd"),
-                Math.Clamp(windowOpacity + 0.2, 0.32, 0.72));
+            TransparencyBackgroundFallback = OpaqueWindowFallback(profile);
             _orionAcrylicLayer.Material = new ExperimentalAcrylicMaterial
             {
                 BackgroundSource = AcrylicBackgroundSource.Digger,
@@ -368,9 +372,7 @@ public sealed partial class OrionWindow
         else
         {
             TransparencyLevelHint = [WindowTransparencyLevel.Transparent];
-            TransparencyBackgroundFallback = SolidBrush(
-                ThemeColour(profile, "WindowEnd"),
-                isTransparent ? windowOpacity : 1);
+            TransparencyBackgroundFallback = OpaqueWindowFallback(profile);
             _orionAcrylicLayer.IsVisible = false;
         }
 
@@ -390,6 +392,21 @@ public sealed partial class OrionWindow
         }
 
         PushOrionThemeToMonaco(profile, windowOpacity, pageOpacity);
+
+        _orionAppliedTheme = profile;
+        if (!_orionTransparencyBackgroundHooked)
+        {
+            _orionTransparencyBackgroundHooked = true;
+            PropertyChanged += (_, args) =>
+            {
+                if (args.Property == TopLevel.ActualTransparencyLevelProperty)
+                {
+                    UpdateOrionTransparencyBackground();
+                }
+            };
+        }
+
+        UpdateOrionTransparencyBackground();
         InvalidateVisual();
 
         if (refreshStudio)
@@ -1377,6 +1394,34 @@ public sealed partial class OrionWindow
             new GradientStop(WithOpacity(end, opacity), secondOffset)
         ]
     };
+
+    // TransparencyBackgroundFallback is only painted when the OS cannot give
+    // us a transparent window; without this the wedges outside the rounded
+    // shell corners show a flat colour that turns black on light themes.
+    // Paint it with the same (opaque) gradient as the window chrome instead.
+    private static LinearGradientBrush OpaqueWindowFallback(OrionThemeProfile profile) => Gradient(
+        ThemeColour(profile, "WindowStart"),
+        ThemeColour(profile, "WindowEnd"),
+        1,
+        0.37019,
+        new RelativePoint(0.189114, -0.0048156, RelativeUnit.Relative),
+        new RelativePoint(0.99810886, 1.0048156, RelativeUnit.Relative));
+
+    private bool _orionTransparencyBackgroundHooked;
+    private OrionThemeProfile? _orionAppliedTheme;
+
+    // Only WindowTransparencyLevel.Transparent gives real per-pixel alpha,
+    // where the wedges outside the rounded shell corners show the desktop.
+    // Every other level (None, Blur, AcrylicBlur, Mica) renders those wedges
+    // as black, which is invisible on dark themes and glaring on light ones.
+    // Paint the window background with the chrome gradient for all of them;
+    // the acrylic/digger layer still draws the material on top of it.
+    private void UpdateOrionTransparencyBackground()
+    {
+        Background = ActualTransparencyLevel == WindowTransparencyLevel.Transparent
+            ? Brushes.Transparent
+            : OpaqueWindowFallback(_orionAppliedTheme ?? CurrentOrionTheme());
+    }
 
     private static LinearGradientBrush CreateOrionEdgeStroke(
         OrionThemeProfile profile,
