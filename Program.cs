@@ -33,10 +33,20 @@ internal static class Program
         AppDomain.CurrentDomain.ProcessExit += (_, _) =>
             UnifiedBridgeServer.ShutdownShared();
 
+        // Save crash evidence: any unhandled .NET exception is appended to a
+        // local log so user-reported 0xe0434352 failures can be diagnosed.
+        AppDomain.CurrentDomain.UnhandledException += (_, eventArgs) =>
+            LogCrash(eventArgs.ExceptionObject as Exception, eventArgs.IsTerminating);
+
         var exitCode = 0;
         try
         {
             exitCode = BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+        }
+        catch (Exception ex)
+        {
+            LogCrash(ex, isTerminating: true);
+            throw;
         }
         finally
         {
@@ -60,6 +70,23 @@ internal static class Program
         // here guarantees no orphan bridge/API host can survive an edge case.
         Environment.Exit(exitCode);
         return exitCode;
+    }
+
+    private static void LogCrash(Exception? exception, bool isTerminating)
+    {
+        if (exception is null) return;
+        try
+        {
+            var directory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Orion");
+            Directory.CreateDirectory(directory);
+            File.AppendAllText(Path.Combine(directory, "orion-crash.log"),
+                $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] terminating={isTerminating}\n{exception}\n");
+        }
+        catch
+        {
+            // A failing crash log must never mask the original failure.
+        }
     }
 
     private static bool TryAcquireSingleInstance(out Mutex? mutex)

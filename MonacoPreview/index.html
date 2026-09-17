@@ -209,6 +209,7 @@
       const isXenoTheme = previewParameters.get("theme") === "xeno";
       const isBlueTheme = previewParameters.get("theme") === "blue";
       const isBunniTheme = previewParameters.get("theme") === "bunni";
+      const isVelocityTheme = previewParameters.get("theme") === "velocity";
       const isTransparent = previewParameters.get("transparent") === "1";
       const isOrionSurface = previewParameters.get("surface") === "orion";
       const isAwpSurface = previewParameters.get("shell") === "awp";
@@ -249,7 +250,7 @@
 
       require(["vs/editor/editor.main"], async function () {
         const fixedBackground = shellBackground;
-        const themeName = isZenithSurface
+        const themeName = isVelocityTheme ? "velocity-fixed" : isZenithSurface
           ? "zenith-transparent"
           : ((isTransparent || isOrionSurface)
             ? "orion-transparent"
@@ -1195,6 +1196,33 @@
             }
           };
         }
+        if (isVelocityTheme) {
+          editorThemeDefinition = {
+            base: "vs-dark",
+            inherit: true,
+            rules: [{ token: "comment", foreground: "686868" }],
+            colors: {
+              "editor.background": fixedBackground,
+              "editor.foreground": "#CCCCCC",
+              "editorGutter.background": fixedBackground,
+              "minimap.background": fixedBackground,
+              "editor.lineHighlightBackground": "#101010",
+              "editorLineNumber.foreground": "#555555",
+              "editorLineNumber.activeForeground": "#CCCCCC",
+              "editor.selectionBackground": "#2D7DFF44",
+              "editorCursor.foreground": "#FFFFFF",
+              "editorWidget.background": "#0A0A0A",
+              "editorWidget.border": "#191919",
+              "editorSuggestWidget.background": "#0A0A0A",
+              "editorSuggestWidget.border": "#191919",
+              "editorSuggestWidget.selectedBackground": "#2D7DFF33",
+              "scrollbar.shadow": "#00000000",
+              "scrollbarSlider.background": "#FFFFFF33",
+              "scrollbarSlider.hoverBackground": "#FFFFFF55",
+              "scrollbarSlider.activeBackground": "#FFFFFF88"
+            }
+          };
+        }
         monaco.editor.defineTheme(themeName, editorThemeDefinition);
 
         const editor = monaco.editor.create(document.getElementById("editor"), {
@@ -1520,6 +1548,38 @@
           applyingHostContent = false;
           editor.focus();
           publishCursorPosition();
+        };
+
+        window.orbitSetMinimap = (enabled) => editor.updateOptions({ minimap: { enabled: enabled === true } });
+        window.velocityApplyTheme = (background, accent, image) => {
+          if (!isVelocityTheme) return;
+          const valid = value => typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value);
+          background = valid(background) ? background : "#080808";
+          accent = valid(accent) ? accent : "#2D7DFF";
+          document.documentElement.style.setProperty("--editor-bg", background);
+          const surface = document.getElementById("preview-scale");
+          if (surface) {
+            if (typeof image === "string" && image.startsWith("data:image/")) {
+              surface.style.backgroundImage = "url(\"" + image.replace(/\s/g, "") + "\")";
+              surface.style.backgroundSize = "cover";
+              surface.style.backgroundPosition = "center";
+            } else {
+              surface.style.backgroundImage = "none";
+            }
+          }
+          monaco.editor.defineTheme("velocity-live", {
+            ...editorThemeDefinition,
+            colors: {
+              ...editorThemeDefinition.colors,
+              "editor.background": image ? "#00000000" : background,
+              "editorGutter.background": image ? "#00000000" : background,
+              "minimap.background": image ? "#00000000" : background,
+              "editorCursor.foreground": accent,
+              "editor.selectionBackground": accent + "44",
+              "editorSuggestWidget.selectedBackground": accent + "33"
+            }
+          });
+          monaco.editor.setTheme("velocity-live");
         };
 
         // Hosts can read the full editor text without the delta protocol.

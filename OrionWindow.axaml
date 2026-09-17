@@ -1970,6 +1970,21 @@
                       </Border>
                     </Grid>
                   </Button>
+                  <Button Classes="orion-ui-card" Tag="Velocity"
+                          Click="OrionUiChoice_Click" Margin="0,0,7,8">
+                    <Grid Background="#080808">
+                      <Image Source="avares://Orion/Assets/Velocity/Vel/Vel_meteor-HQ.png"
+                             Width="42" Height="42" Margin="0,0,0,10"
+                             Stretch="Uniform" Opacity="0.8"
+                             RenderOptions.BitmapInterpolationMode="HighQuality" />
+                      <Border Height="12.363" VerticalAlignment="Bottom"
+                              Background="#C708090A" BorderBrush="#66696C"
+                              BorderThickness="0.333" CornerRadius="0,0,10,10">
+                        <TextBlock Text="Velocity" FontSize="6" Foreground="White"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                      </Border>
+                    </Grid>
+                  </Button>
                   <Button Classes="orion-ui-card" Tag="Bunni"
                           Click="OrionUiChoice_Click" Margin="0,0,7,8">
                     <Grid>

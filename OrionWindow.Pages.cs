@@ -420,6 +420,13 @@ public sealed partial class OrionWindow
                         RestoreOrionWorkspace));
                     try { System.IO.File.AppendAllText(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "orion-handoff.log"), $"{DateTime.Now:HH:mm:ss.fff} [Orion] Sentinel launched, preserved={_orionPreservedWindow?.GetType().Name}\n"); } catch { }
                     break;
+                case "Velocity":
+                    ShowPreservedAvaloniaWindow(new VelocityWindow(
+                        _orionMonacoServer.Address,
+                        _orionWorkspace.ScriptsDirectory,
+                        workspace,
+                        RestoreOrionWorkspace));
+                    break;
                 case "Bunni":
                     ShowPreservedAvaloniaWindow(new BunniWindow(
                         _orionMonacoServer.Address,
@@ -634,6 +641,10 @@ public sealed partial class OrionWindow
                 else if (returningWindow is JJSploitWindow jjsploit)
                 {
                     jjsploit.CloseForOrion();
+                }
+                else if (returningWindow is VelocityWindow velocity)
+                {
+                    velocity.CloseForOrion();
                 }
                 else if (returningWindow is BunniWindow bunni)
                 {
