@@ -335,6 +335,13 @@ public sealed partial class OrionWindow
                         workspace,
                         RestoreOrionWorkspace));
                     break;
+                case "SynapseV3Alt":
+                    ShowPreservedAvaloniaWindow(new SynapseV3AltWindow(
+                        _orionMonacoServer.Address,
+                        _orionWorkspace.ScriptsDirectory,
+                        workspace,
+                        RestoreOrionWorkspace));
+                    break;
                 case "Synapse2017":
                     ShowPreservedAvaloniaWindow(new SynapseFrontendWindow(
                         SynapseFrontendKind.Classic2017,
@@ -601,6 +608,10 @@ public sealed partial class OrionWindow
                 else if (returningWindow is SynapseFrontendWindow synapse)
                 {
                     synapse.CloseForOrbit();
+                }
+                else if (returningWindow is SynapseV3AltWindow synapseAlt)
+                {
+                    synapseAlt.CloseForOrion();
                 }
                 else if (returningWindow is CalamariWindow calamari)
                 {
