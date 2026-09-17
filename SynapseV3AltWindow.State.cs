@@ -91,7 +91,7 @@ public sealed partial class SynapseV3AltWindow
 
     private void PersistWorkspace()
     {
-        // Workspace is returned via callback on close; local persistence only for settings/storage/editor-config
+        PersistObject("workspace.json", _workspace);
         var shared = ToShared();
         _workspaceService.SaveState(shared.Tabs, shared.ActiveTabId);
     }

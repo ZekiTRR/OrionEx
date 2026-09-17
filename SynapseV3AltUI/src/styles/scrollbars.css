@@ -1,0 +1,77 @@
+/* ─── Conventional Pill Scrollbars ─── */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 9999px;
+    margin: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+    min-height: 24px;
+    transition: background-color 0.15s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+::-webkit-scrollbar-thumb:active {
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+/* ─── Monaco Editor Custom Scrollbar Pill Styling ─── */
+.monaco-scrollable-element > .scrollbar {
+    background: rgba(0, 0, 0, 0.2) !important;
+}
+
+.monaco-scrollable-element > .scrollbar.vertical {
+    width: 10px !important;
+}
+
+.monaco-scrollable-element > .scrollbar.horizontal {
+    height: 10px !important;
+}
+
+.monaco-scrollable-element > .scrollbar > .slider {
+    background: rgba(255, 255, 255, 0.3) !important;
+    border-radius: 9999px !important;
+    transition: background 0.15s ease !important;
+}
+
+.monaco-scrollable-element > .scrollbar.vertical > .slider {
+    width: 6px !important;
+    left: 2px !important;
+    border-radius: 9999px !important;
+}
+
+.monaco-scrollable-element > .scrollbar.horizontal > .slider {
+    height: 6px !important;
+    top: 2px !important;
+    border-radius: 9999px !important;
+}
+
+.monaco-scrollable-element > .scrollbar > .slider:hover {
+    background: rgba(255, 255, 255, 0.5) !important;
+}
+
+.monaco-scrollable-element > .scrollbar > .slider.active,
+.monaco-scrollable-element > .scrollbar > .slider:active {
+    background: rgba(255, 255, 255, 0.7) !important;
+}

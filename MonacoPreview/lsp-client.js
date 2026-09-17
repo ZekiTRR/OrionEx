@@ -173,23 +173,6 @@
         };
     }
 
-    // Replacement range covering only the text after the last `:`/`.` on the
-    // line, so accepting `Workspace` after `game.Wor` keeps the `game.` prefix.
-    function tailRange(model, position) {
-        var before = model.getValueInRange({
-            startLineNumber: position.lineNumber, startColumn: 1,
-            endLineNumber: position.lineNumber, endColumn: position.column
-        });
-        var idx = Math.max(before.lastIndexOf(":"), before.lastIndexOf("."));
-        var tailLength = before.length - idx - 1;
-        return {
-            startLineNumber: position.lineNumber,
-            endLineNumber: position.lineNumber,
-            startColumn: position.column - tailLength,
-            endColumn: position.column
-        };
-    }
-
     function toMonacoKind(kind) {
         var K = monaco.languages.CompletionItemKind;
         var map = {};
@@ -226,7 +209,7 @@
                 var doc = documents.get(uri);
                 var synced = flushDocument(doc);
 
-                var fallbackRange = tailRange(model, position);
+                var fallbackRange = toMonacoRange(null, model, position);
 
                 return synced.then(function () {
                 return lspRequest("textDocument/completion", {
@@ -237,7 +220,7 @@
                     setReady(true);
                     var items = Array.isArray(result) ? result : (result && result.items) || [];
                     var suggestions = [];
-                    for (var i = 0; i < items.length && suggestions.length < 200; i++) {
+                    for (var i = 0; i < items.length; i++) {
                         var item = items[i];
                         var label = typeof item.label === "string" ? item.label : (item.label && item.label.label) || "";
                         if (!label) continue;

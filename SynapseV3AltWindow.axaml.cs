@@ -9,27 +9,27 @@ using System.Text.Json.Nodes;
 
 namespace OrbitAvalonia;
 
+// A local editor/UI host only. No execution, injection, client discovery or remote bridge.
 public sealed partial class SynapseV3AltWindow : Window
 {
+    private const string UiOnly = "Execution is unavailable in this UI-only port. No injector or external client is connected.";
     private readonly string _scriptsDirectory;
     private readonly string _dataRoot;
     private readonly string _uiRoot;
-    private readonly Uri _monacoAddress;
     private readonly Action<EditorWorkspaceState> _returnToOrion;
     private readonly EditorWorkspaceService _workspaceService = new();
     private readonly HashSet<string> _dialogFiles = new(StringComparer.OrdinalIgnoreCase);
     private readonly List<object> _logs = [];
     private readonly NativeWebView _webView;
-    private readonly UnifiedBridgeServer _bridge = UnifiedBridgeServer.Shared;
+    private MonacoStaticServer? _server;
     private Window? _console;
     private NativeWebView? _consoleView;
     private bool _disposed, _closingForOrion, _finishingClose, _allowClose;
     private double _zoom = 1;
 
-    internal SynapseV3AltWindow(Uri monacoAddress, string scriptsDirectory, EditorWorkspaceState initialWorkspace,
+    internal SynapseV3AltWindow(string scriptsDirectory, EditorWorkspaceState initialWorkspace,
         Action<EditorWorkspaceState> returnToOrion)
     {
-        _monacoAddress = monacoAddress;
         _scriptsDirectory = Path.GetFullPath(scriptsDirectory).TrimEnd(Path.DirectorySeparatorChar);
         _dataRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Orbit", "SynapseV3Alt");
         _uiRoot = Path.Combine(AppContext.BaseDirectory, "SynapseV3AltUI", "dist");
@@ -58,14 +58,10 @@ public sealed partial class SynapseV3AltWindow : Window
             EnsureNoLinks(_uiRoot);
             if (!File.Exists(Path.Combine(_uiRoot, "index.html")))
                 throw new FileNotFoundException("SynapseV3AltUI/dist/index.html is missing. Build and deploy the UI assets first.");
-            
-            _bridge.ConnectionChanged += BridgeConnectionChanged;
-            _bridge.ClientsChanged += BridgeClientsChanged;
-            _bridge.LogReceived += BridgeLogReceived;
-            
+            _server = new MonacoStaticServer(_uiRoot);
             ConnectView(_webView);
-            _webView.Source = new Uri(Path.Combine(_uiRoot, "index.html"));
-            Log("info", "Synapse V3 Alt editor ready. External client: " + (_bridge.IsConnected ? "connected" : "disconnected"));
+            _webView.Source = _server.Address;
+            Log("info", "Local UI-only editor ready. External client: disconnected. Execution unavailable.");
         }
         catch (Exception error)
         {
@@ -91,8 +87,8 @@ public sealed partial class SynapseV3AltWindow : Window
         view.NavigationCompleted -= OnNavigationCompleted;
     }
 
-    private bool IsLocalPage(Uri? uri) => uri is not null &&
-        (uri.Scheme == _monacoAddress.Scheme || uri.Scheme == "file") && 
+    private bool IsLocalPage(Uri? uri) => _server is not null && uri is not null &&
+        uri.Scheme == _server.Address.Scheme && uri.Host == _server.Address.Host && uri.Port == _server.Address.Port &&
         (uri.AbsolutePath == "/index.html" || uri.AbsolutePath == "/console/index.html");
 
     private void OnNavigation(object? sender, WebViewNavigationStartingEventArgs e)
@@ -148,12 +144,9 @@ public sealed partial class SynapseV3AltWindow : Window
         var target = console ? _console! : this;
         switch (method)
         {
-            case "getBootstrap": 
-                var clients = GetClientInfos();
-                var connected = _bridge.IsConnected && clients.Length > 0;
-                return new { settings = _settings, storage = _storage, workspace = _workspace,
-                    windowState = new { isMaximized = target.WindowState == WindowState.Maximized }, isMaximized = target.WindowState == WindowState.Maximized,
-                    externalClient = false, connected, clients, uiOnly = false, logs = _logs.ToArray() };
+            case "getBootstrap": return new { settings = _settings, storage = _storage, workspace = _workspace,
+                windowState = new { isMaximized = target.WindowState == WindowState.Maximized }, isMaximized = target.WindowState == WindowState.Maximized,
+                externalClient = false, connected = false, clients = Array.Empty<object>(), uiOnly = true, logs = _logs.ToArray() };
             case "saveWorkspace": AcceptWorkspace(Value(0)); PersistWorkspace(); return true;
             case "saveStorage": _storage = RequireObject(Value(0)); PersistObject("storage.json", _storage); return true;
             case "getSetting": return _settings[Text(0)] ?? Value(1);
@@ -204,19 +197,12 @@ public sealed partial class SynapseV3AltWindow : Window
                     await EvaluateSafeAsync(source, $"window.synapseAltEvent?.('consoleMessage',{JsonSerializer.Serialize(entry)});");
                 return true;
             case "clearConsole": _logs.Clear(); Emit("consoleSnapshot", _logs.ToArray()); return true;
-            case "getChangelog": return "SynapseV3Alt: Orion bridge-integrated editor with execution via Orion Bridge.";
+            case "getChangelog": return "SynapseV3Alt: local editor with local-file bookmarks and on-demand GitHub Gists. Execution, external clients and plugins are unavailable.";
             case "showItemInFolder": ShowItemInFolder(Text(0)); return true;
-            case "execute":
-            {
-                if (!_bridge.IsConnected || _bridge.GetConnectedClients().Count == 0)
-                    throw new InvalidOperationException("Not attached — run Scripts/Orion Bridge.lua");
-                var content = await SnapshotEditorContentAsync();
-                _bridge.EnqueueExecute(content);
-                return new { ok = true };
-            }
-            case "getClients": return GetClientInfos();
-            case "isAttached": case "isConnected": return _bridge.IsConnected && _bridge.GetConnectedClients().Count > 0;
-            default: throw new NotSupportedException($"Unsupported operation: {method}");
+            case "execute": throw new InvalidOperationException(UiOnly);
+            case "getClients": return Array.Empty<object>();
+            case "isAttached": case "isConnected": return false;
+            default: throw new NotSupportedException($"Unsupported UI-only operation: {method}");
         }
     }
 
@@ -253,41 +239,18 @@ public sealed partial class SynapseV3AltWindow : Window
         _console?.Close();
         DisconnectView(_webView);
         Content = null; // Detaching NativeWebView destroys its native adapter; do not Hide/reparent it.
-        _bridge.ConnectionChanged -= BridgeConnectionChanged;
-        _bridge.ClientsChanged -= BridgeClientsChanged;
-        _bridge.LogReceived -= BridgeLogReceived;
+        _server?.Dispose();
+        _server = null;
         _workspaceService.Dispose();
         if (!_closingForOrion) _returnToOrion(ToShared());
-    }
-
-    private void BridgeConnectionChanged(bool connected)
-    {
-        Dispatcher.UIThread.Post(() => Emit("connectionChanged", new { connected, clients = GetClientInfos() }));
-    }
-
-    private void BridgeClientsChanged()
-    {
-        Dispatcher.UIThread.Post(() => Emit("clientsChanged", new { clients = GetClientInfos() }));
-    }
-
-    private void BridgeLogReceived(string level, string message)
-    {
-        Dispatcher.UIThread.Post(() => Log(level, message));
-    }
-
-    private object[] GetClientInfos()
-    {
-        return _bridge.GetConnectedClients()
-            .Select(c => new { identifier = c.Identifier, username = c.Username })
-            .Cast<object>()
-            .ToArray();
     }
 
     private void OpenConsole()
     {
         if (_console is not null) { _console.Activate(); return; }
+        if (_server is null) throw new InvalidOperationException("Local UI server is unavailable.");
         var view = new NativeWebView();
-        var window = new Window { Title = "Synapse V3 Alt — console", Width = 760, Height = 420, MinWidth = 450, MinHeight = 250, Content = view };
+        var window = new Window { Title = "Synapse V3 Alt — local console", Width = 760, Height = 420, MinWidth = 450, MinHeight = 250, Content = view };
         _console = window; _consoleView = view;
         ConnectView(view);
         window.PropertyChanged += (_, e) =>
@@ -297,7 +260,7 @@ public sealed partial class SynapseV3AltWindow : Window
         };
         window.Closed += (_, _) => { DisconnectView(view); window.Content = null; _console = null; _consoleView = null; };
         window.Show(this);
-        view.Source = new UriBuilder("http://127.0.0.1:31337") { Path = "console/index.html" }.Uri;
+        view.Source = new Uri(_server.Address, "console/index.html");
     }
 
     private object WindowInfo() => new { isMaximized = WindowState == WindowState.Maximized };
@@ -319,29 +282,6 @@ public sealed partial class SynapseV3AltWindow : Window
         if (_disposed) return;
         try { await view.InvokeScript(script); } catch (Exception) { /* Page may not be ready, or has closed. */ }
     }
-
-    private async Task<string> SnapshotEditorContentAsync()
-    {
-        try
-        {
-            var snapshot = await _webView.InvokeScript("JSON.stringify(window.synapseAltSnapshot?.() ?? null)").WaitAsync(TimeSpan.FromSeconds(2));
-            if (snapshot is not null && ParseUnwrapped(snapshot) is JsonObject state && state["workspace"] is JsonObject workspace)
-            {
-                if (workspace["tabs"] is JsonArray tabs)
-                {
-                    var activeTabId = workspace["activeTabId"]?.GetValue<string>();
-                    var activeTab = tabs.OfType<JsonObject>().FirstOrDefault(t => t["id"]?.GetValue<string>() == activeTabId);
-                    if (activeTab is not null && activeTab["content"] is JsonValue contentValue)
-                    {
-                        return contentValue.GetValue<string>() ?? "";
-                    }
-                }
-            }
-        }
-        catch (Exception) { }
-        return "";
-    }
-
     private static JsonNode? ParseUnwrapped(string json)
     {
         var node = JsonNode.Parse(json);

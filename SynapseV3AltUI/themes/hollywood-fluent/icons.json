@@ -1,0 +1,18 @@
+{
+    "folder": "mdi:folder",
+    "file": "mdi:file",
+    "file-script": "mdi:language-lua",
+    "file-text": "mdi:file-code",
+
+    "btn-execute": "mdi:play-circle-outline",
+    "btn-clear": "mdi:trash-can-outline",
+    "btn-file-open": "mdi:file-document-multiple-outline",
+    "btn-file-execute": "mdi:file-cog-outline",
+    "btn-file-save": "mdi:content-save-outline",
+
+    "page-editor": "mdi:code-brackets",
+    "page-customization": "mdi:palette-outline",
+    "page-settings-engine": "mdi:gamepad-variant-outline",
+    "page-powertools": "mdi:package-variant-closed",
+    "page-settings": "mdi:wrench-outline"
+}

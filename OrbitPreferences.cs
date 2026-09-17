@@ -229,6 +229,7 @@ internal static class OrbitPreferences
     private static string NormalizeInterface(string? selection) => selection switch
     {
         "SynapseV3" => "SynapseV3",
+        "SynapseV3Alt" => "SynapseV3Alt",
         "Synapse2017" => "Synapse2017",
         "SynapseBlue" => "SynapseBlue",
         "SynapseX" => "SynapseX",

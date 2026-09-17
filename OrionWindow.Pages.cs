@@ -337,7 +337,6 @@ public sealed partial class OrionWindow
                     break;
                 case "SynapseV3Alt":
                     ShowPreservedAvaloniaWindow(new SynapseV3AltWindow(
-                        _orionMonacoServer.Address,
                         _orionWorkspace.ScriptsDirectory,
                         workspace,
                         RestoreOrionWorkspace));

@@ -1,0 +1,483 @@
+@charset "UTF-8";
+/*
+	HOLLYWOOD CODE EDITOR — Advanced open-source interface for execution platforms
+    Copyright (C) 2018-2021 Synapse Softworks LLC
+
+    This file and program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This file and program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+/* -------------- Base colors --------------  */
+/* -------------- Main interface colors --------------  */
+/* -------------- Control colors --------------  */
+/* -------------- Editor colors --------------  */
+/* -------------- Console colors --------------  */
+/* -------------- Base colors --------------  */
+/* -------------- Main interface colors --------------  */
+/* -------------- Control colors --------------  */
+/* -------------- Editor colors --------------  */
+/* -------------- Base colors --------------  */
+/* -------------- Main interface colors --------------  */
+/* -------------- Control colors --------------  */
+/* -------------- Editor colors --------------  */
+/* -------------- Console colors --------------  */
+/*
+    HOLLYWOOD CODE EDITOR — Advanced open-source interface for execution platforms
+    Source code available at https://github.com/synllc/hw
+    Copyright (C) 2018-2022 Synapse Softworks LLC
+
+    This file and program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This file and program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+/* -------------- Color applications --------------  */
+.hw-titlebar {
+  color: #fafaf9;
+  background: linear-gradient(to bottom, #1E3142, #151F2A);
+  border-color: #305372 !important;
+  border-bottom-width: 1px !important;
+  border-bottom-style: solid !important;
+  
+  -webkit-app-region: drag;
+}
+.hw-titlebar .control {
+  color: #fafaf9;
+  background: transparent;
+  -webkit-app-region: no-drag;
+}
+.hw-titlebar .control#control-close:hover {
+  color: white;
+  background: #ef4444;
+}
+.hw-titlebar .control#control-close:active {
+  background: #b91c1c;
+}
+.hw-titlebar .control:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+.hw-titlebar .control:active {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.hw-navigationbar {
+  color: #d6d3d1;
+  pointer-events: none;
+  border-color: #305372 !important;
+}
+.hw-navigationbar .entry {
+  pointer-events: all;
+  -webkit-app-region: no-drag;
+}
+.hw-navigationbar .entry .iconify {
+  filter: drop-shadow(none);
+}
+.hw-navigationbar .entry .label {
+  color: #fafaf9;
+  background: linear-gradient(to bottom, #1E3142, #151F2A);
+  box-shadow: none;
+}
+.hw-navigationbar .entry .label .iconify {
+  color: #fafaf9;
+  filter: none;
+}
+.hw-navigationbar .entry .selectbar {
+  background-color: #fafaf9;
+}
+.hw-navigationbar .entry:hover {
+  color: #fafaf9;
+}
+.hw-navigationbar .entry.select {
+  color: white;
+  background: rgba(39, 66, 90, 0.5);
+}
+
+.hw-languagebar {
+  background-color: #1E3142;
+}
+
+.hw-button {
+  color: #fafaf9;
+  background: linear-gradient(to bottom, rgb(13.0147058824%, 21.2573529412%, 28.6323529412%), #1E3142);
+  border: none;
+  box-shadow: 0 0rem 0.5rem rgba(0, 0, 0, 0.3);
+  outline-color: #0369a1;
+}
+.hw-button:hover {
+  color: #fafaf9;
+  background: #27425A;
+  border: none;
+  box-shadow: 0 0rem 0.5rem rgba(0, 0, 0, 0.3);
+}
+.hw-button:active {
+  color: #d6d3d1;
+  background: #151F2A;
+  border: none;
+  box-shadow: 0 0rem 0.5rem rgba(0, 0, 0, 0.3);
+}
+
+.hw-textbox {
+  color: #fafaf9;
+  background: #1E3142;
+  border: none;
+  box-shadow: none;
+}
+.hw-textbox .inner {
+  border-color: #305372 !important;
+}
+.hw-textbox .caption {
+  color: #fafaf9;
+}
+.hw-textbox .iconify {
+  color: #fafaf9;
+}
+
+.hw-checkbox {
+  background: #1E3142;
+  box-shadow: none;
+}
+.hw-checkbox .icon {
+  color: #27425A;
+}
+.hw-checkbox.on {
+  background: #0369a1;
+}
+.hw-checkbox.on .icon {
+  color: #0369a1;
+}
+
+.hw-dropdown {
+  color: #fafaf9;
+}
+.hw-dropdown .selector {
+  background: #1E3142;
+  box-shadow: 0 0rem 0.8rem rgba(0, 0, 0, 0.6);
+  border-color: #305372 !important;
+}
+.hw-dropdown .selector .iconify {
+  color: #fafaf9;
+}
+.hw-dropdown .list {
+  background: #1E3142;
+  box-shadow: 0 0rem 0.8rem rgba(0, 0, 0, 0.6);
+  border-color: #305372 !important;
+}
+.hw-dropdown .list .highlight {
+  background: #0369a1;
+}
+
+.hw-slider {
+  color: #fafaf9;
+  background: transparent;
+}
+.hw-slider input[type=range]::-webkit-slider-runnable-track {
+  background: #1E3142;
+}
+.hw-slider input[type=range]::-webkit-slider-thumb {
+  background: #0369a1;
+}
+
+.hw-list {
+  color: #fafaf9;
+  background: black;
+  border-color: #292524;
+}
+.hw-list .caption {
+  background: black;
+  border-color: #292524;
+}
+.hw-list .value {
+  background: black;
+  border-color: #292524;
+}
+.hw-list .value.selected {
+  background: #0369a1;
+}
+
+.hw-contextmenu {
+  color: #d6d3d1;
+  background: rgba(21, 31, 42, 0.5);
+  box-shadow: 0 0rem 0.5rem rgba(0, 0, 0, 0.3);
+}
+.hw-contextmenu .entry .iconify {
+  color: #d6d3d1;
+}
+.hw-contextmenu .entry:hover {
+  color: #fafaf9;
+}
+.hw-contextmenu .entry:hover .iconify {
+  color: #fafaf9;
+}
+
+.hw-dialog {
+  color: #fafaf9;
+  background: #0E141B;
+  box-shadow: 0 0rem 0.8rem rgba(0, 0, 0, 0.6);
+  border-color: #305372 !important;
+}
+.hw-dialog .caption {
+  color: #fafaf9;
+}
+.hw-dialog .inputs {
+  background: #1E3142;
+  border-color: #305372 !important;
+}
+
+.hw-changelog {
+  color: #fafaf9;
+  background: #151F2A;
+  box-shadow: 0 0rem 0.8rem rgba(0, 0, 0, 0.6);
+  border-color: #305372 !important;
+}
+.hw-changelog .caption {
+  color: #fafaf9;
+  background: #1E3142;
+  border-color: #305372 !important;
+}
+.hw-changelog .caption .iconify {
+  color: #fafaf9;
+}
+
+.hw-progress-view {
+  color: #fafaf9;
+  background: #151F2A;
+  box-shadow: 0 0rem 0.8rem rgba(0, 0, 0, 0.6);
+  border-color: #305372 !important;
+}
+.hw-progress-view .caption {
+  color: #fafaf9;
+  background: #1E3142;
+  border-bottom-color: #305372;
+}
+.hw-progress-view .task {
+  color: #fafaf9;
+  background: transparent;
+  box-shadow: none;
+  border-color: #305372 !important;
+}
+.hw-progress-view .task .subtext {
+  color: #d6d3d1;
+}
+.hw-progress-view .task.in-progress .iconify {
+  color: #38bdf8;
+}
+.hw-progress-view .task.complete .iconify {
+  color: #4ade80;
+}
+.hw-progress-view .task.failure .iconify {
+  color: #ef4444;
+}
+
+.hw-editor-tab {
+  color: #d6d3d1;
+  background: transparent;
+  box-shadow: none;
+  border-color: #305372 !important;
+}
+.hw-editor-tab .iconify {
+  color: #d6d3d1;
+}
+.hw-editor-tab .close .iconify {
+  color: #d6d3d1;
+}
+.hw-editor-tab.select {
+  color: #fafaf9;
+  background: #1E3142;
+  box-shadow: 0 0rem 0.5rem rgba(0, 0, 0, 0.3);
+}
+.hw-editor-tab.select .iconify {
+  color: #fafaf9;
+}
+.hw-editor-tab.select .close .iconify {
+  color: #fafaf9;
+}
+
+.editor-view {
+  border-color: none;
+}
+.editor-view .action-bar {
+  border-color: #305372 ;
+}
+.editor-view .connection-toggle {
+  border-color: #305372 ;
+}
+.editor-view .tabs-container {
+  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.5);
+  border-color: #305372 ;
+  z-index: 1;
+}
+.editor-view .tabs-container::-webkit-scrollbar {
+  display: none;
+}
+.editor-view .main-container {
+  border-color: inherit;
+}
+.editor-view .main-container .editor {
+  border-color: inherit;
+}
+.editor-view .information-view {
+  border-color: #1E3142;
+}
+.editor-view .target-bar {
+  border-color: #1E3142;
+}
+.editor-view .action-button {
+  color: #fafaf9;
+  background: transparent;
+  border-radius: 9999px;
+}
+.editor-view .action-button:hover {
+  color: #fafaf9;
+  background: #fafaf9;
+}
+.editor-view .action-button:hover {
+  color: #fafaf9;
+  background: #fafaf9;
+}
+.editor-view .add-tab {
+  color: #fafaf9;
+  background: transparent;
+}
+
+.sidebar {
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
+  border-color: #305372 ;
+  z-index: 1;
+}
+
+.editor-sidebar-category .category-caption, .editor-sidebar-category .module-caption, .tree .category-caption, .tree .module-caption {
+  color: #fafaf9;
+  background-color: #1E3142;
+  border-color: #305372 !important;
+}
+.editor-sidebar-category .category-caption > .iconify, .editor-sidebar-category .module-caption > .iconify, .tree .category-caption > .iconify, .tree .module-caption > .iconify {
+  color: #fafaf9;
+}
+.editor-sidebar-category .category-caption > .iconify.chevron, .editor-sidebar-category .module-caption > .iconify.chevron, .tree .category-caption > .iconify.chevron, .tree .module-caption > .iconify.chevron {
+  color: #fafaf9;
+}
+.editor-sidebar-category .node, .tree .node {
+  color: #fafaf9;
+  background: transparent;
+}
+.editor-sidebar-category .node .iconify, .tree .node .iconify {
+  color: #fafaf9;
+}
+.editor-sidebar-category .node .node-caption:active, .tree .node .node-caption:active {
+  background: #1E3142;
+}
+.editor-sidebar-category .node .node-caption:hover, .tree .node .node-caption:hover {
+  background: #27425A;
+}
+.editor-sidebar-category .node .caption, .tree .node .caption {
+  background: #d6d3d1;
+}
+
+.hw-multimenu .list {
+  background: #151F2A;
+  box-shadow: 0.2rem 0 0.5rem rgba(0, 0, 0, 0.4);
+  border-color: #305372 !important;
+}
+.hw-multimenu .list .entry {
+  color: #fafaf9;
+  background: #1E3142;
+  box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.3);
+  border-color: #305372 !important;
+}
+.hw-multimenu .list .entry::before {
+  background: #0369a1;
+}
+.hw-multimenu .list .entry:hover {
+  background: #27425A;
+}
+.hw-multimenu .list .entry.select, .hw-multimenu .list .entry:active {
+  background: rgba(39, 66, 90, 0.5);
+}
+.hw-multimenu .pages {
+  background: #0E141B;
+}
+.hw-multimenu .pages .page .category-label {
+  background: #1E3142;
+  border-top: 1px solid #305372 !important;
+  border-bottom: 1px solid #305372 !important;
+}
+
+.console-header {
+  color: #fafaf9;
+  background: black;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 1rem rgba(255, 255, 255, 0.2);
+}
+
+.console-contents {
+  background: black;
+}
+
+#console-body {
+  background-color: #151F2A !important;
+}
+
+/* The window itself is transparent (rounded corners) — the solid theme
+   background must live on #application, never on html/body. */
+html, body {
+  color: #fafaf9;
+  background: transparent !important;
+}
+
+#application {
+  background-color: #151F2A;
+}
+
+a {
+  color: #d6d3d1;
+}
+a:hover {
+  color: #fafaf9;
+}
+
+.hw-editor-tab {
+  border-radius: 0;
+  border-top: 2px solid transparent !important;
+  border-left: 2px solid transparent !important;
+  border-right: 2px solid transparent !important;
+}
+.hw-editor-tab.select {
+  border-top-color: #EF9343 !important;
+}
+
+.tabs-container {
+  padding: 0 !important;
+  gap: 0 !important;
+}
+.tabs-container .tabs {
+  gap: 0 !important;
+}
+
+#execute-button .iconify {
+  color: greenyellow;
+}
+
+/* Manual override requested by user */
+.editor-sidebar-category .category-caption, .editor-sidebar-category .module-caption, .tree .category-caption, .tree .module-caption {
+  color: #fafaf9;
+  background-color: #1E3142;
+  border-color: #305372 !important;
+}
+

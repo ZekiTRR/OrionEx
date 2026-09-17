@@ -27,6 +27,9 @@
 *.userosscache
 *.sln.docstates
 
+# Frontend dependencies
+**/node_modules/
+
 # Local SDK/package caches used by the desktop workspace
 .dotnet/
 .dotnet-home/

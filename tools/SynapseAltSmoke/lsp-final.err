@@ -1,0 +1,4 @@
+SMOKE_FAIL System.Exception: Suggest widget never displayed the LSP completion 'myVariable'
+   at SmokeApp.RunLsp(NativeWebView view) in D:\Cheats\Orion\tools\SynapseAltSmoke\Program.cs:line 117
+   at SmokeApp.<>c__DisplayClass0_0.<<OnFrameworkInitializationCompleted>b__0>d.MoveNext() in D:\Cheats\Orion\tools\SynapseAltSmoke\Program.cs:line 49
+[0917/161412.187:ERROR:ui\gfx\win\window_impl.cc:172] Failed to unregister class Chrome_WidgetWin_0. Error = 1412

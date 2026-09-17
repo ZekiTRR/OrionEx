@@ -1,0 +1,495 @@
+@charset "UTF-8";
+/*
+	HOLLYWOOD CODE EDITOR — Advanced open-source interface for execution platforms
+    Copyright (C) 2018-2021 Synapse Softworks LLC
+
+    This file and program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This file and program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+/* -------------- Base colors --------------  */
+/* -------------- Main interface colors --------------  */
+/* -------------- Control colors --------------  */
+/* -------------- Editor colors --------------  */
+/* -------------- Console colors --------------  */
+/* -------------- Base colors --------------  */
+/* -------------- Main interface colors --------------  */
+/* -------------- Control colors --------------  */
+/* -------------- Editor colors --------------  */
+/* -------------- Base colors --------------  */
+/* -------------- Main interface colors --------------  */
+/* -------------- Control colors --------------  */
+/* -------------- Editor colors --------------  */
+/* -------------- Console colors --------------  */
+/*
+    HOLLYWOOD CODE EDITOR — Advanced open-source interface for execution platforms
+    Source code available at https://github.com/synllc/hw
+    Copyright (C) 2018-2022 Synapse Softworks LLC
+
+    This file and program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This file and program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+/* -------------- Color applications --------------  */
+.hw-titlebar {
+  color: white;
+  background: black;
+  border-color: black !important;
+  
+  -webkit-app-region: drag;
+}
+.hw-titlebar .control {
+  color: white;
+  background: transparent;
+  -webkit-app-region: no-drag;
+}
+.hw-titlebar .control#control-close:hover {
+  color: white;
+  background: #ef4444;
+}
+.hw-titlebar .control#control-close:active {
+  background: #b91c1c;
+}
+.hw-titlebar .control:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+.hw-titlebar .control:active {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.hw-navigationbar {
+  color: grey;
+  pointer-events: none;
+  border-color: black !important;
+}
+.hw-navigationbar .entry {
+  pointer-events: all;
+  -webkit-app-region: no-drag;
+}
+.hw-navigationbar .entry .iconify {
+  filter: drop-shadow(none);
+}
+.hw-navigationbar .entry .label {
+  color: white;
+  background: linear-gradient(to bottom, rgb(26, 26, 26), black);
+  box-shadow: none;
+}
+.hw-navigationbar .entry .label .iconify {
+  color: white;
+  filter: none;
+}
+.hw-navigationbar .entry .selectbar {
+  background-color: white;
+}
+.hw-navigationbar .entry:hover {
+  color: white;
+}
+.hw-navigationbar .entry.select {
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.hw-languagebar {
+  background-color: rgb(26, 26, 26);
+}
+
+.hw-button {
+  color: white;
+  background: black;
+  border: 2px solid red;
+  box-shadow: none;
+  outline-color: red;
+}
+.hw-button:hover {
+  color: white;
+  background: black;
+  border: 2px solid red;
+  box-shadow: none;
+}
+.hw-button:active {
+  color: grey;
+  background: black;
+  border: 2px solid red;
+  box-shadow: none;
+}
+
+.hw-textbox {
+  color: white;
+  background: rgb(26, 26, 26);
+  border: 2px solid red;
+  box-shadow: none;
+}
+.hw-textbox .inner {
+  border-color: black !important;
+}
+.hw-textbox .caption {
+  color: white;
+}
+.hw-textbox .iconify {
+  color: white;
+}
+
+.hw-checkbox {
+  background: rgb(26, 26, 26);
+  box-shadow: none;
+}
+.hw-checkbox .icon {
+  color: black;
+}
+.hw-checkbox.on {
+  background: red;
+}
+.hw-checkbox.on .icon {
+  color: red;
+}
+
+.hw-dropdown {
+  color: white;
+}
+.hw-dropdown .selector {
+  background: rgb(26, 26, 26);
+  box-shadow: 0 0rem 0.8rem rgba(0, 0, 0, 0.6);
+  border-color: black !important;
+}
+.hw-dropdown .selector .iconify {
+  color: white;
+}
+.hw-dropdown .list {
+  background: rgb(26, 26, 26);
+  box-shadow: 0 0rem 0.8rem rgba(0, 0, 0, 0.6);
+  border-color: black !important;
+}
+.hw-dropdown .list .highlight {
+  background: red;
+}
+
+.hw-slider {
+  color: white;
+  background: transparent;
+}
+.hw-slider input[type=range]::-webkit-slider-runnable-track {
+  background: rgb(26, 26, 26);
+}
+.hw-slider input[type=range]::-webkit-slider-thumb {
+  background: red;
+}
+
+.hw-list {
+  color: #fafaf9;
+  background: black;
+  border-color: black;
+}
+.hw-list .caption {
+  background: black;
+  border-color: black;
+}
+.hw-list .value {
+  background: black;
+  border-color: black;
+}
+.hw-list .value.selected {
+  background: #0369a1;
+}
+
+.hw-contextmenu {
+  color: grey;
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0rem 0.5rem rgba(0, 0, 0, 0.3);
+}
+.hw-contextmenu .entry .iconify {
+  color: grey;
+}
+.hw-contextmenu .entry:hover {
+  color: white;
+}
+.hw-contextmenu .entry:hover .iconify {
+  color: white;
+}
+
+.hw-dialog {
+  color: white;
+  background: black;
+  box-shadow: 0 0rem 0.8rem rgba(0, 0, 0, 0.6);
+  border-color: black !important;
+}
+.hw-dialog .caption {
+  color: white;
+}
+.hw-dialog .inputs {
+  background: rgb(26, 26, 26);
+  border-color: black !important;
+}
+
+.hw-changelog {
+  color: white;
+  background: black;
+  box-shadow: 0 0rem 0.8rem rgba(0, 0, 0, 0.6);
+  border-color: black !important;
+}
+.hw-changelog .caption {
+  color: white;
+  background: rgb(26, 26, 26);
+  border-color: black !important;
+}
+.hw-changelog .caption .iconify {
+  color: white;
+}
+
+.hw-progress-view {
+  color: white;
+  background: black;
+  box-shadow: 0 0rem 0.8rem rgba(0, 0, 0, 0.6);
+  border-color: black !important;
+}
+.hw-progress-view .caption {
+  color: white;
+  background: rgb(26, 26, 26);
+  border-bottom-color: black;
+}
+.hw-progress-view .task {
+  color: white;
+  background: transparent;
+  box-shadow: none;
+  border-color: black !important;
+}
+.hw-progress-view .task .subtext {
+  color: grey;
+}
+.hw-progress-view .task.in-progress .iconify {
+  color: #38bdf8;
+}
+.hw-progress-view .task.complete .iconify {
+  color: #4ade80;
+}
+.hw-progress-view .task.failure .iconify {
+  color: #ef4444;
+}
+
+.hw-editor-tab {
+  color: grey;
+  background: transparent;
+  box-shadow: none;
+  border-color: black !important;
+}
+.hw-editor-tab .iconify {
+  color: grey;
+}
+.hw-editor-tab .close .iconify {
+  color: grey;
+}
+.hw-editor-tab.select {
+  color: white;
+  background: rgb(26, 26, 26);
+  box-shadow: 0 0rem 0.5rem rgba(0, 0, 0, 0.3);
+}
+.hw-editor-tab.select .iconify {
+  color: white;
+}
+.hw-editor-tab.select .close .iconify {
+  color: white;
+}
+
+.editor-view {
+  border-color: none;
+}
+.editor-view .action-bar {
+  border-color: black ;
+}
+.editor-view .connection-toggle {
+  border-color: black ;
+}
+.editor-view .tabs-container {
+  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.5);
+  border-color: black ;
+  z-index: 1;
+}
+.editor-view .tabs-container::-webkit-scrollbar {
+  display: none;
+}
+.editor-view .main-container {
+  border-color: inherit;
+}
+.editor-view .main-container .editor {
+  border-color: inherit;
+}
+.editor-view .information-view {
+  border-color: rgb(26, 26, 26);
+}
+.editor-view .target-bar {
+  border-color: rgb(26, 26, 26);
+}
+.editor-view .action-button {
+  color: white;
+  background: transparent;
+  border-radius: 9999px;
+}
+.editor-view .action-button:hover {
+  color: white;
+  background: white;
+}
+.editor-view .action-button:hover {
+  color: white;
+  background: white;
+}
+.editor-view .add-tab {
+  color: white;
+  background: transparent;
+}
+
+.sidebar {
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
+  border-color: black ;
+  z-index: 1;
+}
+
+.editor-sidebar-category .category-caption, .editor-sidebar-category .module-caption, .tree .category-caption, .tree .module-caption {
+  color: white;
+  background-color: rgb(26, 26, 26);
+  border-color: black !important;
+}
+.editor-sidebar-category .category-caption > .iconify, .editor-sidebar-category .module-caption > .iconify, .tree .category-caption > .iconify, .tree .module-caption > .iconify {
+  color: white;
+}
+.editor-sidebar-category .category-caption > .iconify.chevron, .editor-sidebar-category .module-caption > .iconify.chevron, .tree .category-caption > .iconify.chevron, .tree .module-caption > .iconify.chevron {
+  color: white;
+}
+.editor-sidebar-category .node, .tree .node {
+  color: white;
+  background: transparent;
+}
+.editor-sidebar-category .node .iconify, .tree .node .iconify {
+  color: white;
+}
+.editor-sidebar-category .node .node-caption:active, .tree .node .node-caption:active {
+  background: rgb(26, 26, 26);
+}
+.editor-sidebar-category .node .node-caption:hover, .tree .node .node-caption:hover {
+  background: black;
+}
+.editor-sidebar-category .node .caption, .tree .node .caption {
+  background: grey;
+}
+
+.hw-multimenu .list {
+  background: black;
+  box-shadow: 0.2rem 0 0.5rem rgba(0, 0, 0, 0.4);
+  border-color: black !important;
+}
+.hw-multimenu .list .entry {
+  color: white;
+  background: rgb(26, 26, 26);
+  box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.3);
+  border-color: black !important;
+}
+.hw-multimenu .list .entry::before {
+  background: red;
+}
+.hw-multimenu .list .entry:hover {
+  background: black;
+}
+.hw-multimenu .list .entry.select, .hw-multimenu .list .entry:active {
+  background: rgba(0, 0, 0, 0.5);
+}
+.hw-multimenu .pages {
+  background: black;
+}
+.hw-multimenu .pages .page .category-label {
+  background: rgb(26, 26, 26);
+  border-top: 1px solid black !important;
+  border-bottom: 1px solid black !important;
+}
+
+.console-header {
+  color: #fafaf9;
+  background: black;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 1rem rgba(255, 255, 255, 0.2);
+}
+
+.console-contents {
+  background: black;
+}
+
+#console-body {
+  background-color: black !important;
+}
+
+/* The window itself is transparent (rounded corners) — the solid theme
+   background must live on #application, never on html/body. */
+html, body {
+  color: white;
+  background: transparent !important;
+}
+
+#application {
+  background-color: black;
+}
+
+a {
+  color: grey;
+}
+a:hover {
+  color: white;
+}
+
+.hw-editor-tab {
+  border-radius: 0px;
+}
+.hw-editor-tab.select {
+  border: 2px solid red !important;
+}
+
+#titlebar-logo {
+  background-image: none;
+  width: fit-content;
+}
+#titlebar-logo::after {
+  display: inline-block;
+  content: "c00lgui X 3.0";
+  margin-left: 0.2em;
+  font-size: 1.5em;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: white;
+}
+
+.hw-textbox {
+  border-radius: 0;
+}
+
+.hw-button {
+  border: 2px solid red;
+  border-radius: 0;
+}
+
+.module-caption {
+  border: 2px solid red;
+  border-radius: 0;
+}
+
+.page .category-label {
+  border: 2px solid red;
+}
+
+.action-list {
+  gap: 0 !important;
+}
+

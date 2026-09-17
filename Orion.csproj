@@ -116,6 +116,32 @@
              ExcludeFromSingleFile="true" />
   </ItemGroup>
 
+  <ItemGroup>
+    <SynapseV3AltSource Include="SynapseV3AltUI\src\**\*;SynapseV3AltUI\console\**\*;SynapseV3AltUI\assets\**\*;SynapseV3AltUI\themes\**\*;SynapseV3AltUI\*.json;SynapseV3AltUI\*.mjs;SynapseV3AltUI\*.js;SynapseV3AltUI\*.html;MonacoPreview\**\*" />
+  </ItemGroup>
+
+  <Target Name="InstallSynapseV3AltDependencies" Condition="'$(DesignTimeBuild)' != 'true'"
+          Inputs="SynapseV3AltUI\package.json;SynapseV3AltUI\package-lock.json"
+          Outputs="SynapseV3AltUI\node_modules\.package-lock.json">
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)\SynapseV3AltUI" Command="npm ci --no-audit --no-fund" />
+  </Target>
+
+  <Target Name="BuildSynapseV3Alt" DependsOnTargets="InstallSynapseV3AltDependencies"
+          Condition="'$(DesignTimeBuild)' != 'true'" Inputs="@(SynapseV3AltSource)"
+          Outputs="SynapseV3AltUI\dist\.build-stamp">
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)\SynapseV3AltUI" Command="npm run build" />
+    <Touch Files="SynapseV3AltUI\dist\.build-stamp" AlwaysCreate="true" />
+  </Target>
+
+  <Target Name="IncludeSynapseV3Alt" BeforeTargets="AssignTargetPaths" DependsOnTargets="BuildSynapseV3Alt"
+          Condition="'$(DesignTimeBuild)' != 'true'">
+    <Error Condition="!Exists('SynapseV3AltUI\dist\index.html')" Text="SynapseV3Alt frontend build did not produce dist/index.html." />
+    <ItemGroup>
+      <Content Include="SynapseV3AltUI\dist\**\*" Exclude="SynapseV3AltUI\dist\.build-stamp"
+               CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+    </ItemGroup>
+  </Target>
+
   <Target Name="RemoveOrionPublishSymbols" AfterTargets="Publish">
     <ItemGroup>
       <OrionPublishSymbol Include="$(PublishDir)*.pdb" />

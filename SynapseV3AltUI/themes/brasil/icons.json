@@ -1,0 +1,18 @@
+{
+    "folder": "fluent:folder-20-filled",
+    "file": "fluent:document-20-filled",
+    "file-script": "fluent:code-20-filled",
+    "file-text": "fluent:document-text-20-filled",
+
+    "btn-execute": "fluent:play-circle-20-filled",
+    "btn-clear": "fluent:delete-20-filled",
+    "btn-file-open": "fluent:folder-open-20-filled",
+    "btn-file-execute": "fluent:play-20-filled",
+    "btn-file-save": "fluent:save-20-filled",
+
+    "page-editor": "fluent:code-20-filled",
+    "page-customization": "fluent:color-20-filled",
+    "page-settings-engine": "fluent:wrench-20-filled",
+    "page-powertools": "fluent:puzzle-piece-20-filled",
+    "page-settings": "fluent:settings-20-filled"
+}

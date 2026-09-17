@@ -1,0 +1,452 @@
+@charset "UTF-8";
+/* -------------- Base colors --------------  */
+/* -------------- Main interface colors --------------  */
+/* -------------- Control colors --------------  */
+/* -------------- Editor colors --------------  */
+/* -------------- Console colors --------------  */
+/* -------------- Base colors --------------  */
+/* -------------- Main interface colors --------------  */
+/* -------------- Control colors --------------  */
+/* -------------- Editor colors --------------  */
+/* -------------- Console colors --------------  */
+/*
+    HOLLYWOOD CODE EDITOR — Advanced open-source interface for execution platforms
+    Source code available at https://github.com/synllc/hw
+    Copyright (C) 2018-2022 Synapse Softworks LLC
+
+    This file and program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This file and program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+/* -------------- Color applications --------------  */
+.hw-titlebar {
+  color: #fafaf9;
+  background: black;
+  border-color: #292524;
+  border-bottom-width: 1px;
+  -webkit-app-region: drag;
+}
+.hw-titlebar .control {
+  color: #fafaf9;
+  background: transparent;
+  -webkit-app-region: no-drag;
+}
+.hw-titlebar .control#control-close:hover {
+  color: white;
+  background: #ef4444;
+}
+.hw-titlebar .control#control-close:active {
+  background: #b91c1c;
+}
+.hw-titlebar .control:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+.hw-titlebar .control:active {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.hw-navigationbar {
+  color: #d6d3d1;
+  pointer-events: none;
+  border-color: #292524;
+}
+.hw-navigationbar .entry {
+  pointer-events: all;
+  -webkit-app-region: no-drag;
+}
+.hw-navigationbar .entry .iconify {
+  filter: drop-shadow(none);
+}
+.hw-navigationbar .entry .label {
+  color: #fafaf9;
+  background: linear-gradient(to bottom, black, black);
+  box-shadow: none;
+}
+.hw-navigationbar .entry .label .iconify {
+  color: #fafaf9;
+  filter: none;
+}
+.hw-navigationbar .entry .selectbar {
+  background-color: #fafaf9;
+}
+.hw-navigationbar .entry:hover {
+  color: #fafaf9;
+}
+.hw-navigationbar .entry.select {
+  color: white;
+  background: rgba(28, 25, 23, 0.5);
+}
+
+.hw-languagebar {
+  background-color: black;
+}
+
+.hw-button {
+  color: #fafaf9;
+  background: linear-gradient(to bottom, #050505, black);
+  border: none;
+  box-shadow: 0 0rem 0.5rem rgba(0, 0, 0, 0.3);
+  outline-color: #0369a1;
+}
+.hw-button:hover {
+  color: #fafaf9;
+  background: #1c1917;
+  border: none;
+  box-shadow: 0 0rem 0.5rem rgba(0, 0, 0, 0.3);
+}
+.hw-button:active {
+  color: #d6d3d1;
+  background: black;
+  border: none;
+  box-shadow: 0 0rem 0.5rem rgba(0, 0, 0, 0.3);
+}
+
+.hw-textbox {
+  color: #fafaf9;
+  background: black;
+  border: none;
+  box-shadow: none;
+}
+.hw-textbox .inner {
+  border-color: #292524;
+}
+.hw-textbox .caption {
+  color: #fafaf9;
+}
+.hw-textbox .iconify {
+  color: #fafaf9;
+}
+
+.hw-checkbox {
+  background: black;
+  box-shadow: none;
+}
+.hw-checkbox .icon {
+  color: #1c1917;
+}
+.hw-checkbox.on {
+  background: #0369a1;
+}
+.hw-checkbox.on .icon {
+  color: #0369a1;
+}
+
+.hw-dropdown {
+  color: #fafaf9;
+}
+.hw-dropdown .selector {
+  background: black;
+  box-shadow: 0 0rem 0.8rem rgba(0, 0, 0, 0.6);
+  border-color: #292524;
+}
+.hw-dropdown .selector .iconify {
+  color: #fafaf9;
+}
+.hw-dropdown .list {
+  background: black;
+  box-shadow: 0 0rem 0.8rem rgba(0, 0, 0, 0.6);
+  border-color: #292524;
+}
+.hw-dropdown .list .highlight {
+  background: #0369a1;
+}
+
+.hw-slider {
+  color: #fafaf9;
+  background: transparent;
+}
+.hw-slider input[type=range]::-webkit-slider-runnable-track {
+  background: #1c1917;
+}
+.hw-slider input[type=range]::-webkit-slider-thumb {
+  background: #0369a1;
+}
+
+.hw-list {
+  color: #fafaf9;
+  background: black;
+  border-color: #292524;
+}
+.hw-list .caption {
+  background: black;
+  border-color: #292524;
+}
+.hw-list .value {
+  background: black;
+  border-color: #292524;
+}
+.hw-list .value.selected {
+  background: #0369a1;
+}
+
+.hw-contextmenu {
+  color: #d6d3d1;
+  background: #1c1917;
+  box-shadow: 0 0rem 0.5rem rgba(0, 0, 0, 0.3);
+}
+.hw-contextmenu .entry .iconify {
+  color: #d6d3d1;
+}
+.hw-contextmenu .entry:hover {
+  color: #fafaf9;
+}
+.hw-contextmenu .entry:hover .iconify {
+  color: #fafaf9;
+}
+
+.hw-dialog {
+  color: #fafaf9;
+  background: black;
+  box-shadow: 0 0rem 0.8rem rgba(0, 0, 0, 0.6);
+  border-color: #292524;
+}
+.hw-dialog .caption {
+  color: #fafaf9;
+}
+.hw-dialog .inputs {
+  background: black;
+  border-color: #292524;
+}
+
+.hw-changelog {
+  color: #fafaf9;
+  background: black;
+  box-shadow: 0 0rem 0.8rem rgba(0, 0, 0, 0.6);
+  border-color: #292524;
+}
+.hw-changelog .caption {
+  color: #fafaf9;
+  background: black;
+  border-color: #292524;
+}
+.hw-changelog .caption .iconify {
+  color: #fafaf9;
+}
+
+.hw-progress-view {
+  color: #fafaf9;
+  background: black;
+  box-shadow: 0 0rem 0.8rem rgba(0, 0, 0, 0.6);
+  border-color: #292524;
+}
+.hw-progress-view .caption {
+  color: #fafaf9;
+  background: black;
+  border-bottom-color: #292524;
+}
+.hw-progress-view .task {
+  color: #fafaf9;
+  background: transparent;
+  box-shadow: none;
+  border-color: #292524;
+}
+.hw-progress-view .task .subtext {
+  color: #d6d3d1;
+}
+.hw-progress-view .task.in-progress .iconify {
+  color: #38bdf8;
+}
+.hw-progress-view .task.complete .iconify {
+  color: #4ade80;
+}
+.hw-progress-view .task.failure .iconify {
+  color: #ef4444;
+}
+
+.hw-editor-tab {
+  color: #d6d3d1;
+  background: transparent;
+  box-shadow: none;
+  border-color: #292524;
+}
+.hw-editor-tab .iconify {
+  color: #d6d3d1;
+}
+.hw-editor-tab .close .iconify {
+  color: #d6d3d1;
+}
+.hw-editor-tab.select {
+  color: #fafaf9;
+  background: black;
+  box-shadow: 0 0rem 0.5rem rgba(0, 0, 0, 0.3);
+}
+.hw-editor-tab.select .iconify {
+  color: #fafaf9;
+}
+.hw-editor-tab.select .close .iconify {
+  color: #fafaf9;
+}
+
+.editor-view {
+  border-color: none;
+}
+.editor-view .action-bar {
+  border-color: #292524;
+}
+.editor-view .connection-toggle {
+  border-color: #292524;
+}
+.editor-view .tabs-container {
+  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.5);
+  border-color: #292524;
+  z-index: 1;
+}
+.editor-view .tabs-container::-webkit-scrollbar {
+  display: none;
+}
+.editor-view .main-container {
+  border-color: inherit;
+}
+.editor-view .main-container .editor {
+  border-color: inherit;
+}
+.editor-view .information-view {
+  border-color: black;
+}
+.editor-view .target-bar {
+  border-color: black;
+}
+.editor-view .action-button {
+  color: rgba(250, 250, 249, 0.7);
+  background: transparent;
+  border-radius: 9999px;
+}
+.editor-view .action-button:hover {
+  color: #fafaf9;
+  background: transparent;
+}
+.editor-view .action-button:hover {
+  color: #fafaf9;
+  background: transparent;
+}
+.editor-view .add-tab {
+  color: #fafaf9;
+  background: transparent;
+}
+
+.sidebar {
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
+  border-color: #292524;
+  z-index: 1;
+}
+
+.editor-sidebar-category .category-caption, .editor-sidebar-category .module-caption, .tree .category-caption, .tree .module-caption {
+  color: #fafaf9;
+  background-color: black;
+  border-color: #292524;
+}
+.editor-sidebar-category .category-caption > .iconify, .editor-sidebar-category .module-caption > .iconify, .tree .category-caption > .iconify, .tree .module-caption > .iconify {
+  color: #fafaf9;
+}
+.editor-sidebar-category .category-caption > .iconify.chevron, .editor-sidebar-category .module-caption > .iconify.chevron, .tree .category-caption > .iconify.chevron, .tree .module-caption > .iconify.chevron {
+  color: #fafaf9;
+}
+.editor-sidebar-category .node, .tree .node {
+  color: #fafaf9;
+  background: transparent;
+}
+.editor-sidebar-category .node .iconify, .tree .node .iconify {
+  color: #fafaf9;
+}
+.editor-sidebar-category .node .node-caption:active, .tree .node .node-caption:active {
+  background: black;
+}
+.editor-sidebar-category .node .node-caption:hover, .tree .node .node-caption:hover {
+  background: #1c1917;
+}
+.editor-sidebar-category .node .caption, .tree .node .caption {
+  background: #d6d3d1;
+}
+
+.hw-multimenu .list {
+  background: black;
+  box-shadow: none;
+  border-color: #292524;
+}
+.hw-multimenu .list .entry {
+  color: #fafaf9;
+  background: transparent;
+  box-shadow: none;
+  border-color: #292524;
+}
+.hw-multimenu .list .entry::before {
+  background: #0369a1;
+}
+.hw-multimenu .list .entry:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+.hw-multimenu .list .entry.select, .hw-multimenu .list .entry:active {
+  background: rgba(0, 0, 0, 0.7);
+}
+.hw-multimenu .pages {
+  background: black;
+}
+.hw-multimenu .pages .page .category-label {
+  background: black;
+  border-top: 1px solid #292524;
+  border-bottom: 1px solid #292524;
+}
+
+.console-header {
+  color: #fafaf9;
+  background: black;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 1rem rgba(255, 255, 255, 0.2);
+}
+
+.console-contents {
+  background: black;
+}
+
+#console-body {
+  background-color: black !important;
+}
+
+html, body {
+  color: #fafaf9;
+  background: black;
+}
+
+a {
+  color: #d6d3d1;
+}
+a:hover {
+  color: #fafaf9;
+}
+
+/*
+    HOLLYWOOD CODE EDITOR — Advanced open-source interface for execution platforms
+    Source code available at https://github.com/synllc/hw
+    Copyright (C) 2018-2022 Synapse Softworks LLC
+
+    This file and program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This file and program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+/*
+*   ===========================================================
+*   USE STATEMENT
+*   This forwards the variables declared above into the impl.
+*   ===========================================================
+*/
+#titlebar-logo {
+  background-image: url("./assets/logo_white.svg");
+}

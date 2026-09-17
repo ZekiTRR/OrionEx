@@ -1,0 +1,12 @@
+/* ─── Synapse X v3 ("Hollywood") Master Stylesheet ─── */
+@import './main.css';
+@import './titlebar.css';
+@import './navigation.css';
+@import './editor.css';
+@import './sidebar.css';
+@import './settings.css';
+@import './contextmenu.css';
+@import './dialogs.css';
+@import './toasts.css';
+@import './scrollbars.css';
+@import './gateway.css';

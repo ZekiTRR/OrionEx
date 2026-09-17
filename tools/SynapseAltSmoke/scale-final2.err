@@ -1,0 +1,4 @@
+SMOKE_FAIL System.Exception: Application is clipped at 150 percent
+   at SmokeApp.RunCursor(NativeWebView view) in D:\Cheats\Orion\tools\SynapseAltSmoke\Program.cs:line 144
+   at SmokeApp.<>c__DisplayClass0_0.<<OnFrameworkInitializationCompleted>b__0>d.MoveNext() in D:\Cheats\Orion\tools\SynapseAltSmoke\Program.cs:line 50
+[0917/160816.228:ERROR:ui\gfx\win\window_impl.cc:172] Failed to unregister class Chrome_WidgetWin_0. Error = 1412

@@ -1,0 +1,752 @@
+
+$disable-fill: false !default;
+
+/* -------------- Base colors --------------  */
+
+$hw-bg-deep:    black !default;    // When you need an extra level of depth.
+$hw-bg:         black !default;    // For vast background elements (i.e. page containers).
+$hw-base:       black !default;    // For generic background elements (i.e. buttons and textboxes).
+$hw-layer1:     #1c1917 !default;    // For captions on dialogs and other imposed text labels.
+$hw-layer2:     #292524 !default;    // Extra shade for additional layering if needed.
+$hw-layer3:     #78716c !default;    // Extra shade for additional layering if needed.
+$hw-layer4:     #a8a29e !default;    // Extra shade for additional layering if needed.
+
+$hw-text:       #fafaf9 !default;    // Generic text color.
+$hw-text-sub:   #d6d3d1 !default;    // Text color for "less important" inline text.
+
+$hw-red:        #ef4444 !default;    // Errors and dangers.
+$hw-red-dark:   #b91c1c !default;    
+$hw-yellow:     #fbbf24 !default;    // Warnings and diagnostics.
+$hw-yellow-dark:#b45309 !default;    
+$hw-green:      #4ade80 !default;    // Successes and confirmations.
+$hw-green-dark: #15803d !default;    
+$hw-blue:       #38bdf8 !default;    // Notifications and messages.
+$hw-blue-dark:  #0369a1 !default;
+
+$hw-primary:    $hw-blue-dark !default;      // Primary accent color used everywhere in the UI.
+
+$hw-border: $hw-layer2 !default; // Color for the HC border.
+
+/* -------------- Main interface colors --------------  */
+
+// Title bar.
+$hw-titlebar-bg: $hw-bg !default;
+$hw-titlebar-text: $hw-text !default;
+$hw-titlebar-control: $hw-text !default;
+$hw-titlebar-control-bg: transparent !default;
+$hw-titlebar-control-bg-hover: rgba(0, 0, 0,.5) !default;
+$hw-titlebar-control-bg-active: rgba(0, 0, 0,.7) !default;
+
+// Navigation bar.
+$hw-navigation-icon: $hw-text-sub !default;
+$hw-navigation-icon-shadow: none !default;       // Note: This sets the drop-shadow filter, not box-shadow.
+$hw-navigation-icon-hover: $hw-text !default;
+$hw-navigation-icon-select: white !default;
+$hw-navigation-icon-accent: $hw-text !default;
+$hw-navigation-label-bg: linear-gradient(to bottom, $hw-base, $hw-bg) !default;
+$hw-navigation-label-text: $hw-text !default;
+$hw-navigation-label-icon: $hw-text !default;
+$hw-navigation-label-shadow: none !default;      // Note: This sets the 'box-shadow' property.
+
+// Dialogs. Icon color is custom per dialog, so
+// a default cannot be set here.
+$hw-dialog-bg: $hw-bg-deep !default;
+$hw-dialog-text: $hw-text !default;
+$hw-dialog-shadow: 0 0rem 0.8rem rgba(0, 0, 0, 0.6) !default;
+$hw-dialog-caption: $hw-text !default;
+$hw-dialog-inputs-bg: $hw-base !default;
+
+// Changelog.
+$hw-changelog-bg: $hw-bg !default;
+$hw-changelog-text: $hw-text !default;
+$hw-changelog-shadow: $hw-dialog-shadow !default;
+$hw-changelog-caption-bg: $hw-base !default;
+$hw-changelog-caption-text: $hw-text !default;
+$hw-changelog-caption-icon: $hw-text !default;
+
+// Task reporter.
+$hw-tasks-bg: $hw-bg !default;
+$hw-tasks-text: $hw-text !default;
+$hw-tasks-shadow: $hw-dialog-shadow !default;
+$hw-tasks-border: $hw-border !default;
+$hw-tasks-caption-bg: $hw-base !default;
+$hw-tasks-caption-text: $hw-text !default;
+$hw-tasks-task-bg: transparent !default;
+$hw-tasks-task-text: $hw-text !default;
+$hw-tasks-task-subtext: $hw-text-sub !default;
+$hw-tasks-task-shadow: none !default;
+$hw-tasks-task-inprogress: $hw-blue !default;
+$hw-tasks-task-complete: $hw-green !default;
+$hw-tasks-task-failure: $hw-red !default;
+
+/* -------------- Control colors --------------  */
+
+// Buttons.
+$hw-button-bg:  linear-gradient(to bottom, adjust-color($hw-base, $lightness: 2), $hw-base) !default;               // Can also be a gradient if desired.
+$hw-button-text: $hw-text !default;
+$hw-button-border: none !default;                // Sets the 'border' property.
+$hw-button-shadow: 0 0rem 0.5rem rgba(0, 0, 0, 0.3) !default;                // Sets the 'box-shadow' property.
+$hw-button-bg-hover: $hw-layer1 !default;
+$hw-button-text-hover: $hw-text !default;
+$hw-button-border-hover: none !default;
+$hw-button-shadow-hover: $hw-button-shadow !default;
+$hw-button-bg-active: $hw-bg !default;
+$hw-button-text-active: $hw-text-sub !default;
+$hw-button-border-active: none !default;
+$hw-button-shadow-active: $hw-button-shadow !default;
+
+// Textboxes.
+$hw-textbox-bg: $hw-base !default;
+$hw-textbox-text: $hw-text !default;
+$hw-textbox-caption: $hw-text !default;
+$hw-textbox-border: none !default;
+$hw-textbox-shadow: none !default;
+$hw-textbox-icon: $hw-text !default;
+
+// Checkboxes.
+$hw-checkbox-bg: $hw-base !default;
+$hw-checkbox-icon: $hw-layer1 !default;
+$hw-checkbox-bg-on: $hw-primary !default;    // Background when the checkbox is checked.
+$hw-checkbox-icon-on: $hw-primary !default;     // Icon when the checkbox is checked.
+$hw-checkbox-shadow: none !default;
+
+// Dropdowns.
+$hw-dropdown-bg: $hw-base !default;
+$hw-dropdown-text: $hw-text !default;
+$hw-dropdown-chevron: $hw-text !default;     // Color of the arrow icon.
+$hw-dropdown-shadow: $hw-dialog-shadow !default;
+
+// Sliders.
+$hw-slider-bg: transparent !default;
+$hw-slider-bar: $hw-layer1 !default;
+$hw-slider-pin: $hw-primary !default;
+$hw-slider-caption: $hw-text !default;
+
+// Lists.
+$hw-list-bg: $hw-base !default;
+$hw-list-text: $hw-text !default;
+$hw-list-border: $hw-border !default;
+$hw-list-caption-bg: $hw-base !default;
+$hw-list-entry-bg: $hw-base !default;
+$hw-list-entry-selected-bg: $hw-primary !default;
+
+// Context menus.
+$hw-contextmenu-bg: adjust-color($hw-layer1) !default;
+$hw-contextmenu-text: $hw-text-sub !default;
+$hw-contextmenu-text-select: $hw-text !default;
+$hw-contextmenu-icon: $hw-text-sub !default;
+$hw-contextmenu-icon-select: $hw-text !default;
+$hw-contextmenu-shadow: 0 0rem 0.5rem rgba(0, 0, 0, 0.3) !default;
+
+// Page list.
+$hw-multimenu: $hw-base !default;
+$hw-multimenu-pages: $hw-bg-deep !default;
+$hw-multimenu-list-shadow: none !default;
+$hw-multimenu-button-bg: transparent !default;
+$hw-multimenu-button-text: $hw-text !default;
+$hw-multimenu-button-subtext: $hw-text-sub !default;
+$hw-multimenu-button-shadow: none !default;
+$hw-multimenu-accent: $hw-primary !default;
+$hw-multimenu-icon: $hw-text !default;
+$hw-multimenu-button-bg-hover: rgba(255, 255, 255, 0.05) !default;
+$hw-multimenu-button-bg-select: adjust-color($hw-bg, $alpha: -0.3) !default;
+
+/* -------------- Editor colors --------------  */
+
+// Tab.
+$hw-editor-tab-bg: transparent !default;
+$hw-editor-tab-caption: $hw-text-sub !default;
+$hw-editor-tab-icon: $hw-text-sub !default;
+$hw-editor-tab-close: $hw-text-sub !default;
+$hw-editor-tab-border: none !default;
+$hw-editor-tab-shadow: none !default;
+$hw-editor-tab-bg-select: $hw-base !default;
+$hw-editor-tab-caption-select: $hw-text !default;
+$hw-editor-tab-icon-select: $hw-text !default;
+$hw-editor-tab-close-select: $hw-text !default;
+$hw-editor-tab-border-select: none !default;
+$hw-editor-tab-shadow-select: 0 0rem 0.5rem rgba(0, 0, 0, 0.3) !default;
+$hw-editor-add-tab: $hw-text !default;
+$hw-editor-add-tab-bg: transparent !default;
+
+// Editor border/shadows. The rest of editor colors
+// must be defined in the "editor.json" file.
+$hw-editor-border-color: none !default;  // DOES NOT DEFINE THE BORDER PROPERTIES, only the color.
+$hw-editor-shadow-color: rgb(0 0 0 / 50%) !default;  // DOES NOT DEFINE THE SHADOW PROPERTIES, only the color.
+
+// Sidebar.
+$hw-editor-sidebar-bg: $hw-base !default;
+$hw-editor-sidebar-entry-caption-bg: $hw-base !default;
+$hw-editor-sidebar-entry-caption-icon: $hw-text !default;
+$hw-editor-sidebar-entry-caption-chevron: $hw-text !default;
+$hw-editor-sidebar-entry-caption-text: $hw-text !default;
+$hw-editor-sidebar-node-bg: transparent !default;
+$hw-editor-sidebar-node-text: $hw-text !default;
+$hw-editor-sidebar-node-author: $hw-text-sub !default;
+$hw-editor-sidebar-node-icon: $hw-text !default;
+$hw-editor-sidebar-node-bg-hover: $hw-layer1 !default;
+$hw-editor-sidebar-node-bg-active: $hw-base !default;
+
+// Action buttons.
+$hw-editor-action-bg: transparent !default;
+$hw-editor-action-icon: adjust-color($hw-text, $alpha: -0.3) !default;
+$hw-editor-shadow: none !default;
+$hw-editor-action-bg-hover: transparent !default;
+$hw-editor-action-icon-hover: $hw-text !default;
+$hw-editor-shadow-hover: none !default;
+$hw-editor-action-bg-active: transparent !default;
+$hw-editor-action-icon-active: $hw-text !default;
+$hw-editor-shadow-active: none !default;
+
+// Toolbar.
+$hw-editor-toolbar-border: $hw-base !default;
+
+/* -------------- Console colors --------------  */
+
+$hw-console-header-text: $hw-text !default;
+$hw-console-header-background: $hw-bg !default;
+$hw-console-header-border: 1px solid rgba(255, 255, 255, 0.5) !default;
+$hw-console-header-shadow: 0 0 1rem rgba(255, 255, 255, 0.2) !default;
+$hw-console-contents-background: $hw-bg !default;/*
+    HOLLYWOOD CODE EDITOR — Advanced open-source interface for execution platforms
+    Source code available at https://github.com/synllc/hw
+    Copyright (C) 2018-2022 Synapse Softworks LLC
+
+    This file and program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This file and program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+@if (not $disable-fill) {
+    /* -------------- Color applications --------------  */
+
+    // Containers.
+    .hw-titlebar {
+        color: $hw-titlebar-text;
+        background: $hw-titlebar-bg;
+        border-color: $hw-border !important;
+        border-bottom-width: 1px !important; border-bottom-style: solid !important;
+        -webkit-app-region: drag;
+
+        .control {
+            color: $hw-titlebar-control;
+            background: $hw-titlebar-control-bg;
+            -webkit-app-region: no-drag;
+
+            &#control-close {
+                &:hover {
+                    color: white;
+                    background: $hw-red;
+                }
+
+                &:active {
+                    background: $hw-red-dark;
+                }
+            }
+
+            &:hover {
+                background: $hw-titlebar-control-bg-hover;
+            }
+
+            &:active {
+                background: $hw-titlebar-control-bg-active;
+            }
+        }
+    }
+
+    .hw-navigationbar {
+        color: $hw-navigation-icon;
+        pointer-events: none;
+        border-color: $hw-border !important;
+
+        .entry {
+            pointer-events: all;
+            -webkit-app-region: no-drag;
+
+            .iconify {
+                filter: drop-shadow($hw-navigation-icon-shadow);
+            }
+
+            .label {
+                color: $hw-navigation-label-text;
+                background: $hw-navigation-label-bg;
+                box-shadow: $hw-navigation-label-shadow;
+
+                .iconify {
+                    color: $hw-navigation-label-icon;
+                    filter: none;
+                }
+            }
+
+            .selectbar {
+                background-color: $hw-navigation-icon-accent;
+            }
+
+            &:hover {
+                color: $hw-navigation-icon-hover;
+            }
+
+            &.select {
+                color: $hw-navigation-icon-select;
+                background: adjust-color($hw-layer1, $alpha: -0.5);
+            }
+        }
+    }
+
+    .hw-languagebar {
+        background-color: $hw-base;
+    }
+
+    // Controls
+    .hw-button {
+        color: $hw-button-text;
+        background: $hw-button-bg;
+        border: $hw-button-border;
+        box-shadow: $hw-button-shadow;
+        outline-color: $hw-primary;
+
+        &:hover {
+            color: $hw-button-text-hover;
+            background: $hw-button-bg-hover;
+            border: $hw-button-border-hover;
+            box-shadow: $hw-button-shadow-hover;
+        }
+
+        &:active {
+            color: $hw-button-text-active;
+            background: $hw-button-bg-active;
+            border: $hw-button-border-active;
+            box-shadow: $hw-button-shadow-active;
+        }
+    }
+
+    .hw-textbox {
+        color: $hw-textbox-text;
+        background: $hw-textbox-bg;
+        border: $hw-textbox-border;
+        box-shadow: $hw-textbox-shadow;
+
+        .inner {
+            border-color: $hw-border !important;
+        }
+        
+        .caption {
+            color: $hw-textbox-caption;
+        }
+
+        .iconify {
+            color: $hw-textbox-icon;
+        }
+    }
+
+    .hw-checkbox {
+        background: $hw-checkbox-bg;
+        box-shadow: $hw-checkbox-shadow;
+
+        .icon {
+            color: $hw-checkbox-icon;
+        }
+
+        &.on {
+            background: $hw-checkbox-bg-on;
+            .icon {
+                color: $hw-checkbox-icon-on;
+            }
+        }
+    }
+
+    .hw-dropdown {
+        color: $hw-dropdown-text;
+
+        .selector {
+            background: $hw-dropdown-bg;
+            box-shadow: $hw-dropdown-shadow;
+            border-color: $hw-border !important;
+
+            .iconify {
+                color: $hw-dropdown-chevron;
+            }
+        }
+
+        .list {
+            background: $hw-dropdown-bg;
+            box-shadow: $hw-dropdown-shadow;
+            border-color: $hw-border !important;
+
+            .highlight {
+                background: $hw-primary;
+            }
+        }
+    }
+
+    .hw-slider {
+        color: $hw-slider-caption;
+        background: $hw-slider-bg;
+
+        input[type="range"] {
+            &::-webkit-slider-runnable-track {
+                background: $hw-slider-bar;
+            }
+
+            &::-webkit-slider-thumb {
+                background: $hw-slider-pin;
+            }
+        }
+    }
+
+    .hw-list {
+        color: $hw-list-text;
+        background: $hw-list-bg;
+        border-color: $hw-list-border;
+
+        .caption {
+            background: $hw-list-caption-bg;
+            border-color: $hw-list-border;
+        }
+
+        .value {
+            background: $hw-list-entry-bg;
+            border-color: $hw-list-border;
+            &.selected {
+                background: $hw-list-entry-selected-bg;
+            }
+        }
+    }
+
+    .hw-contextmenu {
+        color: $hw-contextmenu-text;
+        background: $hw-contextmenu-bg;
+        box-shadow: $hw-contextmenu-shadow;
+
+        .entry {
+            .iconify {
+                color: $hw-contextmenu-icon;
+            }
+
+            &:hover {
+                color: $hw-contextmenu-text-select;
+                .iconify {
+                    color: $hw-contextmenu-icon-select;
+                }
+            }
+        }
+    }
+
+    .hw-dialog {
+        color: $hw-dialog-text;
+        background: $hw-dialog-bg;
+        box-shadow: $hw-dialog-shadow;
+        border-color: $hw-border;
+
+        .caption {
+            color: $hw-dialog-caption;
+        }
+
+        .inputs {
+            background: $hw-dialog-inputs-bg;
+            border-color: $hw-border;
+        }
+    }
+
+    .hw-changelog {
+        color: $hw-changelog-text;
+        background: $hw-changelog-bg;
+        box-shadow: $hw-changelog-shadow;
+        border-color: $hw-border !important;
+
+        .caption {
+            color: $hw-changelog-caption-text;
+            background: $hw-changelog-caption-bg;
+            border-color: $hw-border !important;
+
+            .iconify {
+                color: $hw-changelog-caption-icon;
+            }
+        }
+    }
+
+    .hw-progress-view {
+        color: $hw-tasks-text;
+        background: $hw-tasks-bg;
+        box-shadow: $hw-tasks-shadow;
+        border-color: $hw-border !important;
+
+        .caption {
+            color: $hw-tasks-caption-text;
+            background: $hw-tasks-caption-bg;
+            border-bottom-color: $hw-border;
+        }
+
+        .task {
+            color: $hw-tasks-task-text;
+            background: $hw-tasks-task-bg;
+            box-shadow: $hw-tasks-task-shadow;
+            border-color: $hw-border !important;
+
+            .subtext {
+                color: $hw-tasks-task-subtext;
+            }
+
+            &.in-progress {
+                .iconify {
+                    color: $hw-tasks-task-inprogress;
+                }
+            }
+
+            &.complete {
+                .iconify {
+                    color: $hw-tasks-task-complete;
+                }
+            }
+
+            &.failure {
+                .iconify {
+                    color: $hw-tasks-task-failure;
+                }
+            }
+        }
+    }
+
+    // Editor and sidebar.
+    .hw-editor-tab {
+        color: $hw-editor-tab-caption;
+        background: $hw-editor-tab-bg;
+        box-shadow: $hw-editor-tab-shadow;
+        border-color: $hw-border !important;
+
+        .iconify {
+            color: $hw-editor-tab-icon;
+        }
+
+        .close {
+            .iconify {
+            color: $hw-editor-tab-close; 
+            }
+        }
+
+        &.select {
+            color: $hw-editor-tab-caption-select;
+            background: $hw-editor-tab-bg-select;
+            box-shadow: $hw-editor-tab-shadow-select;
+
+            .iconify {
+                color: $hw-editor-tab-icon-select;
+            }
+
+            .close {
+                .iconify {
+                    color: $hw-editor-tab-close-select; 
+                }
+            }
+        }
+    }
+
+    .editor-view {
+        border-color: $hw-editor-border-color;
+
+        .action-bar {
+            border-color: $hw-border;
+        }
+
+        .connection-toggle {
+            border-color: $hw-border;
+        }
+
+        .tabs-container {
+            box-shadow: 0 0.25rem 1rem $hw-editor-shadow-color;
+            border-color: $hw-border;
+            z-index: 1;
+
+            &::-webkit-scrollbar {
+                display: none;
+            }
+        }
+
+        .main-container {
+            border-color: inherit;
+
+            .editor {
+                border-color: inherit;
+            }
+        }
+
+        .information-view {
+            border-color: $hw-editor-toolbar-border;
+        }
+
+        .target-bar {
+            border-color: $hw-editor-toolbar-border;
+        }
+
+        .action-button {
+            color: $hw-editor-action-icon;
+            background: $hw-editor-action-bg;
+            border-radius: 9999px;
+
+            &:hover {
+                color: $hw-editor-action-icon-hover;
+                background: $hw-editor-action-bg-hover;
+            }
+
+            &:hover {
+                color: $hw-editor-action-icon-active;
+                background: $hw-editor-action-bg-active;
+            }
+        }
+
+        .add-tab {
+            color: $hw-editor-add-tab;
+            background: $hw-editor-add-tab-bg;
+        }
+    }
+
+    .sidebar {
+        box-shadow: 0 0 1rem $hw-editor-shadow-color;
+        border-color: $hw-border;
+        z-index: 1;
+    }
+
+    .editor-sidebar-category, .tree {
+        .category-caption, .module-caption {
+            color: $hw-editor-sidebar-entry-caption-text;
+            background-color: $hw-editor-sidebar-entry-caption-bg;
+            border-color: $hw-border !important;
+            
+            & > .iconify {
+                color: $hw-editor-sidebar-entry-caption-icon;
+                &.chevron {
+                    color: $hw-editor-sidebar-entry-caption-chevron;
+                }
+            }
+        }
+
+        .node {
+            color: $hw-editor-sidebar-node-text;
+            background: $hw-editor-sidebar-node-bg;
+
+            .iconify {
+                color: $hw-editor-sidebar-node-icon;
+            }
+
+            .node-caption {
+                &:active {
+                    background: $hw-editor-sidebar-node-bg-active;
+                }
+
+                &:hover {
+                    background: $hw-editor-sidebar-node-bg-hover;
+                }
+            }
+
+            .caption {
+                background: $hw-editor-sidebar-node-author;
+            }
+        }
+    }
+
+    // Multimenu.
+
+    .hw-multimenu {
+        .list {
+            background: $hw-multimenu;
+            box-shadow: $hw-multimenu-list-shadow;
+            border-color: $hw-border !important;
+
+            .entry {
+                color: $hw-multimenu-button-text;
+                background: $hw-multimenu-button-bg;
+                box-shadow: $hw-multimenu-button-shadow;
+                border-color: $hw-border !important;
+
+                &::before {
+                    background: $hw-multimenu-accent;
+                }
+
+                &:hover {
+                    background: $hw-multimenu-button-bg-hover;
+                }
+
+                &.select, &:active {
+                    background: $hw-multimenu-button-bg-select;
+                }
+            }
+        }
+
+        .pages {
+            background: $hw-multimenu-pages;
+
+            .page {
+                .category-label {
+                    background: $hw-base;
+                    border-top: 1px solid $hw-border !important;
+                    border-bottom: 1px solid $hw-border !important;
+                }
+            }
+        }
+    }
+
+    // Console.
+
+    .console-header {
+        color: $hw-console-header-text;
+        background: $hw-console-header-background;
+        border-bottom: $hw-console-header-border;
+        box-shadow: $hw-console-header-shadow;
+    }
+    
+    .console-contents {
+        background: $hw-console-contents-background;
+    }
+
+    #console-body {
+        background-color: $hw-bg !important;
+    }
+
+    :root, #application {
+        --hw-bg-deep: #{$hw-bg-deep};
+        --hw-bg: #{$hw-bg};
+        --hw-base: #{$hw-base};
+        --hw-layer1: #{$hw-layer1};
+        --hw-layer2: #{$hw-layer2};
+        --hw-layer3: #{$hw-layer3};
+        --hw-layer4: #{$hw-layer4};
+        --hw-text: #{$hw-text};
+        --hw-text-sub: #{$hw-text-sub};
+        --hw-primary: #{$hw-primary};
+        --hw-border: #{$hw-border};
+
+        --bg: #{$hw-bg};
+        --accent: #{$hw-primary};
+        --text: #{$hw-text};
+    }
+
+    #application, .page-container, .editor-page, .editor-view {
+        color: $hw-text;
+        background-color: $hw-bg;
+    }
+
+    html, body {
+        color: $hw-text;
+        background: $hw-bg;
+    }
+
+    a {
+        color: $hw-text-sub;
+
+        &:hover {
+            color: $hw-text;
+        }
+    }
+
+}
+
+

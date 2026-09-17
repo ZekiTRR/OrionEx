@@ -1,0 +1,11 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="OrbitAvalonia.SynapseV3AltWindow"
+        Title="Synapse V3 Alt — UI-only"
+        Width="942" Height="555" MinWidth="700" MinHeight="400"
+        Background="#17171C" WindowDecorations="BorderOnly"
+        ExtendClientAreaToDecorationsHint="True"
+        WindowStartupLocation="CenterScreen"
+        Icon="avares://Orion/Assets/Orion/Sharp/orion-app.ico">
+  <NativeWebView x:Name="UiWebView" Background="#17171C" />
+</Window>

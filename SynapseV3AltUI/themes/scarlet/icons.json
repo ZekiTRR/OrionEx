@@ -1,0 +1,22 @@
+{
+    "folder": "mdi:folder",
+    "file": "mdi:file",
+    "file-script": "mdi:language-lua",
+    "file-text": "mdi:file-code",
+
+    "btn-execute": "mdi:play-circle",
+    "btn-clear": "mdi:window-close",
+    "btn-file-open": "mdi:file-upload-outline",
+    "btn-file-execute": "mdi:cog",
+    "btn-file-save": "mdi:content-save",
+    "console": "fluent:window-console-20-filled",
+    "documentation": "fluent:book-open-20-filled",
+    "connection-enabled": "fluent:flash-20-filled",
+    "connection-disabled": "fluent:flash-off-20-filled",
+
+    "page-editor": "fluent:code-20-regular",
+    "page-customization": "fluent:paint-brush-20-filled",
+    "page-settings-engine": "fluent:window-dev-tools-20-filled",
+    "page-powertools": "fluent:box-toolbox-20-filled",
+    "page-settings": "fluent:settings-20-filled"
+}

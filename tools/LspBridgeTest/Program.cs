@@ -61,5 +61,18 @@ else
 Console.WriteLine($"  completion items: {itemCount}, contains GetService: {all.Contains("GetService")}");
 
 var ok = itemCount > 0 && all.Contains("GetService");
+await CallLsp("textDocument/didChange", new
+{
+    textDocument = new { uri, version = 2 },
+    contentChanges = new[] { new { text = "local myVariable = 5\nprint(my" } },
+});
+var localCompletion = await CallLsp("textDocument/completion", new
+{
+    textDocument = new { uri }, position = new { line = 1, character = 8 },
+});
+var localItems = localCompletion as JsonArray ?? localCompletion?["items"] as JsonArray;
+var localItem = localItems?.FirstOrDefault(item => item?["label"]?.ToString() == "myVariable");
+Console.WriteLine("  local completion: " + localItem?.ToJsonString());
+ok &= localItem is not null;
 Console.WriteLine(ok ? "BRIDGE TEST: PASS" : "BRIDGE TEST: FAIL");
 return ok ? 0 : 1;

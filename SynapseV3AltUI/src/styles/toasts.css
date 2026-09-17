@@ -1,0 +1,291 @@
+/* ─── Toast Notifications (.hw-toast) ─── */
+#toast-container {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+    z-index: 300;
+    pointer-events: none;
+    align-items: flex-end;
+    max-height: calc(100vh - 3rem);
+    overflow: visible;
+}
+
+.hw-toast {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 16rem;
+    max-width: 22rem;
+    background: var(--hw-layer1, #1e1e1e);
+    border: 1px solid var(--hw-border, rgba(255, 255, 255, 0.12));
+    color: var(--hw-text, #ffffff);
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+    pointer-events: auto;
+    user-select: none;
+    overflow: hidden;
+    transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation: toast-slide-in 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transform: scale(var(--toast-scale, 1));
+    transform-origin: bottom right;
+}
+
+.hw-toast.dismissing {
+    animation: toast-slide-out 180ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes toast-slide-in {
+    0% {
+        opacity: 0;
+        transform: translateY(16px) scale(0.96);
+        filter: blur(4px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+@keyframes toast-slide-out {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(16px) scale(0.96);
+        filter: blur(4px);
+    }
+}
+
+.hw-toast-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.35rem 0.65rem 0.25rem 0.65rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--hw-text-highlight, #ffffff);
+    letter-spacing: 0.015em;
+}
+
+.hw-toast-header .toast-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.15s ease;
+    font-size: 0.75rem;
+    background: transparent;
+    border: none;
+    color: inherit;
+    padding: 0.1rem;
+    border-radius: 0.25rem;
+}
+
+.hw-toast-header .toast-close:hover {
+    opacity: 1;
+}
+
+.hw-toast-body {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.45rem 0.65rem 0.65rem 0.65rem;
+}
+
+.hw-toast-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.hw-toast-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1;
+    gap: 0.1rem;
+}
+
+.hw-toast-desc {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--hw-text, #ffffff);
+    line-height: 1.2;
+    word-break: break-word;
+}
+
+.hw-toast-subdesc {
+    font-size: 0.725rem;
+    color: var(--hw-text-muted, rgba(255, 255, 255, 0.55));
+    line-height: 1.2;
+    word-break: break-word;
+}
+
+.hw-toast-extra {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-left: 0.25rem;
+}
+
+.hw-toast-progress-bar {
+    height: 2px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+.hw-toast-progress-fill {
+    height: 100%;
+    background: var(--hw-primary, #007acc);
+    transition: width 100ms linear;
+}
+
+/* ─── HW Progress View (.hw-progress-view) ─── */
+#canvas-progress > div,
+#canvas-progress .progress-canvas-inner {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+    justify-content: flex-end !important;
+    width: 100% !important;
+    height: 100% !important;
+    gap: 0.85rem !important;
+    padding: 1.5rem !important;
+    box-sizing: border-box !important;
+    pointer-events: none !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+@keyframes progress-view-in {
+    0% {
+        opacity: 0;
+        transform: translateY(18px) scale(0.96);
+        filter: blur(4px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+@keyframes progress-view-out {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(18px) scale(0.96);
+        filter: blur(4px);
+    }
+}
+
+.hw-progress-view {
+    overflow: hidden;
+    box-sizing: border-box;
+    pointer-events: auto;
+    flex-shrink: 0;
+    width: 24rem;
+    transform: scale(var(--toast-scale, 1));
+    transform-origin: bottom right;
+    animation: progress-view-in 240ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transition: transform 150ms ease;
+}
+
+.hw-progress-view.dismissing {
+    animation: progress-view-out 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+.hw-progress-view .caption {
+    font-size: 0.875rem;
+    font-weight: 700;
+    padding: 0.5rem 0.75rem;
+    letter-spacing: 0.015em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.hw-progress-view .caption-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-left: auto;
+}
+
+.hw-progress-view .caption-btn {
+    background: transparent;
+    border: none;
+    color: inherit;
+    opacity: 0.6;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    border-radius: 3px;
+    transition: opacity 120ms ease, background 120ms ease;
+}
+
+.hw-progress-view .caption-btn:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.hw-progress-view .caption-btn:active {
+    opacity: 0.7;
+}
+
+.hw-progress-view .task {
+    display: flex !important;
+    align-items: center !important;
+    padding: 0.55rem 0.75rem !important;
+    min-height: 2.75rem;
+    box-sizing: border-box;
+}
+
+.hw-progress-view .task iconify-icon,
+.hw-progress-view .task .iconify {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.15rem !important;
+    margin-right: 0.75rem !important;
+    flex-shrink: 0 !important;
+}
+
+.hw-progress-view .task .task-desc {
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.hw-progress-view .task .subtext {
+    font-size: 0.725rem;
+    line-height: 1.2;
+    margin-top: 0.1rem;
+}
+
+.hw-progress-view .task .task-spinner {
+    margin-left: 0 !important;
+    margin-right: 0.75rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+}

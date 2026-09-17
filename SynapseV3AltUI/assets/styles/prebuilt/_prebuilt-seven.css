@@ -1,0 +1,771 @@
+@charset "UTF-8";
+/*
+    HOLLYWOOD CODE EDITOR — Advanced open-source interface for execution platforms
+    Source code available at https://github.com/synllc/hw
+    Copyright (C) 2018-2022 Synapse Softworks LLC
+
+    This file and program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This file and program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+/* -------------- Base colors --------------  */
+/* -------------- Main interface colors --------------  */
+/* -------------- Control colors --------------  */
+/* -------------- Editor colors --------------  */
+/* -------------- Console colors --------------  */
+/*
+    HOLLYWOOD CODE EDITOR — Advanced open-source interface for execution platforms
+    Source code available at https://github.com/synllc/hw
+    Copyright (C) 2018-2022 Synapse Softworks LLC
+
+    This file and program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This file and program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+@import url("./7.css");
+/* -------------- Base colors --------------  */
+/* -------------- Main interface colors --------------  */
+/* -------------- Control colors --------------  */
+/* -------------- Editor colors --------------  */
+/* -------------- Console colors --------------  */
+:root {
+  --font: 9pt "Segoe UI", sans-serif;
+  --surface: #f0f0f0;
+  --button-highlight: #fff;
+  --button-face: #eee;
+  --button-face-hover: #e5f4fd;
+  --button-face-active: #cee9f8;
+  --button-face-disabled: #f4f4f4;
+  --button-shade-light: #ddd;
+  --button-shade-light-default: #c3dcea;
+  --button-shade-light-hovered: #b3e0f9;
+  --button-shade-light-active: #86c6e8;
+  --button-shade-dark: #bbb;
+  --button-shadow: inset 0 -1px 1px rgba(255, 255, 255, 0.8), inset 0 1px 1px #fff;
+  --button-border: 1px solid;
+  --button-border-color: #8e8f8f;
+  --button-border-color-default: #5586a3;
+  --button-border-color-hovered: #3c7fb1;
+  --button-border-color-active: #6d91ab;
+  --button-border-color-disabled: #aeb2b5;
+  --button-text-color-disabled: #838383;
+  --tab-border: 1px solid #888;
+  --tab-bg: #fff;
+  --element-spacing: 8px;
+  --grouped-element-spacing: 6px;
+  --border: 1px solid var(--button-border-color);
+  --border-width: 1px;
+  --window-spacing: 6px;
+  --window-border: 1px solid;
+  --window-border-radius: 6px;
+  --window-border-color: rgba(0, 0, 0, 0.7);
+  --window-background-color: #4580c4;
+  --window-background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.4),
+      rgba(0, 0, 0, 0.1),
+      rgba(255, 255, 255, 0.2)
+    ),
+    linear-gradient(
+      55deg,
+      transparent,
+      rgba(0, 0, 0, 0.1) 20%,
+      rgba(0, 0, 0, 0.1) 50%,
+      transparent 53%
+    ),
+    var(--window-background-color);
+  --control-border-color: rgba(0, 0, 0, 0.3);
+  --control-border-radius: 5px;
+  --control-inset-shadow: inset 0 0 0 1px #eee8;
+  --control-background: linear-gradient(
+    rgba(255, 255, 255, 0.5),
+    rgba(255, 255, 255, 0.3) 45%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.1) 75%,
+    rgba(255, 255, 255, 0.5)
+  );
+}
+
+.hw-button {
+  border: var(--button-border);
+  border-color: var(--button-border-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--button-shadow);
+}
+
+.window {
+  font: var(--font);
+  box-shadow: 2px 2px 10px 1px var(--window-border-color);
+  border: var(--window-border) var(--window-border-color);
+  border-radius: var(--window-border-radius);
+  position: relative;
+  z-index: 0;
+}
+.window::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--window-border-radius);
+  background: linear-gradient(transparent 20%, rgba(255, 255, 255, 0.7) 40%, transparent 41%), var(--window-background);
+}
+.window-body {
+  margin: var(--window-spacing);
+  margin-top: 0;
+  border: var(--window-border) var(--window-border-color);
+  background: var(--surface);
+  box-shadow: 0 0 1px 0.5px #fff;
+}
+.window-body.has-space {
+  padding: var(--window-spacing);
+}
+.window-body pre {
+  margin: -var(--window-spacing);
+}
+.window-footer,
+.window footer {
+  margin: var(--window-spacing);
+  margin-top: calc(-1 * var(--window-spacing) - 1px);
+  background: var(--surface);
+  border: var(--window-border) var(--window-border-color);
+  border-top: 0;
+  box-shadow: 0 0.5px 1px 0.5px #fff;
+  position: relative;
+  padding: 10px;
+}
+.window-footer::before,
+.window footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  box-shadow: inset 0 1px rgba(0, 0, 0, 0.3), inset 0 -1px #fff;
+}
+.window.is-bright .window-body {
+  background: #fff;
+}
+.window.is-bright .window-footer,
+.window.is-bright footer {
+  background: #eee;
+  box-shadow: inset 0 1px 3px #ddd;
+}
+.window.is-bright .window-footer::before,
+.window.is-bright footer::before {
+  content: none;
+}
+.window.glass {
+  backdrop-filter: blur(1.5px);
+}
+.window.glass::before {
+  opacity: 0.5;
+  filter: brightness(1.4);
+}
+
+.window > .hw.titlebar {
+  border: 0;
+  box-shadow: inset 0 0.5px #fff;
+}
+.window fieldset {
+  margin-bottom: 9px;
+}
+.window[role=dialog] {
+  position: fixed;
+  z-index: 999;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  visibility: hidden;
+  opacity: 0;
+  transition-duration: 0.2s;
+  transition-property: visibility, opacity;
+}
+.window[role=dialog]:target {
+  visibility: visible;
+  opacity: 1;
+}
+
+.hw-titlebar {
+  font: var(--font);
+  box-shadow: inset 0 0 0.5px 0.5px #fff;
+  border: var(--window-border) var(--window-border-color);
+  border-radius: var(--window-border-radius) var(--window-border-radius) 0 0;
+  padding: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--window-background);
+}
+.hw-titlebar #titlebar-logo {
+  background-size: 90%;
+  background-position: 0%;
+  filter: drop-shadow(0px 0.5px 3px rgba(0, 0, 0, 0.7882352941));
+}
+.hw-titlebar-text, .hw-titlebar #titlebar-middle-text {
+  color: #000;
+  letter-spacing: 0;
+  line-height: 15px;
+  text-shadow: 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff;
+}
+.hw-titlebar #controls {
+  display: flex;
+  background: rgba(255, 255, 255, 0.2);
+  border-top: 0;
+  border-radius: 0 0 var(--control-border-radius) var(--control-border-radius);
+  margin-top: -var(--window-spacing);
+  transform: translateY(-0.3rem);
+}
+.hw-titlebar #controls .control {
+  position: relative;
+  min-width: 29px;
+  min-height: 19px;
+  padding: 0;
+  border: 0;
+  border-right: var(--window-border);
+  border-radius: 0;
+  box-shadow: var(--control-inset-shadow);
+  box-sizing: border-box;
+  background: none;
+}
+.hw-titlebar #controls .control .iconify {
+  display: none;
+}
+.hw-titlebar #controls .control:hover, .hw-titlebar #controls .control:active {
+  /* resolve the conflict with button styles */
+  background: none;
+  box-shadow: var(--control-inset-shadow);
+}
+.hw-titlebar #controls .control:disabled::before {
+  opacity: 0.4;
+}
+.hw-titlebar #controls .control::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.hw-titlebar #controls .control[aria-label=Minimize]::before, .hw-titlebar #controls .control.is-minimize::before {
+  background: url("./icon/minimize.png") no-repeat center 10px;
+}
+.hw-titlebar #controls .control[aria-label=Maximize]::before, .hw-titlebar #controls .control.is-maximize::before {
+  background: url("./icon/maximize.png") no-repeat center;
+}
+.hw-titlebar #controls .control[aria-label=Restore]::before, .hw-titlebar #controls .control.is-restore::before {
+  background: url("./icon/restore.png") no-repeat center;
+}
+.hw-titlebar #controls .control[aria-label=Close], .hw-titlebar #controls .control.is-close {
+  min-width: 48px;
+}
+.hw-titlebar #controls .control[aria-label=Close]::before, .hw-titlebar #controls .control.is-close::before {
+  background: url("./icon/close.png") no-repeat center;
+}
+.hw-titlebar #controls .control[id=ban_control_language]::before, .hw-titlebar #controls .control.is-language::before {
+  background: url("./icon/earth.png") no-repeat center;
+  background-size: 55%;
+}
+.hw-titlebar #controls .control:first-child {
+  border-bottom-left-radius: var(--control-border-radius);
+}
+.hw-titlebar #controls .control:last-child {
+  border: 0;
+  border-bottom-right-radius: var(--control-border-radius);
+}
+.hw-titlebar #controls .control:focus {
+  outline: none;
+}
+.hw-titlebar {
+  /* Active title-bar */
+}
+.hw-titlebar #controls {
+  border-color: var(--window-border-color);
+}
+.hw-titlebar #controls .control {
+  background: var(--control-background);
+  border-color: var(--window-border-color);
+  box-shadow: var(--control-inset-shadow);
+}
+.hw-titlebar #controls .control:hover {
+  box-shadow: 0 0 15px #2aceda, var(--control-inset-shadow);
+  background: radial-gradient(circle at bottom, #2aceda, transparent 60%), linear-gradient(#a9d2e8 50%, #196c9b 50%);
+}
+.hw-titlebar #controls .control:active {
+  box-shadow: 0 0 15px #2aceda, var(--control-inset-shadow);
+  background: radial-gradient(circle at bottom, #0bfdfa, transparent 60%), linear-gradient(#86a7bc 50%, #092747 50%);
+}
+.hw-titlebar #controls .control[aria-label=Close], .hw-titlebar #controls .control.is-close {
+  background-color: #d04834;
+  box-shadow: var(--control-inset-shadow);
+}
+.hw-titlebar #controls .control[aria-label=Close]:hover, .hw-titlebar #controls .control.is-close:hover {
+  background: var(--control-background), radial-gradient(circle at 50% 170%, orange 10% 20%, rgba(0, 0, 0, 0) 60%), linear-gradient(#ee6d56 50%, #d42809 50%);
+  box-shadow: 0 0 15px #e68e75, var(--control-inset-shadow);
+}
+.hw-titlebar #controls .control[aria-label=Close]:active, .hw-titlebar #controls .control.is-close:active {
+  background: var(--control-background), radial-gradient(circle at 50% 170%, yellow 10% 20%, rgba(0, 0, 0, 0) 60%), linear-gradient(#b67562 50%, #780c01 50%);
+}
+.hw-titlebar #controls .control:disabled:hover, .hw-titlebar #controls .control:disabled:active {
+  background: var(--control-background);
+  box-shadow: var(--control-inset-shadow);
+}
+
+.hw-textbox .inner {
+  padding: 3px 4px 5px;
+  border: 1px solid #ccc;
+  border-top-color: var(--button-border-color);
+  border-radius: 2px;
+  background-color: var(--button-highlight);
+  box-sizing: border-box;
+}
+.hw-textbox .inner:focus-within {
+  outline: none;
+  border-color: var(--button-shade-light-hovered);
+  border-top-color: var(--button-shade-light-active);
+}
+
+.hw-dropdown .list {
+  border-radius: 0;
+  background: white;
+  color: black;
+  top: 100%;
+  border: 1px solid #7f9db9;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+.hw-dropdown .list > div {
+  padding: 2px 4px !important;
+  color: #000 !important;
+}
+.hw-dropdown .list > div:hover,
+.hw-dropdown .list > div.highlight {
+  background: #3399ff !important;
+  color: #ffffff !important;
+}
+.hw-dropdown .selector {
+  font: var(--font);
+  padding: 2px 3px;
+  border: var(--button-border);
+  border-color: var(--button-border-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--button-shadow);
+  box-sizing: border-box;
+  color: #222;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  position: relative;
+  background: url("./icon/button-down.svg"), linear-gradient(to bottom, var(--button-face) 45%, var(--button-shade-light) 45%, var(--button-shade-dark));
+  background-position: center right;
+  background-repeat: no-repeat;
+}
+.hw-dropdown .selector:hover {
+  border-color: var(--button-border-color-hovered);
+  background-image: url("./icon/button-down.svg"), linear-gradient(to bottom, var(--button-face-hover) 45%, var(--button-shade-light-hovered) 45%);
+}
+.hw-dropdown .selector:focus {
+  outline: none;
+  border-color: var(--button-border-color-active);
+  box-shadow: unset;
+  background-image: url("./icon/button-down.svg"), linear-gradient(to bottom, var(--button-face-active) 45%, var(--button-shade-light-active) 45%);
+}
+
+.tabs-container {
+  position: relative;
+  margin: 0 0 -2px 0;
+  text-indent: 0;
+  list-style-type: none;
+  display: flex;
+  padding-left: 10px;
+  padding-top: 3px;
+}
+
+.h-8 {
+  height: 2.0rem;
+}
+
+#nav-themes {
+  display: flex;
+  background: rgba(255, 255, 255, 0.2);
+  border: var(--window-border) var(--control-border-color);
+  border-top: 0;
+  border-radius: 0 0 var(--control-border-radius) var(--control-border-radius);
+  margin-top: -var(--window-spacing);
+  box-shadow: 0 0 2px #fff;
+  transform: translateY(-0.3rem);
+  background: var(--control-background);
+  border-color: var(--window-border-color);
+  box-shadow: var(--control-inset-shadow);
+  width: 19%;
+  max-width: 4%;
+  color: #ddd;
+}
+#nav-themes.select {
+  color: #ffffff;
+  background: radial-gradient(circle at bottom, #2aceda, transparent 60%), linear-gradient(#a9d2e8 50%, #196c9b 50%);
+}
+#nav-themes:hover {
+  box-shadow: 0 0 15px #2aceda, var(--control-inset-shadow);
+  background: radial-gradient(circle at bottom, #2aceda, transparent 60%), linear-gradient(#a9d2e8 50%, #196c9b 50%);
+}
+#nav-themes:active {
+  box-shadow: 0 0 15px #2aceda, var(--control-inset-shadow);
+  background-image: radial-gradient(circle at bottom, #0bfdfa, transparent 60%), linear-gradient(#86a7bc 50%, #092747 50%);
+}
+
+#nav-editor {
+  display: flex;
+  background: rgba(255, 255, 255, 0.2);
+  border: var(--window-border) var(--control-border-color);
+  border-top: 0;
+  border-radius: 0 0 var(--control-border-radius) var(--control-border-radius);
+  margin-top: -var(--window-spacing);
+  box-shadow: 0 0 2px #fff;
+  transform: translateY(-0.3rem);
+  background: var(--control-background);
+  border-color: var(--window-border-color);
+  box-shadow: var(--control-inset-shadow);
+  width: 19%;
+  max-width: 4%;
+  color: #ddd;
+}
+#nav-editor.select {
+  color: #ffffff;
+  background: radial-gradient(circle at bottom, #2aceda, transparent 60%), linear-gradient(#a9d2e8 50%, #196c9b 50%);
+}
+#nav-editor:hover {
+  box-shadow: 0 0 15px #2aceda, var(--control-inset-shadow);
+  background: radial-gradient(circle at bottom, #2aceda, transparent 60%), linear-gradient(#a9d2e8 50%, #196c9b 50%);
+}
+#nav-editor:active {
+  box-shadow: 0 0 15px #2aceda, var(--control-inset-shadow);
+  background: radial-gradient(circle at bottom, #0bfdfa, transparent 60%), linear-gradient(#86a7bc 50%, #092747 50%);
+}
+
+#nav-settings {
+  display: flex;
+  background: rgba(255, 255, 255, 0.2);
+  border: var(--window-border) var(--control-border-color);
+  border-top: 0;
+  border-radius: 0 0 var(--control-border-radius) var(--control-border-radius);
+  margin-top: -var(--window-spacing);
+  box-shadow: 0 0 2px #fff;
+  transform: translateY(-0.3rem);
+  background: var(--control-background);
+  border-color: var(--window-border-color);
+  box-shadow: var(--control-inset-shadow);
+  width: 19%;
+  max-width: 4%;
+  color: #ddd;
+}
+#nav-settings.select {
+  color: #ffffff;
+  background: radial-gradient(circle at bottom, #2aceda, transparent 60%), linear-gradient(#a9d2e8 50%, #196c9b 50%);
+}
+#nav-settings:hover {
+  box-shadow: 0 0 15px #2aceda, var(--control-inset-shadow);
+  background: radial-gradient(circle at bottom, #2aceda, transparent 60%), linear-gradient(#a9d2e8 50%, #196c9b 50%);
+}
+#nav-settings:active {
+  box-shadow: 0 0 15px #2aceda, var(--control-inset-shadow);
+  background: radial-gradient(circle at bottom, #0bfdfa, transparent 60%), linear-gradient(#86a7bc 50%, #092747 50%);
+}
+
+#nav-plugins {
+  display: flex;
+  background: rgba(255, 255, 255, 0.2);
+  border: var(--window-border) var(--control-border-color);
+  border-top: 0;
+  border-radius: 0 0 var(--control-border-radius) var(--control-border-radius);
+  margin-top: -var(--window-spacing);
+  box-shadow: 0 0 2px #fff;
+  transform: translateY(-0.3rem);
+  background: var(--control-background);
+  border-color: var(--window-border-color);
+  box-shadow: var(--control-inset-shadow);
+  width: 19%;
+  max-width: 4%;
+  color: #ddd;
+}
+#nav-plugins.select {
+  color: #ffffff;
+  background: radial-gradient(circle at bottom, #2aceda, transparent 60%), linear-gradient(#a9d2e8 50%, #196c9b 50%);
+}
+#nav-plugins:hover {
+  box-shadow: 0 0 15px #2aceda, var(--control-inset-shadow);
+  background: radial-gradient(circle at bottom, #2aceda, transparent 60%), linear-gradient(#a9d2e8 50%, #196c9b 50%);
+}
+#nav-plugins:active {
+  box-shadow: 0 0 15px #2aceda, var(--control-inset-shadow);
+  background: radial-gradient(circle at bottom, #0bfdfa, transparent 60%), linear-gradient(#86a7bc 50%, #092747 50%);
+}
+
+.main-container {
+  background: var(--tab-bg);
+  border: var(--tab-border);
+  position: relative;
+}
+
+.hw-editor-tab {
+  padding: 2px 4px !important;
+  border-radius: 0;
+  z-index: 1;
+  display: block;
+  color: #222;
+  text-decoration: none;
+  min-width: unset;
+  transition: none;
+  border: var(--tab-border);
+}
+.hw-editor-tab .content {
+  transition: none;
+  padding: 0;
+}
+.hw-editor-tab.select {
+  padding-bottom: 4px;
+  margin: -2px 0px 1px -3px;
+  background: var(--tab-bg);
+  box-shadow: none;
+  position: relative;
+  transform: translateY(0.05em);
+  border-bottom: 0;
+}
+.hw-editor-tab {
+  background: linear-gradient(to bottom, var(--button-face) 45%, var(--button-shade-light) 45%, var(--button-shade-dark));
+}
+.hw-editor-tab:not(:disabled):hover {
+  border-color: var(--button-border-color-hovered);
+  background: linear-gradient(to bottom, var(--button-face-hover) 45%, var(--button-shade-light-hovered) 45%);
+}
+.hw-editor-tab:not(:disabled):active, .hw-editor-tab:not(:disabled).active {
+  box-shadow: none;
+  border-color: var(--button-border-color-active);
+  background: linear-gradient(to bottom, var(--button-face-active) 45%, var(--button-shade-light-active) 45%);
+}
+.hw-editor-tab:focus, .hw-editor-tab.focused {
+  box-shadow: inset 0 0 0 2px var(--button-shade-light-active);
+  outline: 1px dotted #000000;
+  outline-offset: -4px;
+}
+.hw-editor-tab:focus {
+  outline: 1px dotted #222;
+  outline-offset: -4px;
+}
+.hw-editor-tab:disabled {
+  opacity: 0.6;
+  background: var(--button-face-disabled);
+  border-color: var(--button-border-color-disabled);
+  color: var(--button-text-color-disabled);
+}
+
+#application {
+  color: #000;
+  background-color: var(--surface) !important;
+  border: none !important;
+  border-radius: var(--window-border-radius) !important;
+}
+
+#content-area,
+.page-container {
+  background-color: var(--surface) !important;
+  color: #000 !important;
+}
+
+/* Windows 7 Aero styling for Multimenu (Settings, Themes, Plugins) */
+.hw-multimenu {
+  background-color: var(--surface) !important;
+  color: #000 !important;
+}
+
+.hw-multimenu .list {
+  background-color: var(--surface) !important;
+  border-right: 1px solid var(--button-border-color) !important;
+  color: #000 !important;
+}
+
+.hw-multimenu .list .entry {
+  color: #000 !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+}
+
+.hw-multimenu .list .entry.select {
+  background: var(--button-face-hover) !important;
+  color: #000 !important;
+}
+
+.hw-multimenu .list .entry:hover {
+  background: var(--button-face-hover) !important;
+  color: #000 !important;
+}
+
+.hw-multimenu .pages,
+.hw-multimenu .page {
+  background-color: var(--surface) !important;
+  color: #000 !important;
+}
+
+.category-label {
+  background-color: var(--surface) !important;
+  color: #000 !important;
+  border-bottom: 1px solid #d0d0d0 !important;
+}
+
+.action-container {
+  border-bottom: 1px solid #e8e8e8 !important;
+  color: #000 !important;
+}
+
+.action-container .caption {
+  color: #000 !important;
+}
+
+.action-container .description {
+  color: #555555 !important;
+}
+
+/* Action Bar & Buttons in Windows 7 */
+.action-bar,
+#actions {
+  background: var(--surface) !important;
+  border-top: 1px solid var(--button-border-color) !important;
+  color: #000 !important;
+}
+
+.action-bar .connection-toggle,
+.action-bar #console-icon,
+.action-bar #documentation-icon {
+  color: #000 !important;
+}
+
+.hw-button {
+  background: linear-gradient(to bottom, var(--button-face) 45%, var(--button-shade-light) 45%, var(--button-shade-dark)) !important;
+  color: #000000 !important;
+  border: 1px solid var(--button-border-color) !important;
+  border-radius: var(--border-radius, 3px) !important;
+  box-shadow: var(--button-shadow) !important;
+  font: var(--font) !important;
+}
+
+.hw-button:hover:not(:disabled) {
+  background: linear-gradient(to bottom, var(--button-face-hover) 45%, var(--button-shade-light-hovered) 45%) !important;
+  border-color: var(--button-border-color-hovered) !important;
+  color: #000000 !important;
+}
+
+.hw-button:active:not(:disabled) {
+  background: linear-gradient(to bottom, var(--button-face-active) 45%, var(--button-shade-light-active) 45%) !important;
+  border-color: var(--button-border-color-active) !important;
+  color: #000000 !important;
+}
+
+.hw-button:disabled {
+  background: var(--button-face-disabled) !important;
+  border-color: var(--button-border-color-disabled) !important;
+  color: var(--button-text-color-disabled) !important;
+  opacity: 0.6;
+}
+
+.hw-contextmenu {
+  color: #000 !important;
+  background: #ffffff !important;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid var(--button-border-color) !important;
+}
+
+.hw-contextmenu .entry {
+  color: #000 !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  text-align: left !important;
+}
+
+.hw-contextmenu .entry .iconify,
+.hw-contextmenu .entry iconify-icon {
+  color: #000 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.hw-contextmenu .entry:hover {
+  background: var(--button-face-hover) !important;
+  color: #000 !important;
+}
+
+/* Sidebar and Modules for Windows 7 Aero */
+.sidebar,
+#sidebar,
+#sidebar-wrapper {
+  background: var(--surface) !important;
+  color: #000 !important;
+}
+
+.sidebar .module-caption,
+.hw-editor-sidebar-entry-caption,
+.module-caption {
+  background: linear-gradient(to bottom, var(--button-face) 45%, var(--button-shade-light) 45%, var(--button-shade-dark)) !important;
+  color: #000 !important;
+  border-top: 1px solid var(--button-border-color) !important;
+  border-bottom: 1px solid var(--button-border-color) !important;
+  box-shadow: inset 0 1px 0 #fff !important;
+}
+
+.sidebar .module-caption:hover,
+.module-caption:hover {
+  background: linear-gradient(to bottom, var(--button-face-hover) 45%, var(--button-shade-light-hovered) 45%) !important;
+  border-color: var(--button-border-color-hovered) !important;
+}
+
+.sidebar .module-caption .title,
+.sidebar .module-caption span,
+.module-caption .title,
+.module-caption span {
+  color: #000 !important;
+}
+
+.sidebar .module-caption .chevron,
+.sidebar .module-caption .action-btn,
+.module-caption .chevron,
+.module-caption .action-btn {
+  color: #333 !important;
+}
+
+.sidebar .module-body,
+.module-body {
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+
+.sidebar .tree-node,
+.sidebar .gist-item {
+  color: #000000 !important;
+}
+
+.sidebar .tree-node:hover,
+.sidebar .gist-item:hover {
+  background: var(--button-face-hover) !important;
+  color: #000000 !important;
+}
+
+

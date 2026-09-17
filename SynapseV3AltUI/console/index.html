@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; object-src 'none';">
+    <link href="../assets/styles/hollywood-base.css" rel="stylesheet">
+    <link href="console.css" rel="stylesheet">
+    <link id="theme-style" rel="stylesheet" href="../assets/styles/prebuilt/_prebuilt-hollywood-dark.css">
+    <link rel="stylesheet" href="../assets/styles/fonts.css">
+</head>
+
+<body id="console-body" class="h-screen w-screen overflow-hidden select-none">
+    <div id="console-application" class="flex flex-col h-full w-full">
+        <!-- Title Bar -->
+        <div class="hw-titlebar flex items-center w-full h-8">
+            <div id="titlebar-middle-text" class="pl-2 font-medium text-sm">Console</div>
+            <div id="controls" class="flex ml-auto z-10">
+                <div class="control p-2 cursor-pointer" id="ban_control_minimize" title="Minimize">
+                    <iconify-icon icon="fluent:subtract-16-regular"></iconify-icon>
+                </div>
+                <div class="control p-2 cursor-pointer" id="ban_control_maximize" title="Maximize">
+                    <iconify-icon icon="fluent:maximize-16-regular"></iconify-icon>
+                </div>
+                <div class="control p-2 cursor-pointer" id="ban_control_restore" title="Restore" style="display: none;">
+                    <iconify-icon icon="fluent:full-screen-maximize-16-regular"></iconify-icon>
+                </div>
+                <div class="control p-2 cursor-pointer" id="ban_control_close" title="Close">
+                    <iconify-icon icon="fluent:dismiss-16-regular"></iconify-icon>
+                </div>
+            </div>
+        </div>
+
+        <!-- Console View -->
+        <div id="console" class="flex flex-col max-w-full max-h-full w-full h-full select-none overflow-hidden" style="height: calc(100% - 32px);">
+            <div class="flex h-full w-full select-none flex-col">
+                <!-- Header Toolbar -->
+                <div class="console-header z-10 flex w-full items-center gap-2 p-1">
+                    <button id="btn-console-copy" class="hw-button relative flex select-none items-center justify-center gap-1 rounded-md px-2 py-1 cursor-pointer">
+                        <iconify-icon icon="fluent:clipboard-20-filled" class="flex items-center justify-center"></iconify-icon> Copy
+                    </button>
+                    <button id="btn-console-clear" class="hw-button relative flex select-none items-center justify-center gap-1 rounded-md px-2 py-1 cursor-pointer">
+                        <iconify-icon icon="fluent:eraser-20-filled" class="flex items-center justify-center"></iconify-icon> Clear
+                    </button>
+                    <!--
+                    <button id="btn-console-test" class="hw-button relative flex select-none items-center justify-center gap-1 rounded-md px-2 py-1 cursor-pointer" title="Send test output logs (print, info, warning, error)">
+                        <iconify-icon icon="fluent:beaker-20-filled" class="flex items-center justify-center"></iconify-icon> Test
+                    </button>
+                    -->
+                    <div class="hw-textbox rounded-md px-2 py-1 grow">
+                        <div class="inner flex items-center gap-2 px-1 py-0.5 rounded">
+                            <iconify-icon icon="fluent:search-20-filled" class="flex items-center justify-center ml-1 text-sm opacity-60"></iconify-icon>
+                            <input id="console-search-input" class="w-full border-none bg-transparent text-inherit outline-none text-sm" type="text" autocomplete="off" spellcheck="false">
+                        </div>
+                    </div>
+                    <div id="console-autoscroll-toggle" class="hw-checkbox on relative inline-flex items-center h-6 w-11 flex-shrink-0 rounded-full cursor-pointer border transition-colors duration-200 ease-in-out">
+                        <div class="icon translate-x-5 pointer-events-none relative inline-block rounded-full h-4 w-4 bg-white shadow transition-all duration-200 ease-in-out"></div>
+                    </div>
+                    <div class="pr-2 text-xs font-medium cursor-pointer" id="label-autoscroll">Autoscroll</div>
+                </div>
+
+                <!-- Console Contents -->
+                <div id="console-contents" class="console-contents flex h-full w-full flex-col p-2 overflow-y-auto font-mono text-xs select-text">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./bootstrap.js"></script>
+</body>
+</html>

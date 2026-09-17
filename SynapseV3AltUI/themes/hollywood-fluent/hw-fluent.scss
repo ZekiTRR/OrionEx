@@ -1,0 +1,679 @@
+@use "reset" as *;
+$disable-fill: false;
+//@STITCH
+
+.hw-titlebar {
+  background: #212121;
+  height: 35px;
+}
+
+#gateway-page{
+  background-image: none!important;
+  backdrop-filter: blur(5px);
+}
+
+#gateway-page #logo-container #extra .h-8.w-8{
+  align-self: center!important;
+}
+
+#gateway-page #logo-container #extra .h-8.w-8 svg{
+  animation-name: spin;
+  animation-duration: 1000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear; 
+}
+
+@function get_scripting_quote() {
+  $scr_quotes: "a","a","Mad? Yep","Mad? Yep","Server is braindead, I hate fitting in. - Gorilla who tried desperately to fit in","Server is braindead, I hate fitting in. - Gorilla who tried desperately to fit in","No V3? Skill issue!","No V3? Skill issue!","my mom always said I was special","my mom always said I was special","What does the __alphatriangulationpos negrosupermethod do?","What does the __alphatriangulationpos negrosupermethod do?";
+  $quote: nth($scr_quotes, random(11));
+  @return $quote;
+}
+
+#gateway-page #logo-container #extra #subtitle{
+  align-self: center!important;
+  text-align: center;
+  transition: 0.1s;
+  align-items: center;
+  width: 100%;
+    &::after {
+        content: get_scripting_quote();
+        text-align: center;
+        width: 100%;
+        align-self: center!important;
+    }
+}
+
+.tabs-container{
+  background: #212121;
+}
+
+#titlebar-logo{
+  width: 120px;
+}
+
+@function get_quote() {
+  $quotes: "T0V4: best themes maker", "T0V4: best themes maker", "IceyTamim is super cool", "IceyTamim is super cool", "Syn V3 is fire!", "Syn V3 is fire!", "SW v3 is a just reskin", "SW v3 is a just reskin","No V3 - No life","No V3 - No life","SIRMEME on top!","SIRMEME on top!","I ❤ Synapse V3","I ❤ Synapse V3";
+  $quote: nth($quotes, random(14));
+  @return $quote;
+}
+
+#titlebar-branding {
+    margin-bottom: 0.1em;
+ 
+    &::after {
+        content: 'UI v1.2 | Hollywood Fluent \a'+get_quote();
+        font-size: 0.69em;
+        white-space: pre;
+        padding-top: 0.625em;
+        transform: translate(0,-50%);
+    }
+}
+
+.hw-titlebar #controls .control{
+  width: 35px;
+  height: 35px;
+  position: relative;
+}
+
+.hw-titlebar #controls .control svg{
+  position: absolute;
+  transform: translate(-50%,-50%);
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+}
+
+.hw-list .caption{
+  background-color: #212121!important;
+}
+
+.hw-list .divide-y .value{
+  background-color: #212121!important;
+}
+
+.hw-list .divide-y .value.selected{
+  text-shadow: 0 0 5px black;
+  background-color: lightblue!important;
+}
+
+.add-tab:hover{
+  cursor: pointer;
+}
+
+.hw-editor-tab .content .caption{
+  font-size: 12px;
+  color: lightgrey;
+  padding-right: 5px;
+}
+
+.hw-editor-tab iconify-icon{
+  color: lightgrey;
+}
+
+.hw-editor-tab{
+  max-height: 32px;
+  margin-bottom: 3px;
+  margin-top: 3px;
+  margin-left: 3px;
+  border-radius: 6px;
+  box-shadow: none;
+  border: none;
+}
+
+.hw-editor-tab:hover{
+  max-height: 32px;
+  background: black;
+  cursor: pointer;
+  border-radius: 6px;
+  box-shadow: none;
+  border: none;
+}
+
+.hw-editor-tab.select{
+  max-height: 32px;
+  box-shadow: 0 0 5px #101010;
+  background: #2d2d2d;
+  border-radius: 6px;
+}
+
+.monaco-editor .margin-view-overlays{
+  background: #212121;
+}
+
+#ban_control_feedback{
+  color: yellow;
+}
+.select{
+  background: red;
+}
+
+.node{
+  background: lightblue;
+}
+
+.hw-dialog .inputs{
+  background: #131313;
+}
+
+.hw-dialog .h-full{
+  margin-left: 35px;
+}
+
+.hw-dialog{
+  background: #212121;
+  border: 1px solid #808080;
+}
+
+.hw-dialog *{
+  font-weight: 200;
+}
+
+.hw-dialog .caption{
+  font-weight: 300;
+  color: white;
+}
+.hw-dialog iconify-icon{
+  position: absolute;
+  top: 15px;
+  padding: 0;
+}
+.hw-dialog .hw-button{
+  background: #373737;
+  cursor: pointer;
+  font-size: 14px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border:1px solid #3f3f3f;
+  border-radius: 4px;
+  transition: 0.05s;
+}
+.hw-dialog .hw-button:hover{
+  background-color: #414141;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  margin-bottom: 5px;
+  border:1px solid #3f3f3f;
+  border-radius: 4px;
+  transition: 0.05s;
+}
+.hw-dialog .hw-button:active{
+  background-color: #2d2d2d;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  margin-bottom: 5px;
+  border:1px solid #3f3f3f;
+  border-radius: 4px;
+  transition: 0.05s;
+}
+
+.bg-black{
+  background: #212121!important;
+}
+
+.hw-textbox .inner{
+  border: none;
+}
+
+#canvas-language button{
+  cursor: pointer;
+  background: #373737;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 2px;
+  margin-right: 8px;
+  border:1px solid #3f3f3f;
+  border-radius: 4px;
+  transition: 0.05s;
+}
+
+#canvas-language button:hover{
+  background: #414141;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 2px;
+  margin-right: 8px;
+  border:1px solid #3f3f3f;
+  border-radius: 4px;
+  transition: 0.05s;
+}
+
+#canvas-language button:active{
+  background: #2d2d2d;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 2px;
+  margin-right: 8px;
+  border:1px solid #3f3f3f;
+  border-radius: 4px;
+  transition: 0.05s;
+}
+
+
+.hw-textbox{
+  background: #2d2d2d;
+}
+
+.hw-dialog .hw-textbox div{
+  border: none;
+}
+
+.sidebar{
+  background: #212121;
+}
+
+.sidebar .module .node div .node-caption{
+  transition: 0.2s;
+}
+
+.sidebar .text-blue-400,.text-yellow-400,.text-green-400{
+  color: lightgrey;
+}
+
+.sidebar iconify-icon{
+  color: #858585
+}
+
+.sidebar .hw-textbox{
+  margin: 3px;
+}
+
+.sidebar .module .node div .node-caption:hover{
+  margin-left: 5px;
+  transition: 0.2s;
+}
+
+.sidebar .module-caption{
+  background: #313131;
+}
+
+.action-bar{
+  background: #212121;
+}
+
+.action-list{
+  padding-right: 2px;
+  font-weight: 200;
+}
+.hw-navigationbar .entry{
+  border-radius: 0;
+  background: transparent;
+  border: none;
+  transition: 0.1s;
+  width: 30px;
+  margin: 0;
+  padding: 0;
+  height: 35px;
+}
+
+.hw-navigationbar .entry iconify-icon,svg{
+  width: 16px;
+  height: 16px;
+}
+
+#logo-container iconify-icon,svg{
+  width: 32px;
+  height: 32px;
+}
+
+.hw-navigationbar .entry iconify-icon.flex.text-base{
+  width: 20px;
+  font-size: 20px;
+  height: 35px;
+  border-bottom: 0px solid gray;
+}
+
+
+.hw-navigationbar .entry:hover{
+  border-radius: 0;
+  background: transparent;
+  border: none;
+  transition: 0.1s;
+}
+
+.hw-navigationbar .entry:hover iconify-icon.flex.text-base{
+  width: 20px;
+  height: 35px;
+  border-bottom: 2px solid gray;
+  transition: 0.1s;
+}
+
+.hw-navigationbar .entry div.label{
+  background: transparent;
+  backdrop-filter: blur(2px);
+  border-radius: 4px;
+  border: 1px solid gray;
+}
+
+.hw-navigationbar .entry.select {
+  border-radius: 0;
+  box-sizing: border-box;
+  background: transparent;
+  border: none;
+  transition: 0.1s;
+}
+
+.hw-navigationbar .entry.select iconify-icon.flex.text-base{
+  width: 20px;
+  height: 35px;
+  border-bottom: 2px solid lightblue;
+  transition: 0.1s;
+}
+
+body{
+  background: #212121;
+}
+
+#application{
+  background: #212121;
+}
+
+
+.editor-page .h-full section .hw-button{
+  cursor: pointer;
+  font-size: 14px;
+  background: #373737;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin:5px;
+  border:1px solid #3f3f3f;
+  border-radius: 4px;
+  transition: 0.05s;
+}
+
+.editor-page .h-full section .hw-button:hover{
+  background: #414141;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin:5px;
+  border:1px solid #3f3f3f;
+  border-radius: 4px;
+  transition: 0.05s;
+}
+
+.editor-page .h-full section .hw-button:active{
+  background: #2d2d2d;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin:5px;
+  border:1px solid #3f3f3f;
+  border-radius: 4px;
+  transition: 0.05s;
+}
+
+.editor-page .h-full section div.pointer-events-auto{
+  box-shadow: 0 0 5px #101010;
+}
+
+.action-list button{
+  cursor: pointer;
+  font-size: 14px;
+  background: #373737;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 2px;
+  border:1px solid #3f3f3f;
+  border-radius: 4px;
+  transition: 0.05s;
+}
+.action-list button:hover{
+  background: #414141;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 2px;
+  border:1px solid #3f3f3f;
+  border-radius: 4px;
+  transition: 0.05s;
+}
+.action-list button:active{
+  background: #2d2d2d;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 2px;
+  border:1px solid #3f3f3f;
+  border-radius: 4px;
+  transition: 0.05s;
+}
+
+.hw-multimenu .list{
+  background: #212121;
+  min-width: 60px;
+}
+
+.hw-multimenu .pages{
+  background: #151515;
+}
+
+.hw-multimenu .pages .page .category-label{
+  background: #303030;
+  border-radius: 5px;
+  margin: 5px;
+  box-shadow: 0 0 5px black;
+}
+
+.hw-multimenu .list .hw-textbox{
+  margin: 4px;
+}
+
+.hw-multimenu .list .entry{
+  border-radius: 4px;
+  transition: 0.1s;
+  margin-top: 4px;
+  margin-left: 4px;
+  margin-right: 4px;
+  border-color: lightblue;
+  border: none;
+  transition: 0.1s;
+}
+.hw-multimenu .list .entry:hover{
+  border-left: 4px solid gray;
+  transition: 0.1s;
+  background: #212121;
+}
+.hw-multimenu .list .entry.select{
+  border-left: 4px solid lightblue;
+  background: #313131;
+  transition: 0.1s;
+  box-shadow: 0 0 5px #101010;
+}
+#attach-button{
+  display: none;
+}
+
+.hw-multimenu .hw-button{
+  background: #373737;
+  cursor: pointer;
+  font-size: 14px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 2px;
+  border:1px solid #3f3f3f;
+  border-radius: 4px;
+  transition: 0.05s;
+}
+.hw-multimenu .hw-button:hover{
+  background: #414141;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 2px;
+  border:1px solid #3f3f3f;
+  border-radius: 4px;
+  transition: 0.05s;
+}
+.hw-multimenu .hw-button:active{
+  background: #2d2d2d;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 2px;
+  border:1px solid #3f3f3f;
+  border-radius: 4px;
+  transition: 0.05s;
+}
+
+.hw-dropdown .selector{
+  background: #212121;
+  border: none;
+}
+
+.hw-dropdown .list{
+  background: #212121;
+  border: none;
+}
+
+div.flex.flex-col.items-center.text-white.p-2.rounded-md.text-xs.bg-stone-800{
+  background: #353535!important;
+}
+
+.hw-changelog{
+  border: 1px solid gray;
+  background: #212121;
+}
+
+.hw-changelog .caption{
+  background: #353535;
+}
+
+.hw-progress-view{
+  border: 1px solid gray;
+  background: #212121;
+}
+
+.hw-progress-view .caption{
+  background: #353535;
+}
+
+.hw-contextmenu{
+  border: 1px gray solid;
+  backdrop-filter: blur(20px);
+  background: transparent;
+}
+.hw-contextmenu .entry div{
+  background: #212121;
+  border-radius: 4px;
+}
+.hw-checkbox{
+  border: 1px gray solid;
+  background: #212121;
+  width: 30px;
+  height: 30px;
+  border-radius: 4px;
+}
+.hw-checkbox div.ease-in-out{
+  background-size: contain;
+  border-radius: 0;
+  margin-left: 2px;
+}
+.hw-checkbox .translate-x-1{
+  background: #212121;
+  box-shadow: none;
+}
+.hw-checkbox .translate-x-5{
+  position: absolute;
+  right: 24px;
+  background: transparent;
+  box-shadow: none;
+  width: 20px;
+  height: 20px;
+  background-image: url('https://svgur.com/i/r_X.svg');
+}
+.hw-checkbox.on{
+  background: lightblue;
+}
+
+#actions *{
+  cursor: pointer;
+}
+
+#nav-plugins iconify-icon{
+  color: #5e5d12;
+}
+
+#nav-plugins iconify-icon{
+  color: #5e5d12;
+}
+
+/* CONSOLE THEMING: */
+#console-body{
+  background: #212121!important;
+}
+
+#console-body .console-contents{
+  background: #212121;
+}
+
+#console-body .console-header{
+  background: #303030;
+  border-radius: 0 0 5px 5px;
+  box-shadow: 0 0 5px black;
+  border: none;
+}
+
+#console-body .hw-textbox{
+  background: #202020;
+}
+
+#console-body button{
+  cursor: pointer;
+  font-size: 14px;
+  background: #373737;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 2px;
+  border:1px solid #3f3f3f;
+  border-radius: 4px;
+  transition: 0.05s;
+}
+#console-body button:hover{
+  background: #414141;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 2px;
+  border:1px solid #3f3f3f;
+  border-radius: 4px;
+  transition: 0.05s;
+}
+#console-body button:active{
+  background: #2d2d2d;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 2px;
+  border:1px solid #3f3f3f;
+  border-radius: 4px;
+  transition: 0.05s;
+}

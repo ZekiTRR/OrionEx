@@ -1,0 +1,19 @@
+/* ─── Dialogs (.hw-dialog) ─── */
+.hw-dialog {
+    border-width: 1px;
+    border-style: solid;
+    box-sizing: border-box;
+}
+
+/* ─── Color swatch picker in dialogs ─── */
+.hw-dialog .rounded-full[data-color] {
+    transition: transform 0.1s ease, filter 0.1s ease;
+}
+
+.hw-dialog .rounded-full[data-color]:hover {
+    transform: scale(1.15);
+}
+
+.hw-dialog .inputs {
+    box-sizing: border-box;
+}

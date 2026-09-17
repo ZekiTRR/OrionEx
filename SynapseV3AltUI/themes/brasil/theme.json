@@ -1,0 +1,12 @@
+{
+  "id": "brasil",
+  "name": "Brasil",
+  "author": "Synapse Community",
+  "version": "1.0.0",
+  "description": "Brazilian-themed Hollywood theme with vibrant Amazon green, flag gold, and deep ocean blue accents.",
+  "metrics": {
+    "ux-button-padding-v": 0.25,
+    "ux-button-padding-h": 0.6,
+    "ux-border-radius": 0.375
+  }
+}

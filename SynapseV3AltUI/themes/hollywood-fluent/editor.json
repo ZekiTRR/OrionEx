@@ -1,0 +1,12 @@
+{
+    "inherit": true,
+    "base": "vs-dark",
+    "colors": {
+      "editor.background": "#1e1e1e",
+      "editor.foreground": "#c7c7c7",
+      "minimap.background": "#1e1e1e"
+    },
+    "rules": [
+    ],
+    "encodedTokensColors": []
+  }
