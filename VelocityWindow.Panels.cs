@@ -99,8 +99,7 @@ public sealed partial class VelocityWindow
     {
         var grid = new Grid { RowDefinitions = new("48,*,26") };
         var commands = new Grid { ColumnDefinitions = new("Auto,Auto,Auto,Auto"), VerticalAlignment = VerticalAlignment.Stretch };
-        var execute = MakeButton("Execute", () => { }, "Bt/RunFileExe.png", "Unavailable: this port supports editor and local-file operations only.");
-        execute.IsEnabled = false;
+        var execute = MakeButton("Execute", () => Run(ExecuteAsync), "Bt/RunFileExe.png", "Execute active script via Orion Bridge");
         Put(commands, execute, column: 0);
         Put(commands, MakeButton("Clear", () => Run(ClearEditorAsync), "Bt/Clear.png", "Clear active editor"), column: 1);
         Put(commands, MakeButton("Open", () => Run(OpenPickerAsync), "Bt/OpenFile.png", "Open script · Ctrl+O"), column: 2);
@@ -196,9 +195,30 @@ public sealed partial class VelocityWindow
 
     private void QueueOnBridge(string content)
     {
-        // Deliberately never forwards Monaco execution requests to the bridge.
-        Toast("Execute is unavailable in this frontend-only port.");
-        AppendLog("info", "Execute is unavailable. Editor text was kept; nothing was sent to a client.");
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            Toast("Nothing to execute");
+            return;
+        }
+        if (!_bridge.IsConnected)
+        {
+            Toast("No bridge connection");
+            AppendLog("error", "Execution failed: Orion Bridge is not connected.");
+            return;
+        }
+        var targets = _selectedClients.ToArray();
+        if (targets.Length == 0)
+        {
+            _bridge.EnqueueExecute(content);
+            Toast("Executed on bridge (all clients)");
+            AppendLog("info", "Executed script on Orion Bridge.");
+        }
+        else
+        {
+            _bridge.EnqueueExecute(content, targets);
+            Toast($"Executed on bridge ({targets.Length} clients)");
+            AppendLog("info", $"Executed script on Orion Bridge for {targets.Length} clients.");
+        }
     }
 
     private void RenderClients()

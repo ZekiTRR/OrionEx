@@ -13,6 +13,12 @@ export function ActionBar() {
         return i18n.subscribe(() => setLangTick(t => t + 1));
     }, []);
 
+    useEffect(() => {
+        if (window.hwAPI?.onClientAttach) {
+            return window.hwAPI.onClientAttach(status => setIsConnected(!!status));
+        }
+    }, []);
+
     const handleExecute = () => {
         if (!activeTab) return;
         const code = activeTab.content || '';
@@ -43,7 +49,12 @@ export function ActionBar() {
         }
     };
 
-    const handleExecuteFile = () => window.hwAPI.execute();
+    const handleExecuteFile = async () => {
+        const file = await window.hwAPI?.openFileDialog?.();
+        if (file && file.content) {
+            window.hwAPI?.execute?.(file.content);
+        }
+    };
 
     const handleSaveFile = () => {
         saveActiveScript();

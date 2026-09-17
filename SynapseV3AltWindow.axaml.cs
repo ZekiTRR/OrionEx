@@ -12,7 +12,7 @@ namespace OrbitAvalonia;
 // A local editor/UI host only. No execution, injection, client discovery or remote bridge.
 public sealed partial class SynapseV3AltWindow : Window
 {
-    private const string UiOnly = "Execution is unavailable in this UI-only port. No injector or external client is connected.";
+    private const string UiOnly = "Execution is unavailable because no Orion Bridge client is connected.";
     private readonly string _scriptsDirectory;
     private readonly string _dataRoot;
     private readonly string _uiRoot;
@@ -21,6 +21,7 @@ public sealed partial class SynapseV3AltWindow : Window
     private readonly HashSet<string> _dialogFiles = new(StringComparer.OrdinalIgnoreCase);
     private readonly List<object> _logs = [];
     private readonly NativeWebView _webView;
+    private readonly UnifiedBridgeServer _bridgeServer = UnifiedBridgeServer.Shared;
     private MonacoStaticServer? _server;
     private Window? _console;
     private NativeWebView? _consoleView;
@@ -59,9 +60,13 @@ public sealed partial class SynapseV3AltWindow : Window
             if (!File.Exists(Path.Combine(_uiRoot, "index.html")))
                 throw new FileNotFoundException("SynapseV3AltUI/dist/index.html is missing. Build and deploy the UI assets first.");
             _server = new MonacoStaticServer(_uiRoot);
+            _bridgeServer.ConnectionChanged += BridgeConnectionChanged;
+            _bridgeServer.LogReceived += BridgeLogReceived;
             ConnectView(_webView);
             _webView.Source = _server.Address;
-            Log("info", "Local UI-only editor ready. External client: disconnected. Execution unavailable.");
+            Title = "Synapse V3 Alt" + (_bridgeServer.IsConnected ? "" : " — Disconnected");
+            Log("info", "Local UI editor ready. External client: " + (_bridgeServer.IsConnected ? "connected" : "disconnected") + ".");
+            Emit("bridgeStatus", new { connected = _bridgeServer.IsConnected });
         }
         catch (Exception error)
         {
@@ -70,6 +75,18 @@ public sealed partial class SynapseV3AltWindow : Window
             Close();
         }
     }
+
+    private void BridgeConnectionChanged(bool connected)
+    {
+        Dispatcher.UIThread.Post(() =>
+        {
+            Title = "Synapse V3 Alt" + (connected ? "" : " — Disconnected");
+            Emit("bridgeStatus", new { connected });
+        });
+    }
+
+    private void BridgeLogReceived(string level, string message) =>
+        Dispatcher.UIThread.Post(() => Log(level, message));
 
     private void ConnectView(NativeWebView view)
     {
@@ -146,7 +163,7 @@ public sealed partial class SynapseV3AltWindow : Window
         {
             case "getBootstrap": return new { settings = _settings, storage = _storage, workspace = _workspace,
                 windowState = new { isMaximized = target.WindowState == WindowState.Maximized }, isMaximized = target.WindowState == WindowState.Maximized,
-                externalClient = false, connected = false, clients = Array.Empty<object>(), uiOnly = true, logs = _logs.ToArray() };
+                externalClient = _bridgeServer.IsConnected, connected = _bridgeServer.IsConnected, clients = _bridgeServer.GetConnectedClients(), uiOnly = !_bridgeServer.IsConnected, logs = _logs.ToArray() };
             case "saveWorkspace": AcceptWorkspace(Value(0)); PersistWorkspace(); return true;
             case "saveStorage": _storage = RequireObject(Value(0)); PersistObject("storage.json", _storage); return true;
             case "getSetting": return _settings[Text(0)] ?? Value(1);
@@ -197,12 +214,14 @@ public sealed partial class SynapseV3AltWindow : Window
                     await EvaluateSafeAsync(source, $"window.synapseAltEvent?.('consoleMessage',{JsonSerializer.Serialize(entry)});");
                 return true;
             case "clearConsole": _logs.Clear(); Emit("consoleSnapshot", _logs.ToArray()); return true;
-            case "getChangelog": return "SynapseV3Alt: local editor with local-file bookmarks and on-demand GitHub Gists. Execution, external clients and plugins are unavailable.";
+            case "getChangelog": return "SynapseV3Alt: local editor with local-file bookmarks and on-demand GitHub Gists. Execution, external clients and plugins are now enabled via Orion Bridge.";
             case "showItemInFolder": ShowItemInFolder(Text(0)); return true;
-            case "execute": throw new InvalidOperationException(UiOnly);
-            case "getClients": return Array.Empty<object>();
-            case "isAttached": case "isConnected": return false;
-            default: throw new NotSupportedException($"Unsupported UI-only operation: {method}");
+            case "execute":
+                if (!_bridgeServer.IsConnected) throw new InvalidOperationException("Orion Bridge is not connected.");
+                return _bridgeServer.EnqueueExecute(Text(0));
+            case "getClients": return _bridgeServer.GetConnectedClients();
+            case "isAttached": case "isConnected": return _bridgeServer.IsConnected;
+            default: throw new NotSupportedException($"Unsupported UI operation: {method}");
         }
     }
 
@@ -242,6 +261,8 @@ public sealed partial class SynapseV3AltWindow : Window
         _server?.Dispose();
         _server = null;
         _workspaceService.Dispose();
+        _bridgeServer.ConnectionChanged -= BridgeConnectionChanged;
+        _bridgeServer.LogReceived -= BridgeLogReceived;
         if (!_closingForOrion) _returnToOrion(ToShared());
     }
 

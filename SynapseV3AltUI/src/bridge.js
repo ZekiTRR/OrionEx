@@ -116,8 +116,16 @@ window.hwAPI = {
   minimize: safe('minimize'), maximize: safe('maximize'), close: safe('close'),
   startWindowDrag: safe('startWindowDrag'), setAlwaysOnTop: safe('setAlwaysOnTop'),
   isMaximized: () => !!windowState.isMaximized,
-  isConnected: () => false,
-  execute: async () => reportError('Execution is unsupported in SynapseV3Alt (UI-only). No script was executed.'),
+  isConnected: async () => transport() ? await request('isConnected') : false,
+  isAttached: async () => transport() ? await request('isAttached') : false,
+  execute: async (code) => {
+    if (!transport()) return reportError('Execution is unsupported in standalone preview.');
+    try {
+      return await request('execute', code);
+    } catch (error) {
+      return reportError(error);
+    }
+  },
   openConsole: safe('openConsole'), flushConsoleLogs: safe('flushConsoleLogs'), clearConsole: safe('clearConsole'),
   openThemeFolder: safe('openThemeFolder'), showItemInFolder: safe('showItemInFolder'),
   openExternal: async () => reportError('External navigation is unavailable in this offline UI-only port.'),
@@ -132,7 +140,24 @@ window.hwAPI = {
   onScriptsChanged: cb => on('scriptsChanged', cb), onThemesChanged: cb => on('themesChanged', cb),
   onConsoleMessage: cb => on('consoleMessage', cb), onConsoleSnapshot: cb => on('consoleSnapshot', cb),
   onSettingsChanged: cb => on('settingsChanged', cb), onWindowState: cb => on('windowState', cb),
-  onClientAttach: cb => { cb(false); return () => {}; }
+  onClientAttach: cb => {
+    let active = false;
+    if (transport()) {
+      request('isConnected').then(connected => {
+        active = !!connected;
+        cb(active);
+      }).catch(() => cb(false));
+    } else {
+      cb(false);
+    }
+    return on('bridgeStatus', payload => {
+      const next = !!(payload?.connected);
+      if (next !== active) {
+        active = next;
+        cb(active);
+      }
+    });
+  }
 };
 export async function hydrate() {
   if (transport()) {
