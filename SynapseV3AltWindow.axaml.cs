@@ -64,7 +64,7 @@ public sealed partial class SynapseV3AltWindow : Window
             _bridge.LogReceived += BridgeLogReceived;
             
             ConnectView(_webView);
-            _webView.Source = monacoAddress;
+            _webView.Source = new Uri(Path.Combine(_uiRoot, "index.html"));
             Log("info", "Synapse V3 Alt editor ready. External client: " + (_bridge.IsConnected ? "connected" : "disconnected"));
         }
         catch (Exception error)
@@ -92,7 +92,7 @@ public sealed partial class SynapseV3AltWindow : Window
     }
 
     private bool IsLocalPage(Uri? uri) => uri is not null &&
-        uri.Scheme == _monacoAddress.Scheme && uri.Host == _monacoAddress.Host && uri.Port == _monacoAddress.Port &&
+        (uri.Scheme == _monacoAddress.Scheme || uri.Scheme == "file") && 
         (uri.AbsolutePath == "/index.html" || uri.AbsolutePath == "/console/index.html");
 
     private void OnNavigation(object? sender, WebViewNavigationStartingEventArgs e)
