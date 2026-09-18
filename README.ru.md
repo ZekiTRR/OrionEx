@@ -2,7 +2,20 @@
 
 Ремейк [Orion](https://github.com/snooped-xl/Orion) — мультиинтерфейсного скрипт-исполнителя на Avalonia.
 
-Добавлены меню: **Wave**, **SirHurt**, **Script-Ware**, **SirHurt Legacy**, **SirHurt Remake**, **Sentinel**, **JJSploit**, **Wave Legacy**, **Bunni.lol**.
+Добавлены меню:
+- **Wave**,
+- **SirHurt**,
+- **Script-Ware**,
+- **SirHurt Legacy**,
+- **SirHurt Remake**,
+- **Sentinel**,
+- **Universal Console**,
+- **JJSploit**,
+- **Wave Legacy**,
+- **Bunni.lol**.
+
+[Скриншоты](Screenshots.md)
+
 
 > ⚠️ Это лишь MVP — меню могут не соответствовать оригиналу на все 100%.
 
@@ -20,6 +33,13 @@ dotnet publish -c Release -p:RuntimeIdentifier=win-x64
 
 - Issues и pull requests приветствуются.
 - Если переиспользуете код — укажите ссылку на [оригинальный Orion](https://github.com/snooped-xl/Orion).
+
+
+Velocity UI:
+- https://github.com/Azulzzxd/Velocity-User-Interface
+
+Synapse V3 alternative version (from Synapse Z menu):
+- https://github.com/Okafor-twd/SynapseV3
 
 ---
 
